@@ -61,6 +61,9 @@
     .hero-brief-slip span,.hero-brief-slip i { display:block; color:var(--oxblood); font-size:9px; font-style:normal; font-weight:700; letter-spacing:.14em; text-transform:uppercase; }
     .hero-brief-slip strong { display:block; margin:17px 0 20px; font:500 29px/.88 Fraunces,serif; letter-spacing:-.06em; }
     .hero-brief-slip i { color:var(--ink-soft); }
+    .slip-avatar { width:48px; height:48px; border-radius:50%; border:1.5px solid var(--brass); object-fit:cover; display:block; margin-bottom:12px; box-shadow:2px 2px 0 rgba(166,124,61,.2); }
+    .profile-avatar-wrap { width:128px; height:128px; border-radius:50%; border:2px solid #e1bc75; padding:4px; background:rgba(255,255,255,.05); box-shadow:0 12px 32px rgba(0,0,0,.45); margin-bottom:20px; flex-shrink:0; }
+    .profile-circle-pic { width:100%; height:100%; border-radius:50%; object-fit:cover; display:block; }
 
     .advocate-profile { border-top:1px solid var(--line); border-bottom:1px solid var(--line); background:rgba(238,226,205,.55); }
     .profile-inner { display:grid; grid-template-columns:.65fr 1.35fr; max-width:1440px; margin:auto; }
@@ -172,10 +175,39 @@
         <div class="evidence-rail">Case file / 2026</div>
         <div class="hero-copy"><div class="file-tab">Advocacy with intent</div><h1 id="hero-title">A clear case begins with a <em>clear conversation.</em></h1><p class="hero-summary">Brief &amp; Gavel is the senior advocate practice of Vimal Vasireddy for people who need a considered legal strategy, not intimidating legal theatre.</p><div class="hero-actions"><button class="desk-button consultation-trigger">Discuss your matter ↗</button><a class="desk-button ghost" href="#practice">Explore practice areas →</a></div><p class="hero-note">⌾ <b>Practical. Private. Prepared.</b> Start with the facts, then choose the next right step.</p></div>
         <div class="hero-object"><img src="https://briefgavel-xsdpi3fq.manus.space/manus-storage/brief-gavel-hero_fb3554c6.jpg" alt="A considered advocate desk with a gavel, case file, pen and papers" /><span class="object-number">01</span><span class="object-label">The working brief</span></div>
-        <aside class="hero-brief-slip"><span>Senior advocate</span><strong>Vimal<br />Vasireddy</strong><i>Case record / 01</i></aside>
+        <aside class="hero-brief-slip">
+          <img src="/img/vimal-vasireddy-circle.png" alt="Vimal Vasireddy" class="slip-avatar" />
+          <span>Senior advocate</span>
+          <strong>Vimal<br />Vasireddy</strong>
+          <i>Case record / 01</i>
+        </aside>
       </section>
 
-      <section class="advocate-profile" id="profile"><div class="profile-inner"><aside class="profile-record"><span>Senior advocate / profile</span><strong>Vimal<br />Vasireddy</strong><p>Credentials and court admissions are presented below for client confirmation before publication.</p></aside><div class="profile-content"><div class="section-kicker">About Vimal Vasireddy</div><h2 class="section-title">A steady hand when the stakes are <em>highest.</em></h2><p class="profile-note">A short, plain-spoken account of Vimal Vasireddy’s practice philosophy and the clients served will be added once approved by the client.</p><div class="credential-grid"><article class="credential-card"><span>Bar enrolment</span><strong>To be confirmed</strong></article><article class="credential-card"><span>Years in practice</span><strong>To be confirmed</strong></article><article class="credential-card"><span>Courts admitted</span><strong>To be confirmed</strong></article><article class="credential-card"><span>Recognitions</span><strong>To be confirmed</strong></article></div></div></div></section>
+      <section class="advocate-profile" id="profile">
+        <div class="profile-inner">
+          <aside class="profile-record">
+            <div class="profile-avatar-wrap">
+              <img src="/img/vimal-vasireddy-circle.png" alt="Advocate Vimal Vasireddy" class="profile-circle-pic" />
+            </div>
+            <div>
+              <span>Senior advocate / profile</span>
+              <strong>Vimal<br />Vasireddy</strong>
+            </div>
+            <p>Credentials and court admissions are presented below for client confirmation before publication.</p>
+          </aside>
+          <div class="profile-content">
+            <div class="section-kicker">About Vimal Vasireddy</div>
+            <h2 class="section-title">A steady hand when the stakes are <em>highest.</em></h2>
+            <p class="profile-note">A short, plain-spoken account of Vimal Vasireddy’s practice philosophy and the clients served will be added once approved by the client.</p>
+            <div class="credential-grid">
+              <article class="credential-card"><span>Bar enrolment</span><strong>To be confirmed</strong></article>
+              <article class="credential-card"><span>Years in practice</span><strong>14+</strong></article>
+              <article class="credential-card"><span>Courts admitted</span><strong>To be confirmed</strong></article>
+              <article class="credential-card"><span>Recognitions</span><strong>To be confirmed</strong></article>
+            </div>
+          </div>
+        </div>
+      </section>
 
       <nav class="quick-index" aria-label="Page highlights"><a class="index-item" href="#profile"><span class="stamp">01</span><div><span>Profile</span><strong>The advocate</strong></div></a><a class="index-item" href="#practice"><span class="stamp">02</span><div><span>Practice</span><strong>Where we can help</strong></div></a><button class="index-item consultation-trigger"><span class="stamp">03</span><div><span>First step</span><strong>Request a consult</strong></div></button></nav>
 
