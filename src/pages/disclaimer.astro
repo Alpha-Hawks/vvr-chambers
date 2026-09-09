@@ -1,0 +1,50 @@
+---
+import Base from "../layouts/Base.astro";
+import data from "../data/chambers.json";
+---
+
+<Base
+  title="Disclaimer"
+  description="Disclaimer and statement of compliance with Rule 36 of the Bar Council of India Rules."
+>
+  <section class="shell section">
+    <div class="section__head">
+      <span class="kicker">Disclaimer</span>
+    <div>
+      <h1 class="title title--sub">Disclaimer</h1>
+
+      <div class="prose">
+        <p>{data.disclaimer}</p>
+
+        <p>
+          The particulars published on this website are limited to those
+          permitted under the proviso to Rule 36 of the Bar Council of India
+          Rules: name, address, telephone number and email address, enrolment
+          number and date of enrolment, the State Bar Council of original
+          enrolment and the State Bar Council on whose roll the name currently
+          stands, Bar Association membership, academic and professional
+          qualifications, and areas of practice.
+        </p>
+
+        <p>
+          Nothing on this website is an advertisement, solicitation,
+          invitation or inducement to seek professional services. No claim is
+          made as to the outcome of any matter. No case results, client
+          testimonials, rankings or client names are published.
+        </p>
+
+        <p>
+          The information here is not legal advice and must not be relied upon
+          as such. Reading this website does not create an
+          advocate-client relationship.
+        </p>
+
+        <p>
+          {data.senior.name} is a Senior Advocate designated under Section 16
+          of the Advocates Act, 1961, and does not accept briefs or
+          instructions directly from clients.
+        </p>
+      </div>
+    </div>
+  </section>
+</Base>

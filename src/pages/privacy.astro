@@ -1,0 +1,59 @@
+---
+import Base from "../layouts/Base.astro";
+import data from "../data/chambers.json";
+---
+
+<Base
+  title="Privacy"
+  description="How this website handles data."
+>
+  <section class="shell section">
+    <div class="section__head">
+      <span class="kicker">Privacy</span>
+    <div>
+      <h1 class="title title--sub">Privacy</h1>
+
+      <div class="prose">
+        <p>
+          This website has no account system, no advertising and no
+          third-party trackers. The only personal data it collects is what you
+          choose to enter into the enquiry form.
+        </p>
+
+        <p>
+          No cookies are set by this website. Web fonts are served by Google
+          Fonts, which receives your IP address as a necessary part of
+          delivering the font files. No other third party receives data.
+        </p>
+
+        <p>
+          If you use the enquiry form, the name, contact details and
+          description you provide are received by the chambers and routed to an
+          advocate who is able to accept the matter. That information is used
+          only to respond to your enquiry and to decide whether the chambers can
+          assist. It is not shared with anyone outside the chambers, and it is
+          not used for marketing.
+        </p>
+
+        <p>
+          Please do not send confidential facts or documents before an advocate
+          has been formally instructed. A first enquiry does not create an
+          advocate-client relationship and is not protected as privileged
+          communication.
+        </p>
+
+        <p>
+          Server access logs may be retained by the hosting provider for
+          security and diagnostic purposes.
+        </p>
+
+        <p>
+          For any question about this notice, contact the chambers clerk at{" "}
+          <a href={`mailto:${data.chambers.clerk.email}`}>
+            {data.chambers.clerk.email}
+          </a>.
+        </p>
+      </div>
+    </div>
+  </section>
+</Base>

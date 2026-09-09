@@ -1,0 +1,78 @@
+---
+import Base from "../layouts/Base.astro";
+import Separation from "../components/Separation.astro";
+import data from "../data/chambers.json";
+
+const clerk = data.chambers.clerk;
+const s = data.senior;
+---
+
+<Base
+  title="Contact"
+  description={`Contact particulars for ${data.chambers.shortName}.`}
+>
+  <section class="shell section">
+    <div class="section__head">
+      <span class="kicker">Contact</span>
+    <div>
+      <h1 class="title title--sub">Contact</h1>
+
+      <div class="prose">
+        <p>
+          There are two routes, and they are not interchangeable. Please use
+          the one that applies to your matter.
+        </p>
+      </div>
+
+      <Separation />
+
+      <div class="contactcard">
+        <span class="contactcard__label">
+          Route one — briefing {s.name}
+        </span>
+        <p style="margin:0 0 0.75rem">
+          Through an instructing advocate only. For availability and dates,
+          the instructing advocate should contact the chambers clerk.
+        </p>
+        <address>
+          {clerk.name}, {clerk.label}<br />
+          <a href={`tel:${clerk.phone.replace(/\s/g, "")}`}>{clerk.phone}</a><br />
+          <a href={`mailto:${clerk.email}`}>{clerk.email}</a>
+        </address>
+      </div>
+
+      <div class="contactcard">
+        <span class="contactcard__label">
+          Route two — instructing an advocate directly
+        </span>
+        <p style="margin:0 0 0.75rem">
+          The advocates on the roll practise independently and may be
+          instructed directly. Their particulars and contact details are
+          published individually.
+        </p>
+        <p style="margin:0 0 1rem">
+          <a href="/chambers">The roll — {data.juniors.length} advocates</a>
+        </p>
+        <button class="btn" data-open-consult type="button">Request a consultation</button>
+      </div>
+
+      <div class="contactcard">
+        <span class="contactcard__label">Chambers</span>
+        <address>
+          {data.chambers.addressLines.map((line) => (
+            <span style="display:block">{line}</span>
+          ))}
+        </address>
+      </div>
+
+      <div class="prose" style="margin-top:2.5rem">
+        <p style="font-family:var(--font-data);font-size:0.8125rem;color:var(--ink-muted)">
+          An enquiry sent through this website is received by the chambers and
+          routed to an advocate who can accept it. Please do not send
+          confidential facts or documents before an advocate has been formally
+          instructed.
+        </p>
+      </div>
+    </div>
+  </section>
+</Base>

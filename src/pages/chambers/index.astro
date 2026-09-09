@@ -1,0 +1,54 @@
+---
+import Base from "../../layouts/Base.astro";
+import Separation from "../../components/Separation.astro";
+import data from "../../data/chambers.json";
+
+// The roll renders correctly at any headcount from 0 to 15 — juniors
+// arrive as rows, never as new pages.
+const juniors = data.juniors;
+const pad = (n) => String(n).padStart(2, "0");
+---
+
+<Base
+  title="The Roll"
+  description={`Advocates of ${data.chambers.shortName} accepting instructions. Particulars published under the proviso to Rule 36 of the Bar Council of India Rules.`}
+>
+  <section class="shell section">
+    <div class="section__head">
+      <span class="kicker">Roll 02—{pad(juniors.length + 1)}</span>
+    <div>
+      <h1 class="title title--sub">Advocates accepting instructions</h1>
+
+      <div class="prose">
+        <p>
+          Each advocate below practises independently and may be instructed
+          directly. Particulars are published individually, as permitted under
+          the proviso to Rule 36 of the Bar Council of India Rules.
+        </p>
+      </div>
+
+      <Separation />
+
+      {juniors.length === 0 ? (
+        <p class="prose">
+          Particulars are being collected and will be published as they are
+          confirmed.
+        </p>
+      ) : (
+        <ol class="roll">
+          {juniors.map((advocate, i) => (
+            <li class="roll__item">
+              <a class="roll__link" href={`/chambers/${advocate.slug}`}>
+                <span class="roll__no">{pad(i + 2)}</span>
+                <span class="roll__name">{advocate.name}</span>
+                <span class="roll__meta">
+                  {advocate.areasOfPractice.join(" — ")}
+                </span>
+              </a>
+            </li>
+          ))}
+        </ol>
+      )}
+    </div>
+  </section>
+</Base>

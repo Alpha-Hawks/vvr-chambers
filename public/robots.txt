@@ -1,0 +1,7 @@
+# STAGING — not for publication.
+# This site carries placeholder particulars, including invented advocates and
+# zeroed Bar Council enrolment numbers. See docs/PLACEHOLDERS.md.
+# Remove this file only when the advocate has approved real content for launch.
+
+User-agent: *
+Disallow: /

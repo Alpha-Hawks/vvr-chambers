@@ -1,0 +1,12 @@
+---
+// Areas of practice, set as law-report catchwords.
+// Listed, never described — the Tier A ceiling.
+const { areas, label = "Areas of practice" } = Astro.props;
+---
+
+<div class="catchwords">
+  <span class="catchwords__label">{label}</span>
+  <ul class="catchwords__list">
+    {areas.map((area) => <li>{area}</li>)}
+  </ul>
+</div>

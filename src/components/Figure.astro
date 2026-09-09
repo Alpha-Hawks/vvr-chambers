@@ -1,0 +1,51 @@
+---
+// Renders a real photograph when `src` is given, otherwise a self-hosted
+// placeholder. Width/height are always set so the box reserves its space
+// and nothing shifts as the image decodes.
+const {
+  label, no, caption,
+  src = null, width = null, height = null,
+  ratio = "4 / 5",
+  eager = false,
+} = Astro.props;
+
+const id = `hatch-${Math.random().toString(36).slice(2, 8)}`;
+---
+
+<figure class="figure" style={`margin:0;aspect-ratio:${ratio}`}>
+  {src ? (
+    <img
+      class="figure__img"
+      src={src}
+      width={width}
+      height={height}
+      alt={caption ?? ""}
+      loading={eager ? "eager" : "lazy"}
+      decoding="async"
+      fetchpriority={eager ? "high" : "auto"}
+    />
+  ) : (
+    <svg
+      class="figure__ph"
+      viewBox="0 0 400 500"
+      preserveAspectRatio="xMidYMid slice"
+      role="img"
+      aria-label={caption ?? "Placeholder for commissioned photography"}
+    >
+      <defs>
+        <pattern id={id} width="14" height="14" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+          <line x1="0" y1="0" x2="0" y2="14" stroke="currentColor" stroke-width="1" opacity="0.16" />
+        </pattern>
+      </defs>
+      <rect width="400" height="500" fill="var(--paper-sunk)" />
+      <rect width="400" height="500" fill={`url(#${id})`} style="color:var(--ink-faint)" />
+      <text
+        x="200" y="252" text-anchor="middle"
+        style="font-family:var(--font-data);font-size:11px;letter-spacing:1.6px;text-transform:uppercase;fill:var(--ink-muted)"
+      >Photography to be commissioned</text>
+    </svg>
+  )}
+
+  {no && <span class="figure__no">{no}</span>}
+  {label && <figcaption class="figure__label">{label}</figcaption>}
+</figure>

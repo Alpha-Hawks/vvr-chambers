@@ -1,0 +1,203 @@
+{
+  "_placeholder": true,
+  "_notice": "ALL VALUES ARE FICTITIOUS PLACEHOLDERS. Names are invented. Enrolment numbers are deliberately zeroed and are not valid. Practice-area copy is written by the web team and must be replaced with the advocate's own words. Replace every field before publication and set _placeholder to false. See docs/PLACEHOLDERS.md.",
+  "_compliance": "Tier B — prevailing practice. Descriptive practice copy, credentials and a consultation form are permitted. Testimonials, case results, rankings, superlatives and client names remain excluded. The consultation form must never route to the Senior Advocate.",
+
+  "chambers": {
+    "name": "Chambers of Vimal Vasi Reddy",
+    "shortName": "Chambers of Vimal Vasi Reddy",
+    "tagline": "Telangana High Court · Arbitration",
+    "addressLines": [
+      "[Chamber Block, Room 00]",
+      "[Street Address]",
+      "Hyderabad 500000",
+      "Telangana, India"
+    ],
+    "clerk": {
+      "label": "Chambers Clerk",
+      "name": "[Clerk Name]",
+      "phone": "+91 95734 58794",
+      "email": "clerk@example.invalid"
+    }
+  },
+
+  "hero": {
+    "eyebrow": "Telangana High Court",
+    "headline": "Argued on the record,",
+    "headlineEm": "not on the volume.",
+    "summary": "Chambers of Vimal Vasi Reddy appears in constitutional, commercial and appellate matters before the High Court for the State of Telangana and in domestic and institutional arbitration.",
+    "note": "Instructions received through an instructing advocate. Juniors of these chambers may be instructed directly.",
+    "objectLabel": "The working brief",
+    "slipKicker": "Senior Advocate",
+    "slipLine": "Designated under Section 16"
+  },
+
+  "profile": {
+    "kicker": "Profile",
+    "title": "Preparation is the argument.",
+    "body": "A short account of the advocate's practice and approach will be added once approved by him. Everything on this page is placeholder copy written by the web team and carries no factual weight until he has confirmed it.",
+    "recordKicker": "Senior Advocate / Profile",
+    "recordTitle": "Professional record",
+    "recordNote": "Particulars are published under the proviso to Rule 36 of the Bar Council of India Rules."
+  },
+
+  "credentials": [
+    { "label": "Enrolment", "value": "TS/0000/0000" },
+    { "label": "Designated", "value": "Section 16, Advocates Act" },
+    { "label": "Principal forum", "value": "Telangana High Court" },
+    { "label": "Also appears in", "value": "Domestic & institutional arbitration" }
+  ],
+
+  "practiceAreas": [
+    {
+      "id": "01",
+      "title": "Constitutional Law",
+      "short": "Writ jurisdiction and fundamental-rights petitions before the High Court.",
+      "detail": "Petitions under Articles 226 and 32, challenges to statutory and executive action, and matters raising questions of fundamental rights. Work in this area turns on framing the question precisely and building a record that survives scrutiny.",
+      "points": ["Writ petitions", "Fundamental rights", "Challenges to State action"]
+    },
+    {
+      "id": "02",
+      "title": "Arbitration",
+      "short": "Domestic and institutional arbitration, from appointment through enforcement.",
+      "detail": "Appointment applications, interim measures, conduct of arbitral proceedings, and challenges to and enforcement of awards under the Arbitration and Conciliation Act, 1996.",
+      "points": ["Appointment and interim relief", "Conduct of proceedings", "Challenge and enforcement"]
+    },
+    {
+      "id": "03",
+      "title": "Criminal Appellate",
+      "short": "Appellate and revisional work, and matters of bail before the High Court.",
+      "detail": "Appeals, revisions and applications for bail, with attention to the trial record and to the legal questions that appellate courts are actually able to reach.",
+      "points": ["Appeals and revisions", "Bail matters", "Record-based argument"]
+    },
+    {
+      "id": "04",
+      "title": "Civil Appellate",
+      "short": "First and second appeals in property, contract and injunction matters.",
+      "detail": "Appellate work arising from civil suits, including questions of title, contractual construction, and the scope of injunctive relief.",
+      "points": ["First and second appeals", "Title and property", "Contractual construction"]
+    },
+    {
+      "id": "05",
+      "title": "Company & Commercial",
+      "short": "Company disputes, regulatory proceedings and commercial matters.",
+      "detail": "Disputes before the company and commercial jurisdictions, regulatory proceedings, and matters arising from shareholder and commercial arrangements.",
+      "points": ["Company disputes", "Regulatory proceedings", "Shareholder matters"]
+    },
+    {
+      "id": "06",
+      "title": "Service & Regulatory",
+      "short": "Service jurisprudence and proceedings before statutory authorities.",
+      "detail": "Matters concerning conditions of service, disciplinary proceedings, and challenges to the orders of statutory and regulatory authorities.",
+      "points": ["Service matters", "Disciplinary proceedings", "Statutory authorities"]
+    }
+  ],
+
+  "approach": {
+    "kicker": "The working method",
+    "title": "The record first, then the argument.",
+    "intro": "Placeholder copy. The advocate's own account of how these chambers prepare a matter will replace this text once he has approved it.",
+    "imageCaption": "Placeholder — commissioned photography",
+    "principles": [
+      { "n": "01", "title": "Begin with the record", "body": "The pleadings, orders and documents establish what can actually be argued. The record is settled before the strategy is." },
+      { "n": "02", "title": "Frame the question", "body": "Appellate and constitutional courts reach the questions that are put to them precisely. Framing is most of the work." },
+      { "n": "03", "title": "Argue what will decide it", "body": "A shorter argument that meets the point tends to travel further than a longer one that covers everything." }
+    ]
+  },
+
+  "contactBand": {
+    "kicker": "Instructions",
+    "title": "Two routes, and they are not interchangeable.",
+    "body": "Briefing the Senior Advocate is done through an instructing advocate. The juniors of these chambers practise independently and may be instructed directly."
+  },
+
+  "senior": {
+    "slug": "vimal-vasi-reddy",
+    "name": "Vimal Vasi Reddy",
+    "designation": "Senior Advocate",
+    "designatedUnder": "Section 16, Advocates Act, 1961",
+    "designatedBy": "High Court for the State of Telangana",
+    "enrolmentNo": "TS/0000/0000",
+    "enrolmentDate": "0000-00-00",
+    "stateBarCouncilOriginal": "Bar Council of Andhra Pradesh",
+    "stateBarCouncilCurrent": "Bar Council of Telangana",
+    "barAssociation": "Telangana High Court Advocates' Association",
+    "qualifications": ["B.A., LL.B. — [University]", "LL.M. — [University]"],
+    "areasOfPractice": ["Constitutional law", "Arbitration", "Criminal appellate", "Civil appellate", "Company and commercial"],
+    "acceptsDirectInstruction": false,
+    "portrait": null
+  },
+
+  "juniors": [
+    {
+      "slug": "a-deshpande", "name": "A. Deshpande", "designation": "Advocate",
+      "enrolmentNo": "TS/0000/0001", "enrolmentDate": "0000-00-00",
+      "stateBarCouncilCurrent": "Bar Council of Telangana",
+      "barAssociation": "Telangana High Court Advocates' Association",
+      "qualifications": ["B.A., LL.B. — [University]"],
+      "areasOfPractice": ["Constitutional law", "Writ jurisdiction"],
+      "acceptsDirectInstruction": true,
+      "contact": { "phone": "+91 00000 00001", "email": "a.deshpande@example.invalid" },
+      "portrait": null
+    },
+    {
+      "slug": "k-menon", "name": "K. Menon", "designation": "Advocate",
+      "enrolmentNo": "TS/0000/0002", "enrolmentDate": "0000-00-00",
+      "stateBarCouncilCurrent": "Bar Council of Telangana",
+      "barAssociation": "Telangana High Court Advocates' Association",
+      "qualifications": ["B.B.A., LL.B. — [University]"],
+      "areasOfPractice": ["Arbitration", "Company and commercial"],
+      "acceptsDirectInstruction": true,
+      "contact": { "phone": "+91 00000 00002", "email": "k.menon@example.invalid" },
+      "portrait": null
+    },
+    {
+      "slug": "p-varma", "name": "P. Varma", "designation": "Advocate",
+      "enrolmentNo": "TS/0000/0003", "enrolmentDate": "0000-00-00",
+      "stateBarCouncilCurrent": "Bar Council of Telangana",
+      "barAssociation": "Telangana High Court Advocates' Association",
+      "qualifications": ["B.A., LL.B. — [University]", "LL.M. — [University]"],
+      "areasOfPractice": ["Criminal appellate", "Bail and trial"],
+      "acceptsDirectInstruction": true,
+      "contact": { "phone": "+91 00000 00003", "email": "p.varma@example.invalid" },
+      "portrait": null
+    },
+    {
+      "slug": "r-chandrasekhar", "name": "R. Chandrasekhar", "designation": "Advocate",
+      "enrolmentNo": "TS/0000/0004", "enrolmentDate": "0000-00-00",
+      "stateBarCouncilCurrent": "Bar Council of Telangana",
+      "barAssociation": "Telangana High Court Advocates' Association",
+      "qualifications": ["B.Com., LL.B. — [University]"],
+      "areasOfPractice": ["Civil appellate", "Property and title"],
+      "acceptsDirectInstruction": true,
+      "contact": { "phone": "+91 00000 00004", "email": "r.chandrasekhar@example.invalid" },
+      "portrait": null
+    },
+    {
+      "slug": "n-bhaskar", "name": "N. Bhaskar", "designation": "Advocate",
+      "enrolmentNo": "TS/0000/0005", "enrolmentDate": "0000-00-00",
+      "stateBarCouncilCurrent": "Bar Council of Telangana",
+      "barAssociation": "Telangana High Court Advocates' Association",
+      "qualifications": ["B.A., LL.B. — [University]"],
+      "areasOfPractice": ["Arbitration", "Enforcement"],
+      "acceptsDirectInstruction": true,
+      "contact": { "phone": "+91 00000 00005", "email": "n.bhaskar@example.invalid" },
+      "portrait": null
+    },
+    {
+      "slug": "l-krishnan", "name": "L. Krishnan", "designation": "Advocate",
+      "enrolmentNo": "TS/0000/0006", "enrolmentDate": "0000-00-00",
+      "stateBarCouncilCurrent": "Bar Council of Telangana",
+      "barAssociation": "Telangana High Court Advocates' Association",
+      "qualifications": ["B.A., LL.B. — [University]"],
+      "areasOfPractice": ["Constitutional law", "Service and regulatory"],
+      "acceptsDirectInstruction": true,
+      "contact": { "phone": "+91 00000 00006", "email": "l.krishnan@example.invalid" },
+      "portrait": null
+    }
+  ],
+
+  "separationNotice": "Vimal Vasi Reddy is a Senior Advocate designated under Section 16 of the Advocates Act, 1961, and does not accept briefs or instructions directly from clients. Instructions must be received through an instructing advocate. For availability and dates, please contact the chambers clerk.",
+
+  "disclaimer": "The Bar Council of India does not permit advertisement or solicitation by advocates. By accessing this website you acknowledge that you are seeking information about the advocates named here of your own accord, that there has been no advertisement, solicitation, invitation or inducement of any kind, and that no attorney-client relationship is created by your use of this website. No claim is made as to the outcome of any matter. The information provided is not legal advice."
+}

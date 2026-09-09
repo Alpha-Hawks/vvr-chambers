@@ -1,0 +1,309 @@
+---
+import "../styles/global.css";
+import data from "../data/chambers.json";
+
+const { title, description } = Astro.props;
+const isPlaceholder = data._placeholder === true;
+const path = Astro.url.pathname.replace(/\/+$/, "") || "/";
+
+const nav = [
+  { href: "/#practice", label: "Practice" },
+  { href: "/#approach", label: "Approach" },
+  { href: "/chambers", label: "The Roll" },
+  { href: "/contact", label: "Contact" },
+];
+---
+
+<!doctype html>
+<html lang="en-IN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>
+      {title === data.chambers.shortName ? title : `${title} — ${data.chambers.shortName}`}
+    </title>
+    <meta name="description" content={description} />
+    {/* Placeholder content must never be indexed or mistaken for a real record. */}
+    <meta name="robots" content="noindex, nofollow" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Spectral:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap"
+    />
+  </head>
+
+  <body>
+    <a class="skip" href="#main">Skip to content</a>
+
+    {isPlaceholder && (
+      <div class="demobar" role="status">
+        <strong>Placeholder content</strong> — names are fictitious, enrolment
+        numbers are zeroed and invalid, copy is unapproved. Not for publication.
+      </div>
+    )}
+
+    <header class="site-header">
+      <div class="shell header-inner">
+        <a class="brand" href="/">
+          <span class="brand__name">{data.chambers.shortName}</span>
+          <span class="brand__sub">{data.chambers.tagline}</span>
+        </a>
+
+        <nav class="desk-nav" aria-label="Primary">
+          {nav.map((item) => (
+            <a href={item.href} aria-current={path === item.href ? "page" : undefined}>
+              {item.label}
+            </a>
+          ))}
+        </nav>
+
+        <button class="btn header-cta" data-open-consult type="button">
+          Request a consultation
+        </button>
+
+        <button
+          class="menu-toggle"
+          id="menu-toggle"
+          type="button"
+          aria-expanded="false"
+          aria-controls="drawer"
+          aria-label="Open navigation"
+        >
+          <span aria-hidden="true"></span>
+        </button>
+      </div>
+
+      <nav class="drawer" id="drawer" aria-label="Mobile navigation">
+        <div class="shell drawer__inner">
+          {nav.map((item) => <a href={item.href}>{item.label}</a>)}
+          <button class="btn" data-open-consult type="button">
+            Request a consultation
+          </button>
+        </div>
+      </nav>
+    </header>
+
+    <main id="main">
+      <slot />
+    </main>
+
+    <footer class="colophon">
+      <div class="shell">
+        <p class="colophon__disclaimer">{data.disclaimer}</p>
+        <nav class="colophon__nav" aria-label="Footer">
+          <a href="/chambers">The Roll</a>
+          <a href="/contact">Contact</a>
+          <a href="/disclaimer">Disclaimer</a>
+          <a href="/privacy">Privacy</a>
+        </nav>
+      </div>
+    </footer>
+
+    {/* Consultation dialog. Routes to the chambers and juniors — never to the
+        Senior Advocate, who cannot accept instructions directly from a client. */}
+    <div class="modal" id="consult" role="dialog" aria-modal="true" aria-labelledby="consult-title" hidden>
+      <div class="modal__card">
+        <button class="modal__close" type="button" data-close-consult aria-label="Close">×</button>
+        <span class="kicker">Initial enquiry</span>
+        <h2 id="consult-title">Tell us enough to route it.</h2>
+
+        <div class="separation">
+          <span class="separation__label">Before you write</span>
+          <p>{data.separationNotice}</p>
+        </div>
+
+        <form id="consult-form" novalidate>
+          <div class="fields">
+            <div class="field" data-field="name">
+              <label for="f-name">Your name</label>
+              <input id="f-name" name="name" type="text" autocomplete="name" required aria-describedby="e-name" />
+              <span class="field__error" id="e-name" role="alert"></span>
+            </div>
+
+            <div class="field" data-field="reply">
+              <label for="f-reply">Phone or email</label>
+              <input id="f-reply" name="reply" type="text" autocomplete="email" required aria-describedby="e-reply" />
+              <span class="field__error" id="e-reply" role="alert"></span>
+            </div>
+
+            <div class="field field--full" data-field="capacity">
+              <label for="f-capacity">You are</label>
+              <select id="f-capacity" name="capacity" required aria-describedby="e-capacity">
+                <option value="">Select one</option>
+                <option>An instructing advocate</option>
+                <option>A law firm</option>
+                <option>In-house counsel</option>
+                <option>Seeking to instruct an advocate directly</option>
+              </select>
+              <span class="field__error" id="e-capacity" role="alert"></span>
+            </div>
+
+            <div class="field field--full" data-field="area">
+              <label for="f-area">Subject matter</label>
+              <select id="f-area" name="area" required aria-describedby="e-area">
+                <option value="">Select the closest area</option>
+                {data.practiceAreas.map((a) => <option>{a.title}</option>)}
+              </select>
+              <span class="field__error" id="e-area" role="alert"></span>
+            </div>
+
+            <div class="field field--full" data-field="note">
+              <label for="f-note">Nature of the matter (no confidential details)</label>
+              <textarea id="f-note" name="note" rows="4" aria-describedby="e-note"></textarea>
+              <span class="field__error" id="e-note" role="alert"></span>
+            </div>
+          </div>
+
+          <div class="hp" aria-hidden="true">
+            <label for="f-hp">Leave this field empty</label>
+            <input id="f-hp" name="company" type="text" tabindex="-1" autocomplete="off" />
+          </div>
+
+          <p class="formnote">
+            Please do not send confidential facts or documents in a first
+            message. This enquiry is received by the chambers and routed to an
+            advocate who can accept it — not to {data.senior.name}.
+          </p>
+
+          <button class="btn" type="submit" style="margin-top:1.5rem">Send enquiry</button>
+          <div class="formmsg" id="consult-msg" role="status" aria-live="polite"></div>
+        </form>
+      </div>
+    </div>
+
+    <script>
+      // ---- Mobile drawer ----
+      const toggle = document.getElementById("menu-toggle");
+      const drawer = document.getElementById("drawer");
+      const closeDrawer = () => {
+        drawer.classList.remove("open");
+        toggle.setAttribute("aria-expanded", "false");
+        toggle.setAttribute("aria-label", "Open navigation");
+      };
+      toggle?.addEventListener("click", () => {
+        const open = drawer.classList.toggle("open");
+        toggle.setAttribute("aria-expanded", String(open));
+        toggle.setAttribute("aria-label", open ? "Close navigation" : "Open navigation");
+      });
+      drawer?.querySelectorAll("a").forEach((a) => a.addEventListener("click", closeDrawer));
+
+      // ---- Consultation dialog, with focus trap and restore ----
+      const modal = document.getElementById("consult");
+      const form = document.getElementById("consult-form");
+      const msg = document.getElementById("consult-msg");
+      let lastFocused = null;
+
+      const focusables = () =>
+        [...modal.querySelectorAll('a[href],button,input,select,textarea,[tabindex]:not([tabindex="-1"])')]
+          .filter((el) => el.offsetParent !== null);
+
+      function openModal() {
+        lastFocused = document.activeElement;
+        modal.hidden = false;
+        modal.classList.add("open");
+        document.body.style.overflow = "hidden";
+        closeDrawer();
+        focusables()[0]?.focus();
+      }
+      function closeModal() {
+        modal.classList.remove("open");
+        modal.hidden = true;
+        document.body.style.overflow = "";
+        lastFocused?.focus();
+      }
+
+      document.querySelectorAll("[data-open-consult]").forEach((b) =>
+        b.addEventListener("click", openModal)
+      );
+      document.querySelectorAll("[data-close-consult]").forEach((b) =>
+        b.addEventListener("click", closeModal)
+      );
+      modal?.addEventListener("click", (e) => { if (e.target === modal) closeModal(); });
+
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape") { closeModal(); closeDrawer(); }
+        if (e.key === "Tab" && modal.classList.contains("open")) {
+          const list = focusables();
+          if (!list.length) return;
+          const first = list[0], last = list[list.length - 1];
+          if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+          else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+        }
+      });
+
+      // ---- Validation: errors next to the field, focus the first one ----
+      const rules = {
+        name:     (v) => (v.trim() ? "" : "Please give a name we can reply to."),
+        reply:    (v) => (v.trim() ? (/@|\d{6,}/.test(v) ? "" : "Give a full phone number or an email address.") : "A phone number or email is required."),
+        capacity: (v) => (v ? "" : "Please tell us in what capacity you are writing."),
+        area:     (v) => (v ? "" : "Please choose the closest subject matter."),
+        note:     (v) => (v.length > 1200 ? "Please keep this under 1200 characters." : ""),
+      };
+
+      function validateField(name) {
+        const wrap = form.querySelector(`[data-field="${name}"]`);
+        const input = wrap.querySelector("input, select, textarea");
+        const err = wrap.querySelector(".field__error");
+        const message = rules[name](input.value);
+        err.textContent = message;
+        wrap.setAttribute("data-invalid", message ? "true" : "false");
+        input.setAttribute("aria-invalid", message ? "true" : "false");
+        return !message;
+      }
+
+      Object.keys(rules).forEach((name) => {
+        const wrap = form?.querySelector(`[data-field="${name}"]`);
+        const input = wrap?.querySelector("input, select, textarea");
+        // Validate on blur, then live once the field has been corrected.
+        input?.addEventListener("blur", () => validateField(name));
+        input?.addEventListener("input", () => {
+          if (wrap.getAttribute("data-invalid") === "true") validateField(name);
+        });
+      });
+
+      form?.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        if (form.querySelector('[name="company"]').value) return; // honeypot
+
+        const results = Object.keys(rules).map(validateField);
+        if (results.includes(false)) {
+          form.querySelector('[data-invalid="true"] input, [data-invalid="true"] select, [data-invalid="true"] textarea')?.focus();
+          return;
+        }
+
+        const submitBtn = form.querySelector('button[type="submit"]');
+        submitBtn?.setAttribute("disabled", "true");
+        msg.classList.remove("show");
+
+        try {
+          const res = await fetch("/api/consult", { method: "POST", body: new FormData(form) });
+          const data = await res.json().catch(() => ({}));
+          if (!res.ok || !data.ok) {
+            throw new Error(data.error || "Something went wrong.");
+          }
+          msg.textContent = "Thank you — your enquiry has been forwarded to the chambers clerk.";
+          form.reset();
+        } catch (err) {
+          msg.textContent = `Could not send this enquiry (${err.message}). Please call or email the clerk directly.`;
+        } finally {
+          submitBtn?.removeAttribute("disabled");
+          msg.classList.add("show");
+        }
+      });
+
+      // ---- Scroll reveal, opt-out under reduced motion ----
+      if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+        const io = new IntersectionObserver(
+          (entries) => entries.forEach((en) => {
+            if (en.isIntersecting) { en.target.classList.add("in"); io.unobserve(en.target); }
+          }),
+          { rootMargin: "0px 0px -10% 0px" }
+        );
+        document.querySelectorAll(".reveal").forEach((el) => io.observe(el));
+      } else {
+        document.querySelectorAll(".reveal").forEach((el) => el.classList.add("in"));
+      }
+    </script>
+  </body>
+</html>

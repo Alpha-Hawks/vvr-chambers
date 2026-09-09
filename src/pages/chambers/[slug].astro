@@ -1,0 +1,63 @@
+---
+import Base from "../../layouts/Base.astro";
+import Citation from "../../components/Citation.astro";
+import Catchwords from "../../components/Catchwords.astro";
+import Separation from "../../components/Separation.astro";
+import data from "../../data/chambers.json";
+
+export function getStaticPaths() {
+  return data.juniors.map((advocate, i) => ({
+    params: { slug: advocate.slug },
+    props: { advocate, index: i },
+  }));
+}
+
+const { advocate, index } = Astro.props;
+const pad = (n) => String(n).padStart(2, "0");
+---
+
+<Base
+  title={advocate.name}
+  description={`${advocate.name}, ${advocate.designation}, ${advocate.stateBarCouncilCurrent}. Particulars published under the proviso to Rule 36 of the Bar Council of India Rules.`}
+>
+  <section class="shell section">
+    <div class="section__head">
+      <span class="kicker">Roll {pad(index + 2)}</span>
+    <div>
+      <h1 class="title title--sub">{advocate.name}</h1>
+      <p class="designation">{advocate.designation}</p>
+
+      <Citation advocate={advocate} />
+      <Catchwords areas={advocate.areasOfPractice} />
+
+      <Separation />
+
+      {advocate.acceptsDirectInstruction && advocate.contact && (
+        <div class="contactcard">
+          <span class="contactcard__label">Instructions</span>
+          <address>
+            <a href={`tel:${advocate.contact.phone.replace(/\s/g, "")}`}>
+              {advocate.contact.phone}
+            </a><br />
+            <a href={`mailto:${advocate.contact.email}`}>
+              {advocate.contact.email}
+            </a>
+          </address>
+        </div>
+      )}
+
+      <div class="contactcard">
+        <span class="contactcard__label">Chambers</span>
+        <address>
+          {data.chambers.addressLines.map((line) => (
+            <span style="display:block">{line}</span>
+          ))}
+        </address>
+      </div>
+
+      <p class="prose" style="margin-top:2rem">
+        <a href="/chambers">Return to the roll</a>
+      </p>
+    </div>
+  </section>
+</Base>

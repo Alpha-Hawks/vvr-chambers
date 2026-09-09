@@ -1,0 +1,21 @@
+# Netlify configuration — STAGING ONLY.
+#
+# This site is not approved for publication. It carries placeholder
+# particulars, including invented advocates and zeroed Bar Council enrolment
+# numbers. See docs/PLACEHOLDERS.md.
+#
+# The X-Robots-Tag header below is a server-level safeguard that sits on top
+# of the noindex meta tag in src/layouts/Base.astro. Both must be removed
+# deliberately, and only after the advocate has approved real content.
+
+[build]
+  command = "npm run build"
+  publish = "dist"
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Robots-Tag = "noindex, nofollow, noarchive, nosnippet"
+    X-Frame-Options = "SAMEORIGIN"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"

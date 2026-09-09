@@ -1,0 +1,38 @@
+---
+// The citation line — a law report's source apparatus, holding the
+// prescribed particulars permitted under the proviso to Rule 36.
+const { advocate } = Astro.props;
+
+const rows = [
+  ["Enrolment no.", advocate.enrolmentNo],
+  ["Date of enrolment", advocate.enrolmentDate],
+  ["Enrolled with", advocate.stateBarCouncilOriginal],
+  ["Currently on the roll of", advocate.stateBarCouncilCurrent],
+  ["Bar association", advocate.barAssociation],
+].filter(([, value]) => Boolean(value));
+---
+
+<div class="citation">
+  <dl>
+    {rows.map(([label, value]) => (
+      <>
+        <dt>{label}</dt>
+        <dd>{value}</dd>
+      </>
+    ))}
+
+    <dt>Qualifications</dt>
+    <dd>
+      {advocate.qualifications.map((q) => (
+        <span style="display:block">{q}</span>
+      ))}
+    </dd>
+
+    {advocate.designatedUnder && (
+      <>
+        <dt>Designated</dt>
+        <dd>{advocate.designatedUnder}<br />{advocate.designatedBy}</dd>
+      </>
+    )}
+  </dl>
+</div>
