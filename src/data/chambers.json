@@ -28,7 +28,7 @@
     "summary": "Chambers of Vimal Vasireddy appears in constitutional, commercial and appellate matters before the High Court for the State of Telangana and in domestic and institutional arbitration.",
     "note": "Instructions received through an instructing advocate. Juniors of these chambers may be instructed directly.",
     "objectLabel": "The working brief",
-    "slipKicker": "Senior Advocate",
+    "slipKicker": "Advocate",
     "slipLine": "Designated under Section 16"
   },
 
@@ -36,7 +36,7 @@
     "kicker": "Profile",
     "title": "Preparation is the argument.",
     "body": "A short account of the advocate's practice and approach will be added once approved by him. Everything on this page is placeholder copy written by the web team and carries no factual weight until he has confirmed it.",
-    "recordKicker": "Senior Advocate / Profile",
+    "recordKicker": "Advocate / Profile",
     "recordTitle": "Professional record",
     "recordNote": "Particulars are published under the proviso to Rule 36 of the Bar Council of India Rules."
   },
@@ -44,7 +44,7 @@
   "credentials": [
     { "label": "Enrolment", "value": "TS/0000/0000" },
     { "label": "Designated", "value": "Section 16, Advocates Act" },
-    { "label": "Principal forum", "value": "Telangana High Court" },
+    { "label": "Courts admitted", "value": "Telangana High Court, AP High Court & NCLT" },
     { "label": "Also appears in", "value": "Domestic & institutional arbitration" }
   ],
 
@@ -114,7 +114,7 @@
   "senior": {
     "slug": "vimal-vasireddy",
     "name": "Vimal Vasireddy",
-    "designation": "Senior Advocate",
+    "designation": "Advocate",
     "designatedUnder": "Section 16, Advocates Act, 1961",
     "designatedBy": "High Court for the State of Telangana",
     "enrolmentNo": "TS/0000/0000",
