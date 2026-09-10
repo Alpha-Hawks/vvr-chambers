@@ -1,0 +1,53 @@
+---
+// ConsultationModal.astro — Interactive Intake Modal Dialog
+---
+
+<div class="modal" id="consultation-modal" role="dialog" aria-modal="true" aria-labelledby="consultation-title">
+  <div class="modal-card">
+    <button class="modal-close" id="modal-close" aria-label="Close consultation form" type="button">×</button>
+    <div class="dialog-label">Initial consultation</div>
+    <h2 id="consultation-title">Start with what you know.</h2>
+    <p>
+      A short, private first note is enough to begin a useful conversation. We will use it to prepare for the questions that matter most.
+    </p>
+
+    <form id="consultation-form">
+      <div class="intake-grid">
+        <div class="field">
+          <label for="name">Your name</label>
+          <input id="name" required placeholder="Name" />
+        </div>
+        <div class="field">
+          <label for="contact-info">Phone or email</label>
+          <input id="contact-info" required placeholder="How should we reply?" />
+        </div>
+        <div class="field full">
+          <label for="matter">Matter type</label>
+          <select id="matter" required>
+            <option value="">Select the closest option</option>
+            <option>Constitutional Law &amp; Writs</option>
+            <option>Criminal Defence &amp; Bail</option>
+            <option>Civil Litigation &amp; Injunctions</option>
+            <option>Corporate, Commercial &amp; NCLT</option>
+            <option>Arbitration &amp; Enforcement</option>
+            <option>Appellate Practice</option>
+          </select>
+        </div>
+        <div class="field full">
+          <label for="timing">When would you like to speak?</label>
+          <select id="timing" required>
+            <option value="">Choose a preferred time</option>
+            <option>This week</option>
+            <option>Within two weeks</option>
+            <option>Not urgent — I need initial guidance</option>
+          </select>
+        </div>
+      </div>
+      <p class="intake-note">
+        Please avoid sharing highly sensitive facts or documents in an initial online note. We can discuss a secure way to share relevant materials during your consultation.
+      </p>
+      <button class="desk-button" type="submit">Save intake note ↗</button>
+      <div class="form-message" id="form-message">Thank you. Your note is ready for review. We will contact you shortly.</div>
+    </form>
+  </div>
+</div>

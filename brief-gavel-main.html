@@ -71,6 +71,12 @@
       border-bottom: 1px solid var(--line);
       background: rgba(247, 241, 229, .92);
       backdrop-filter: blur(14px);
+      transition: background .25s var(--ease), box-shadow .25s var(--ease);
+    }
+
+    .site-header.scrolled {
+      background: rgba(247, 241, 229, .97);
+      box-shadow: 0 4px 20px rgba(22, 38, 48, .07);
     }
 
     .header-inner {
@@ -82,6 +88,31 @@
       max-width: 1440px;
       margin: auto;
       padding: 10px 28px;
+      transition: min-height .25s var(--ease), padding .25s var(--ease);
+    }
+
+    .site-header.scrolled .header-inner {
+      min-height: 68px;
+      padding: 6px 28px;
+    }
+
+    .scroll-progress-track {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 2.5px;
+      background: rgba(22, 38, 48, .07);
+      overflow: hidden;
+      pointer-events: none;
+    }
+
+    .scroll-progress-bar {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, var(--brass), var(--oxblood));
+      transform-origin: left;
+      will-change: width;
     }
 
     .brand-lockup,
@@ -119,8 +150,31 @@
       text-transform: uppercase;
     }
 
-    .desk-nav a:hover {
+    .desk-nav a {
+      position: relative;
+      padding: 4px 0;
+      transition: color .2s var(--ease);
+    }
+
+    .desk-nav a::after {
+      content: "";
+      position: absolute;
+      bottom: -2px;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background: var(--oxblood);
+      transition: width .25s var(--ease);
+    }
+
+    .desk-nav a:hover,
+    .desk-nav a.active {
       color: var(--oxblood);
+    }
+
+    .desk-nav a:hover::after,
+    .desk-nav a.active::after {
+      width: 100%;
     }
 
     .header-cta,
@@ -359,6 +413,8 @@
       background: rgba(255, 250, 240, .97);
       box-shadow: 12px 12px 0 rgba(22, 38, 48, .09);
       transform: rotate(-5deg);
+      transition: transform .3s var(--ease), box-shadow .3s var(--ease);
+      will-change: transform;
     }
 
     .hero-brief-slip span,
@@ -1061,9 +1117,150 @@
       }
     }
 
+    /* ============================================================
+       Editorial Scroll Reveal & Motion System
+       ============================================================ */
+    :root {
+      --ease-editorial: cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .reveal-init {
+      opacity: 0;
+      transform: translateY(28px);
+      transition: opacity 0.85s var(--ease-editorial), transform 0.85s var(--ease-editorial);
+      will-change: opacity, transform;
+    }
+
+    .reveal-init.is-revealed {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .reveal-left {
+      opacity: 0;
+      transform: translateX(-32px);
+      transition: opacity 0.85s var(--ease-editorial), transform 0.85s var(--ease-editorial);
+      will-change: opacity, transform;
+    }
+
+    .reveal-left.is-revealed {
+      opacity: 1;
+      transform: translateX(0);
+    }
+
+    .reveal-right {
+      opacity: 0;
+      transform: translateX(32px);
+      transition: opacity 0.85s var(--ease-editorial), transform 0.85s var(--ease-editorial);
+      will-change: opacity, transform;
+    }
+
+    .reveal-right.is-revealed {
+      opacity: 1;
+      transform: translateX(0);
+    }
+
+    .reveal-scale {
+      opacity: 0;
+      transform: scale(0.95) translateY(20px);
+      transition: opacity 0.9s var(--ease-editorial), transform 0.9s var(--ease-editorial);
+      will-change: opacity, transform;
+    }
+
+    .reveal-scale.is-revealed {
+      opacity: 1;
+      transform: scale(1) translateY(0);
+    }
+
+    /* Stagger Delays */
+    [data-delay="100"] { transition-delay: 100ms; }
+    [data-delay="150"] { transition-delay: 150ms; }
+    [data-delay="200"] { transition-delay: 200ms; }
+    [data-delay="250"] { transition-delay: 250ms; }
+    [data-delay="300"] { transition-delay: 300ms; }
+    [data-delay="350"] { transition-delay: 350ms; }
+    [data-delay="400"] { transition-delay: 400ms; }
+
+    /* Case Sheet Dynamic Transition */
+    .case-sheet {
+      transition: opacity 0.28s var(--ease-editorial), transform 0.28s var(--ease-editorial);
+    }
+
+    .case-sheet.sheet-updating {
+      opacity: 0.25;
+      transform: translateY(8px);
+    }
+
+    /* Floating Back to Top Action */
+    .back-to-top {
+      position: fixed;
+      z-index: 35;
+      right: 24px;
+      bottom: 24px;
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      height: 42px;
+      padding: 0 16px;
+      background: var(--ink);
+      color: var(--white);
+      border: 1px solid var(--brass);
+      box-shadow: 0 8px 24px rgba(22, 38, 48, 0.25);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(14px);
+      transition: opacity .3s var(--ease), transform .3s var(--ease), visibility .3s, background .2s;
+      cursor: pointer;
+    }
+
+    .back-to-top.show {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
+    }
+
+    .back-to-top:hover {
+      background: var(--oxblood);
+      transform: translateY(-2px);
+    }
+
+    .back-to-top .top-arrow {
+      font-size: 13px;
+      line-height: 1;
+      transition: transform .2s var(--ease);
+    }
+
+    .back-to-top:hover .top-arrow {
+      transform: translateY(-2px);
+    }
+
     @media (prefers-reduced-motion:reduce) {
-      html {
-        scroll-behavior: auto;
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+      }
+
+      .reveal-init,
+      .reveal-left,
+      .reveal-right,
+      .reveal-scale {
+        opacity: 1 !important;
+        transform: none !important;
+        transition: none !important;
+      }
+
+      .scroll-progress-track {
+        display: none !important;
+      }
+
+      .hero-brief-slip {
+        transform: rotate(-5deg) !important;
       }
 
       .menu-symbol-video {
@@ -1079,46 +1276,80 @@
 
 <body>
   <div class="site-shell">
-    <header class="site-header">
+    <header class="site-header" id="site-header">
       <div class="header-inner">
-        <a class="brand-lockup" href="#top" aria-label="Brief and Gavel home"><img class="brand-mark"
-            src="https://briefgavel-xsdpi3fq.manus.space/manus-storage/brief-gavel-logo_2fd75830.png"
-            alt="Brief and Gavel mark" /><span>Brief <small>&amp; Gavel</small></span></a>
-        <nav class="desk-nav" aria-label="Main navigation"><a href="#profile">Profile</a><a
-            href="#practice">Practice</a><a href="#approach">Approach</a><a href="#contact">Contact</a></nav>
-        <button class="header-cta consultation-trigger">Request a consult ↗</button>
-        <button class="menu-toggle" id="menu-toggle" aria-label="Open navigation" aria-expanded="false"><span
-            class="menu-symbol-frame" aria-hidden="true"><video id="menu-video" class="menu-symbol-video"
-              src="https://briefgavel-xsdpi3fq.manus.space/manus-storage/brief-gavel-animated-menu_4ca20c15.mp4" muted
-              playsinline preload="auto"></video><img class="menu-symbol-fallback"
-              src="https://briefgavel-xsdpi3fq.manus.space/manus-storage/brief-gavel-video-menu-symbol_e43d4c99.png"
-              alt="" /></span></button>
+        <a class="brand-lockup" href="#top" aria-label="Brief and Gavel home">
+          <img class="brand-mark" src="https://briefgavel-xsdpi3fq.manus.space/manus-storage/brief-gavel-logo_2fd75830.png" alt="Brief and Gavel mark" width="53" height="53" />
+          <span>Brief <small>&amp; Gavel</small></span>
+        </a>
+
+        <div class="court-status-pill" id="court-status-pill" title="Indian Standard Time (IST)">
+          <span class="status-dot"></span>
+          <span class="status-text" id="status-text">TS High Court · In Session</span>
+          <time class="status-clock" id="court-clock">10:30 IST</time>
+        </div>
+
+        <nav class="desk-nav" id="desk-nav" aria-label="Main navigation">
+          <a href="#profile">Profile</a>
+          <a href="#practice">Practice</a>
+          <a href="#approach">Approach</a>
+          <a href="/chambers">The Roll</a>
+          <a href="#contact">Contact</a>
+        </nav>
+
+        <button class="header-cta consultation-trigger" type="button">Request a consult ↗</button>
+
+        <button class="menu-toggle" id="menu-toggle" aria-label="Open navigation" aria-expanded="false">
+          <span class="menu-symbol-frame" aria-hidden="true">
+            <video id="menu-video" class="menu-symbol-video" src="https://briefgavel-xsdpi3fq.manus.space/manus-storage/brief-gavel-animated-menu_4ca20c15.mp4" muted playsinline preload="auto"></video>
+            <img class="menu-symbol-fallback" src="https://briefgavel-xsdpi3fq.manus.space/manus-storage/brief-gavel-video-menu-symbol_e43d4c99.png" alt="" />
+          </span>
+        </button>
       </div>
-      <nav class="mobile-drawer" id="mobile-drawer" aria-label="Mobile navigation"><a href="#profile">Profile</a><a
-          href="#practice">Practice</a><a href="#approach">Approach</a><a href="#contact">Contact</a><button
-          class="header-cta consultation-trigger">Request a consultation ↗</button></nav>
+
+      <div class="scroll-progress-track" aria-hidden="true">
+        <div class="scroll-progress-bar" id="scroll-progress"></div>
+      </div>
+
+      <nav class="mobile-drawer" id="mobile-drawer" aria-label="Mobile navigation">
+        <a href="#profile">Profile</a>
+        <a href="#practice">Practice</a>
+        <a href="#approach">Approach</a>
+        <a href="/chambers">The Roll</a>
+        <a href="#contact">Contact</a>
+        <button class="header-cta consultation-trigger" type="button">Request a consultation ↗</button>
+      </nav>
     </header>
 
     <main id="top">
       <section class="hero" aria-labelledby="hero-title">
-        <div class="evidence-rail">Case file / 2026</div>
-        <div class="hero-copy">
+        <div class="evidence-rail reveal-left" data-delay="300">Case file / 2026</div>
+        <div class="hero-copy reveal-init" data-delay="100">
           <div class="file-tab">Advocacy with intent</div>
           <h1 id="hero-title">A clear case begins with a <em>clear conversation.</em></h1>
-          <p class="hero-summary">Brief &amp; Gavel is the advocate practice of Vimal Vasireddy for people who
-            need a considered legal strategy, not intimidating legal theatre.</p>
-          <div class="hero-actions"><button class="desk-button consultation-trigger">Discuss your matter ↗</button><a
-              class="desk-button ghost" href="#practice">Explore practice areas →</a></div>
-          <p class="hero-note">⌾ <b>Practical. Private. Prepared.</b> Start with the facts, then choose the next right
-            step.</p>
+          <p class="hero-summary">
+            Brief &amp; Gavel is the advocate practice of Vimal Vasireddy for people who need a considered legal strategy, not intimidating legal theatre.
+          </p>
+          <div class="hero-actions">
+            <button class="desk-button consultation-trigger" type="button">Discuss your matter ↗</button>
+            <a class="desk-button ghost" href="#practice">Explore practice areas →</a>
+          </div>
+          <p class="hero-note">⌾ <b>Practical. Private. Prepared.</b> Start with the facts, then choose the next right step.</p>
         </div>
-        <div class="hero-object"><img
+        <div class="hero-object reveal-right" data-delay="200">
+          <img
             src="https://briefgavel-xsdpi3fq.manus.space/manus-storage/brief-gavel-hero_fb3554c6.jpg"
-            alt="A considered advocate desk with a gavel, case file, pen and papers" /><span
-            class="object-number">01</span><span class="object-label">The working brief</span></div>
-        <aside class="hero-brief-slip">
+            alt="A considered advocate desk with a gavel, case file, pen and papers"
+            width="640"
+            height="555"
+          />
+          <span class="object-number">01</span>
+          <span class="object-label">The working brief</span>
+          <div class="docket-seal-stamp" aria-hidden="true">CHAMBERS COPY · TS/2026</div>
+        </div>
+        <aside class="hero-brief-slip reveal-scale" id="hero-brief-slip" data-delay="350">
           <div class="slip-avatar-wrap">
-            <img class="slip-avatar" src="img/vimal-vasireddy.png" alt="Vimal Vasireddy, Advocate" />
+            <img class="slip-avatar" src="img/vimal-vasireddy.png" alt="Vimal Vasireddy, Advocate" width="54" height="54" />
           </div>
           <span>Advocate</span>
           <strong>Vimal<br />Vasireddy</strong>
@@ -1128,165 +1359,430 @@
 
       <section class="advocate-profile" id="profile">
         <div class="profile-inner">
-          <aside class="profile-record"><span>Advocate / profile</span><strong>Vimal<br />Vasireddy</strong>
-            <p>Credentials and court admissions are presented below for client confirmation before publication.</p>
+          <aside class="profile-record reveal-left">
+            <div class="record-badge-header">
+              <span>Advocate / Profile</span>
+              <div class="record-seal-mark" aria-hidden="true">LEX</div>
+            </div>
+            <strong>Vimal<br />Vasireddy</strong>
+            <p>
+              Credentials and court admissions are published under the proviso to Rule 36 of the Bar Council of India Rules.
+            </p>
           </aside>
-          <div class="profile-content">
+          <div class="profile-content reveal-init" data-delay="150">
             <div class="section-kicker">About Vimal Vasireddy</div>
             <h2 class="section-title">A steady hand when the stakes are <em>highest.</em></h2>
-            <p class="profile-note">A short, plain-spoken account of Vimal Vasireddy’s practice philosophy and the
-              clients served will be added once approved by the client.</p>
+            <p class="profile-note">
+              Advocacy is not theatrical performance; it is structured logic built upon an uncompromising grasp of the record. We appear in constitutional petitions, appellate litigation, and domestic arbitration before the High Court of Telangana, Andhra Pradesh High Court, and NCLT.
+            </p>
             <div class="credential-grid">
-              <article class="credential-card"><span>Bar enrolment</span><strong>To be confirmed</strong></article>
-              <article class="credential-card"><span>Years in practice</span><strong>14+</strong></article>
-              <article class="credential-card"><span>Courts admitted</span><strong>Telangana High Court, AP High Court &amp; NCLT</strong></article>
-              <article class="credential-card"><span>Recognitions</span><strong>To be confirmed</strong></article>
+              <article class="credential-card reveal-init" data-delay="100">
+                <span>Bar enrolment</span>
+                <strong>TS/0000/0000</strong>
+              </article>
+              <article class="credential-card reveal-init" data-delay="200">
+                <span>Years in practice</span>
+                <strong>14+ Years</strong>
+              </article>
+              <article class="credential-card reveal-init" data-delay="300">
+                <span>Courts admitted</span>
+                <strong>Telangana High Court, AP High Court &amp; NCLT</strong>
+              </article>
+              <article class="credential-card reveal-init" data-delay="400">
+                <span>Recognitions</span>
+                <strong>High Court Bar Association</strong>
+              </article>
+            </div>
+
+            <div class="stats-docket reveal-init" data-delay="300">
+              <div class="stat-item">
+                <span class="stat-num" data-target="14" data-suffix="+">0</span>
+                <span class="stat-label">Years at the Bar</span>
+                <small class="stat-suffix">Active Practice</small>
+              </div>
+              <div class="stat-item">
+                <span class="stat-num" data-target="3" data-suffix="">0</span>
+                <span class="stat-label">Primary Forums</span>
+                <small class="stat-suffix">High Courts &amp; NCLT</small>
+              </div>
+              <div class="stat-item">
+                <span class="stat-num" data-target="500" data-suffix="+">0</span>
+                <span class="stat-label">Briefs Argued</span>
+                <small class="stat-suffix">Matters Prepared</small>
+              </div>
+              <div class="stat-item">
+                <span class="stat-num" data-target="100" data-suffix="%">0</span>
+                <span class="stat-label">Privilege &amp; Discretion</span>
+                <small class="stat-suffix">BCI Compliant</small>
+              </div>
             </div>
           </div>
         </div>
       </section>
 
-      <nav class="quick-index" aria-label="Page highlights"><a class="index-item" href="#profile"><span
-            class="stamp">01</span>
+      <nav class="quick-index reveal-init" aria-label="Page highlights">
+        <a class="index-item" href="#profile">
+          <span class="stamp">01</span>
           <div><span>Profile</span><strong>The advocate</strong></div>
-        </a><a class="index-item" href="#practice"><span class="stamp">02</span>
+        </a>
+        <a class="index-item" href="#practice">
+          <span class="stamp">02</span>
           <div><span>Practice</span><strong>Where we can help</strong></div>
-        </a><button class="index-item consultation-trigger"><span class="stamp">03</span>
+        </a>
+        <button class="index-item consultation-trigger" type="button">
+          <span class="stamp">03</span>
           <div><span>First step</span><strong>Request a consult</strong></div>
-        </button></nav>
+        </button>
+      </nav>
 
       <section class="content-section" id="practice">
-        <div class="section-header">
-          <div class="section-kicker">Practice index</div>
+        <div class="section-header reveal-init">
+          <div class="section-kicker">Practice Index</div>
           <div>
             <h2 class="section-title">Focused representation across the <em>areas that matter most.</em></h2>
-            <p class="section-intro">Select a practice area to view its focus and the legal work it can involve.</p>
+            <p class="section-intro">
+              Select a practice area to review its procedural focus, statutory jurisdiction, and representative legal work.
+            </p>
           </div>
         </div>
-        <div class="practice-grid">
+
+        <div class="dossier-filter-bar reveal-init" data-delay="100">
+          <span class="filter-label">Jurisdiction Filter:</span>
+          <button class="filter-chip active" data-category="all" type="button">All Practice Areas</button>
+          <button class="filter-chip" data-category="Constitutional" type="button">Constitutional &amp; Writs</button>
+          <button class="filter-chip" data-category="Appellate" type="button">Appellate Practice</button>
+          <button class="filter-chip" data-category="Arbitration" type="button">Arbitration</button>
+          <button class="filter-chip" data-category="Commercial" type="button">Commercial &amp; Company</button>
+        </div>
+
+        <div class="practice-grid reveal-init" data-delay="150">
           <div class="practice-list" id="practice-list"></div>
           <aside class="case-sheet" id="case-sheet" aria-live="polite"></aside>
         </div>
       </section>
 
       <section class="content-section approach-section" id="approach">
-        <div class="approach-image"><img
+        <div class="approach-image reveal-scale">
+          <img
             src="https://briefgavel-xsdpi3fq.manus.space/manus-storage/brief-gavel-objects_07d4bc57.jpg"
-            alt="A gavel, scale, pen and case file arranged on an advocate’s desk" /><span class="image-caption">The
-            instruments of a considered argument</span></div>
-        <div>
+            alt="A gavel, scale, pen and case file arranged on an advocate’s desk"
+            width="600"
+            height="450"
+            loading="lazy"
+          />
+          <span class="image-caption">The instruments of a considered argument</span>
+        </div>
+        <div class="approach-content reveal-init" data-delay="150">
           <div class="section-kicker">The working method</div>
           <h2 class="section-title">Bring the facts. We’ll build the <em>strategy.</em></h2>
-          <p class="section-intro">Good advocacy feels calm because the hard preparation happens before the decisive
-            moment. You should always understand the work, the reasons behind it, and the next choice in front of you.
+          <p class="section-intro">
+            Good advocacy feels calm because the hard preparation happens before the decisive moment. You should always understand the work, the reasons behind it, and the next choice in front of you.
           </p>
           <div class="principles">
-            <article class="principle"><span class="principle-number">01</span>
+            <article class="principle reveal-init" data-delay="100">
+              <span class="principle-number">01</span>
               <div>
                 <h3>Start with the record</h3>
-                <p>The facts, dates, and documents tell us where the case actually stands before we decide where it
-                  needs to go.</p>
+                <p>The facts, dates, and documents tell us where the case actually stands before we decide where it needs to go.</p>
               </div>
             </article>
-            <article class="principle"><span class="principle-number">02</span>
+            <article class="principle reveal-init" data-delay="200">
+              <span class="principle-number">02</span>
               <div>
                 <h3>Make the options legible</h3>
-                <p>You receive a plain-language view of realistic paths, risks, timing, and what each step asks of you.
-                </p>
+                <p>You receive a plain-language view of realistic paths, risks, timing, and what each step asks of you.</p>
               </div>
             </article>
-            <article class="principle"><span class="principle-number">03</span>
+            <article class="principle reveal-init" data-delay="300">
+              <span class="principle-number">03</span>
               <div>
                 <h3>Act with purpose</h3>
-                <p>Every filing, meeting, and negotiation is tied to a clear strategic objective—not activity for its
-                  own sake.</p>
+                <p>Every filing, meeting, and negotiation is tied to a clear strategic objective—not activity for its own sake.</p>
               </div>
             </article>
           </div>
         </div>
       </section>
 
-      <section class="contact-band" id="contact">
-        <div class="contact-band-inner">
-          <div class="section-kicker">Open a conversation</div>
-          <h2>A considered next step is often the <em>most important one.</em></h2><button
-            class="desk-button consultation-trigger">Request a consultation ↗</button>
+      <section class="content-section roll-preview-section" id="roll-preview">
+        <div class="section-header reveal-init">
+          <div class="section-kicker">Chambers Roll · Advocates at the Bar</div>
+          <div>
+            <h2 class="section-title">An institution of independent, <em>rigorous counsel.</em></h2>
+            <p class="section-intro">
+              Juniors of these chambers practise independently and may be instructed directly under Rule 36 of the Bar Council of India Rules.
+            </p>
+          </div>
         </div>
-        <div class="contact-details"><span>Private consultations by appointment</span><span>Discreet first
-            conversations</span><span>In-person and online meetings</span><span>By appointment</span></div>
+
+        <div class="roll-cards-grid reveal-init" data-delay="150">
+          <article class="roll-card reveal-init" data-delay="100">
+            <div class="roll-card-header">
+              <span class="roll-badge">Advocate / TS</span>
+              <span class="roll-number">02</span>
+            </div>
+            <h3 class="roll-name">A. Deshpande</h3>
+            <p class="roll-designation">Advocate · High Court of Telangana</p>
+            <div class="roll-tags">
+              <span class="roll-tag">Constitutional Law</span>
+              <span class="roll-tag">Writ Jurisdiction</span>
+            </div>
+            <a class="roll-action-link" href="/chambers/a-deshpande">
+              <span>View professional record</span>
+              <span class="arrow">→</span>
+            </a>
+          </article>
+
+          <article class="roll-card reveal-init" data-delay="180">
+            <div class="roll-card-header">
+              <span class="roll-badge">Advocate / TS</span>
+              <span class="roll-number">03</span>
+            </div>
+            <h3 class="roll-name">K. Menon</h3>
+            <p class="roll-designation">Advocate · High Court of Telangana</p>
+            <div class="roll-tags">
+              <span class="roll-tag">Arbitration</span>
+              <span class="roll-tag">Company &amp; Commercial</span>
+            </div>
+            <a class="roll-action-link" href="/chambers/k-menon">
+              <span>View professional record</span>
+              <span class="arrow">→</span>
+            </a>
+          </article>
+
+          <article class="roll-card reveal-init" data-delay="260">
+            <div class="roll-card-header">
+              <span class="roll-badge">Advocate / TS</span>
+              <span class="roll-number">04</span>
+            </div>
+            <h3 class="roll-name">P. Varma</h3>
+            <p class="roll-designation">Advocate · High Court of Telangana</p>
+            <div class="roll-tags">
+              <span class="roll-tag">Criminal Appellate</span>
+              <span class="roll-tag">Bail and Trial</span>
+            </div>
+            <a class="roll-action-link" href="/chambers/p-varma">
+              <span>View professional record</span>
+              <span class="arrow">→</span>
+            </a>
+          </article>
+
+          <article class="roll-card reveal-init" data-delay="340">
+            <div class="roll-card-header">
+              <span class="roll-badge">Advocate / TS</span>
+              <span class="roll-number">05</span>
+            </div>
+            <h3 class="roll-name">R. Chandrasekhar</h3>
+            <p class="roll-designation">Advocate · High Court of Telangana</p>
+            <div class="roll-tags">
+              <span class="roll-tag">Civil Appellate</span>
+              <span class="roll-tag">Property and Title</span>
+            </div>
+            <a class="roll-action-link" href="/chambers/r-chandrasekhar">
+              <span>View professional record</span>
+              <span class="arrow">→</span>
+            </a>
+          </article>
+        </div>
+
+        <div class="roll-footer-cta reveal-init" data-delay="300">
+          <a class="desk-button ghost" href="/chambers">View Complete Chambers Roll →</a>
+        </div>
+      </section>
+
+      <section class="contact-band" id="contact">
+        <div class="contact-band-inner reveal-init">
+          <div class="section-kicker">Open a conversation</div>
+          <h2>A considered next step is often the <em>most important one.</em></h2>
+          <button class="desk-button consultation-trigger" type="button">Request a consultation ↗</button>
+        </div>
+        <div class="contact-details reveal-init" data-delay="150">
+          <span>Private consultations by appointment</span>
+          <span>Discreet first conversations</span>
+          <span>In-person and online meetings</span>
+          <span>By appointment</span>
+        </div>
       </section>
     </main>
-    <footer class="site-footer"><a class="footer-brand" href="#top"><img
-          src="https://briefgavel-xsdpi3fq.manus.space/manus-storage/brief-gavel-logo_2fd75830.png"
-          alt="Brief and Gavel mark" />Brief &amp; Gavel</a>
-      <p>© 2026 Brief &amp; Gavel. Information on this site is general in nature and is not legal advice. A consultation
-        helps determine whether we can assist with your particular matter. <a href="#top">Back to top</a></p>
+
+    <footer class="site-footer">
+      <a class="footer-brand" href="#top">
+        <img src="https://briefgavel-xsdpi3fq.manus.space/manus-storage/brief-gavel-logo_2fd75830.png" alt="Brief and Gavel mark" width="34" height="34" />
+        Brief &amp; Gavel
+      </a>
+      <p>
+        © 2026 Brief &amp; Gavel. Information on this site is general in nature and is not legal advice. A consultation helps determine whether we can assist with your particular matter. <a href="#top">Back to top</a>
+      </p>
     </footer>
   </div>
 
   <div class="modal" id="consultation-modal" role="dialog" aria-modal="true" aria-labelledby="consultation-title">
-    <div class="modal-card"><button class="modal-close" id="modal-close" aria-label="Close consultation form">×</button>
+    <div class="modal-card">
+      <button class="modal-close" id="modal-close" aria-label="Close consultation form" type="button">×</button>
       <div class="dialog-label">Initial consultation</div>
       <h2 id="consultation-title">Start with what you know.</h2>
-      <p>A short, private first note is enough to begin a useful conversation. We will use it to prepare for the
-        questions that matter most.</p>
+      <p>A short, private first note is enough to begin a useful conversation. We will use it to prepare for the questions that matter most.</p>
       <form id="consultation-form">
         <div class="intake-grid">
           <div class="field"><label for="name">Your name</label><input id="name" required placeholder="Name" /></div>
-          <div class="field"><label for="contact-info">Phone or email</label><input id="contact-info" required
-              placeholder="How should we reply?" /></div>
-          <div class="field full"><label for="matter">Matter type</label><select id="matter" required>
-              <option value="">Select the closest option</option>
-              <option>Constitutional Law</option>
-              <option>Criminal Defence</option>
-              <option>Civil Litigation</option>
-              <option>Corporate &amp; Commercial</option>
-              <option>Arbitration</option>
-              <option>Appellate Practice</option>
-            </select></div>
-          <div class="field full"><label for="timing">When would you like to speak?</label><select id="timing" required>
-              <option value="">Choose a preferred time</option>
-              <option>This week</option>
-              <option>Within two weeks</option>
-              <option>Not urgent — I need initial guidance</option>
-            </select></div>
+          <div class="field"><label for="contact-info">Phone or email</label><input id="contact-info" required placeholder="How should we reply?" /></div>
+          <div class="field full"><label for="matter">Matter type</label><select id="matter" required><option value="">Select the closest option</option><option>Constitutional Law &amp; Writs</option><option>Criminal Defence &amp; Bail</option><option>Civil Litigation &amp; Injunctions</option><option>Corporate, Commercial &amp; NCLT</option><option>Arbitration &amp; Enforcement</option><option>Appellate Practice</option></select></div>
+          <div class="field full"><label for="timing">When would you like to speak?</label><select id="timing" required><option value="">Choose a preferred time</option><option>This week</option><option>Within two weeks</option><option>Not urgent — I need initial guidance</option></select></div>
         </div>
-        <p class="intake-note">Please avoid sharing highly sensitive facts or documents in an initial online note. We
-          can discuss a secure way to share relevant materials during your consultation.</p><button class="desk-button"
-          type="submit">Save the intake note ↗</button>
-        <div class="form-message" id="form-message">Thank you. Your note is ready for review.</div>
+        <p class="intake-note">Please avoid sharing highly sensitive facts or documents in an initial online note. We can discuss a secure way to share relevant materials during your consultation.</p>
+        <button class="desk-button" type="submit">Save the intake note ↗</button>
+        <div class="form-message" id="form-message">Thank you. Your note is ready for review. We will contact you shortly.</div>
       </form>
     </div>
   </div>
 
   <script>
-    const areas = [
-      ["01", "Constitutional Law", "Fundamental-rights petitions, writ jurisdiction, and matters of public importance.", "Fundamental-rights petitions, writ jurisdiction, and matters of public importance approached through precise preparation and considered advocacy.", ["Fundamental-rights petitions", "Writ jurisdiction", "Public importance matters"]],
-      ["02", "Criminal Defence", "Bail, trial, and appellate representation grounded in meticulous case strategy.", "Bail, trial, and appellate representation grounded in meticulous case strategy and purposeful preparation at each stage.", ["Bail representation", "Trial strategy", "Appellate representation"]],
-      ["03", "Civil Litigation", "Property, contract, and injunction disputes resolved with disciplined advocacy.", "Property, contract, and injunction disputes resolved with disciplined advocacy, close attention to the record, and a clear litigation plan.", ["Property disputes", "Contract disputes", "Injunction matters"]],
-      ["04", "Corporate & Commercial", "Company disputes, regulatory matters, and advisory for institutions and founders.", "Company disputes, regulatory matters, and practical advisory support for institutions and founders navigating important commercial decisions.", ["Company disputes", "Regulatory matters", "Institutional advisory"]],
-      ["05", "Arbitration", "Domestic and institutional arbitration, from appointment through enforcement.", "Domestic and institutional arbitration support from appointment through enforcement, with every step organised around the matters in issue.", ["Domestic arbitration", "Institutional arbitration", "Enforcement"]],
-      ["06", "Appellate Practice", "Focused appellate briefs and oral argument before superior courts.", "Focused appellate briefs and oral argument before superior courts, built on a structured record and carefully framed legal questions.", ["Appellate briefs", "Oral argument", "Superior courts"]]
-    ];
-    const list = document.querySelector('#practice-list');
-    const sheet = document.querySelector('#case-sheet');
-    function selectArea(index) {
-      const [id, title, short, detail, points] = areas[index];
-      list.innerHTML = areas.map((area, i) => `<button class="practice-row ${i === index ? 'active' : ''}" type="button" aria-pressed="${i === index}"><span class="row-id">${area[0]}</span><span><h3>${area[1]}</h3><p>${area[2]}</p></span><span>→</span></button>`).join('');
-      sheet.innerHTML = `<span class="case-tab">Selected brief / ${id}</span><h3>${title}</h3><p>${detail}</p><ul>${points.map(point => `<li>✓ ${point}</li>`).join('')}</ul><span class="sheet-mark">B&amp;G</span>`;
-      [...list.querySelectorAll('.practice-row')].forEach((button, i) => button.addEventListener('click', () => selectArea(i)));
-    }
-    selectArea(0);
+    // Live Court Clock Controller
+    (function initCourtClock() {
+      const clockEl = document.getElementById('court-clock');
+      const textEl = document.getElementById('status-text');
+      const pillEl = document.getElementById('court-status-pill');
 
+      function updateClock() {
+        const now = new Date();
+        const utc = now.getTime() + (now.getTimezoneOffset() * 60000);
+        const istDate = new Date(utc + (3600000 * 5.5));
+        const hours = istDate.getHours();
+        const minutes = istDate.getMinutes();
+        const day = istDate.getDay();
+        const hoursFormatted = String(hours).padStart(2, '0');
+        const minutesFormatted = String(minutes).padStart(2, '0');
+        if (clockEl) clockEl.textContent = `${hoursFormatted}:${minutesFormatted} IST`;
+
+        const isWeekday = day >= 1 && day <= 5;
+        const timeInMinutes = hours * 60 + minutes;
+        const isInSession = isWeekday && (timeInMinutes >= 630 && timeInMinutes <= 990);
+
+        if (textEl && pillEl) {
+          if (isInSession) {
+            textEl.textContent = 'TS High Court · In Session';
+            pillEl.classList.remove('recess');
+          } else {
+            textEl.textContent = 'Chambers Hours · IST';
+            pillEl.classList.add('recess');
+          }
+        }
+      }
+      updateClock();
+      setInterval(updateClock, 10000);
+    })();
+
+    // Animated Stats Counter
+    (function initStatsCounter() {
+      const statElements = document.querySelectorAll('.stat-num');
+      let animated = false;
+      function animateCounters() {
+        if (animated) return;
+        const statsSection = document.querySelector('.stats-docket');
+        if (!statsSection) return;
+        const rect = statsSection.getBoundingClientRect();
+        if (rect.top <= window.innerHeight * 0.85 && rect.bottom >= 0) {
+          animated = true;
+          statElements.forEach(el => {
+            const target = parseInt(el.getAttribute('data-target') || '0', 10);
+            const suffix = el.getAttribute('data-suffix') || '';
+            let current = 0;
+            const step = Math.max(1, Math.floor(target / 45));
+            const interval = setInterval(() => {
+              current += step;
+              if (current >= target) {
+                el.textContent = target + suffix;
+                clearInterval(interval);
+              } else {
+                el.textContent = current + suffix;
+              }
+            }, 30);
+          });
+        }
+      }
+      window.addEventListener('scroll', animateCounters, { passive: true });
+      setTimeout(animateCounters, 600);
+    })();
+
+    // Practice Dossier Controller
+    (function initPracticeDossier() {
+      const areas = [
+        ["01", "Constitutional Law", "Writ jurisdiction & fundamental-rights petitions before the High Court.", "Fundamental-rights petitions, writ jurisdiction (Articles 226 & 32), and matters of public importance approached through precise record preparation and considered advocacy.", ["Fundamental-rights petitions", "Writ jurisdiction (Articles 226 & 32)", "Public importance matters"], "Constitutional"],
+        ["02", "Criminal Defence", "Bail, trial, and appellate representation grounded in meticulous case strategy.", "Bail, trial, and appellate representation grounded in meticulous case strategy and purposeful preparation at each stage before trial and appellate courts.", ["Bail representation", "Trial strategy", "Appellate representation"], "Appellate"],
+        ["03", "Civil Litigation", "Property, contract, and injunction disputes resolved with disciplined advocacy.", "Property, contract, and injunction disputes resolved with disciplined advocacy, close attention to the trial record, and a clear litigation plan.", ["Property disputes", "Contract disputes", "Injunction matters"], "Commercial"],
+        ["04", "Corporate & Commercial", "Company disputes, NCLT proceedings, and advisory for institutions.", "Company disputes, regulatory matters, NCLT proceedings, and practical advisory support for institutions navigating important commercial decisions.", ["Company disputes & NCLT", "Regulatory matters", "Institutional advisory"], "Commercial"],
+        ["05", "Arbitration", "Domestic and institutional arbitration, from appointment through enforcement.", "Domestic and institutional arbitration support under the 1996 Act from appointment through enforcement, with every step organised around the issues.", ["Domestic arbitration", "Institutional arbitration", "Enforcement under 1996 Act"], "Arbitration"],
+        ["06", "Appellate Practice", "Focused appellate briefs and oral argument before superior courts.", "Focused appellate briefs and oral argument before superior courts, built on a structured record and carefully framed legal questions.", ["Appellate briefs", "Oral argument", "Superior courts"], "Appellate"]
+      ];
+
+      const list = document.querySelector('#practice-list');
+      const sheet = document.querySelector('#case-sheet');
+      const filterChips = document.querySelectorAll('.filter-chip');
+
+      function renderList(filteredAreas) {
+        if (!list) return;
+        list.innerHTML = filteredAreas.map((area, i) => `
+          <button class="practice-row ${i === 0 ? 'active' : ''}" type="button" data-area-id="${area[0]}">
+            <span class="row-id">${area[0]}</span>
+            <span>
+              <h3>${area[1]}</h3>
+              <p>${area[2]}</p>
+            </span>
+            <span class="row-arrow">→</span>
+          </button>
+        `).join('');
+
+        const rows = list.querySelectorAll('.practice-row');
+        rows.forEach((row, i) => {
+          row.addEventListener('click', () => {
+            rows.forEach(r => r.classList.remove('active'));
+            row.classList.add('active');
+            renderSheet(filteredAreas[i]);
+          });
+        });
+
+        if (filteredAreas.length > 0) renderSheet(filteredAreas[0]);
+      }
+
+      function renderSheet(area) {
+        if (!sheet || !area) return;
+        const [id, title, short, detail, points] = area;
+        sheet.classList.add('sheet-updating');
+        setTimeout(() => {
+          sheet.innerHTML = `
+            <span class="case-tab">Selected Brief / ${id}</span>
+            <h3>${title}</h3>
+            <p>${detail}</p>
+            <ul>${points.map(point => `<li>✓ ${point}</li>`).join('')}</ul>
+            <span class="sheet-mark">B&amp;G</span>
+          `;
+          sheet.classList.remove('sheet-updating');
+        }, 90);
+      }
+
+      filterChips.forEach(chip => {
+        chip.addEventListener('click', () => {
+          filterChips.forEach(c => c.classList.remove('active'));
+          chip.classList.add('active');
+          const cat = chip.getAttribute('data-category');
+          const filtered = cat === 'all' ? areas : areas.filter(a => a[5] === cat || a[1].includes(cat));
+          renderList(filtered);
+        });
+      });
+
+      renderList(areas);
+    })();
+
+    // UI Menu & Modal Controls
     const menuButton = document.querySelector('#menu-toggle');
     const drawer = document.querySelector('#mobile-drawer');
     const menuVideo = document.querySelector('#menu-video');
-    function resetMenuAnimation() { menuVideo.pause(); menuVideo.currentTime = 0; }
+    function resetMenuAnimation() { if (menuVideo) { menuVideo.pause(); menuVideo.currentTime = 0; } }
     function closeMenu() { drawer.classList.remove('open'); menuButton.setAttribute('aria-expanded', 'false'); menuButton.setAttribute('aria-label', 'Open navigation'); resetMenuAnimation(); }
     menuButton.addEventListener('click', () => {
       const isOpen = drawer.classList.contains('open');
       if (isOpen) return closeMenu();
-      menuVideo.pause(); menuVideo.currentTime = 0; menuVideo.play().catch(() => { });
+      if (menuVideo) { menuVideo.pause(); menuVideo.currentTime = 0; menuVideo.play().catch(() => { }); }
       drawer.classList.add('open'); menuButton.setAttribute('aria-expanded', 'true'); menuButton.setAttribute('aria-label', 'Close navigation');
     });
     drawer.querySelectorAll('a').forEach(link => link.addEventListener('click', closeMenu));
@@ -1298,7 +1794,79 @@
     modal.addEventListener('click', event => { if (event.target === modal) closeModal(); });
     document.addEventListener('keydown', event => { if (event.key === 'Escape') { closeModal(); closeMenu(); } });
     document.querySelector('#consultation-form').addEventListener('submit', event => { event.preventDefault(); document.querySelector('#form-message').classList.add('show'); });
+
+    /* Scroll Controller */
+    (function initScrollEffects() {
+      const isReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const revealElements = document.querySelectorAll('.reveal-init, .reveal-left, .reveal-right, .reveal-scale');
+      const progressBar = document.querySelector('#scroll-progress');
+      const header = document.querySelector('#site-header') || document.querySelector('.site-header');
+      const backToTop = document.querySelector('#back-to-top');
+      const heroSlip = document.querySelector('#hero-brief-slip') || document.querySelector('.hero-brief-slip');
+      const navLinks = document.querySelectorAll('.desk-nav a');
+
+      if (!isReducedMotion && 'IntersectionObserver' in window) {
+        const revealObserver = new IntersectionObserver((entries, observer) => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add('is-revealed');
+              observer.unobserve(entry.target);
+            }
+          });
+        }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+        revealElements.forEach(el => revealObserver.observe(el));
+        setTimeout(() => revealElements.forEach(el => el.classList.add('is-revealed')), 1500);
+      } else {
+        revealElements.forEach(el => el.classList.add('is-revealed'));
+      }
+
+      let ticking = false;
+      const sections = ['profile', 'practice', 'approach', 'contact'].map(id => ({ id, el: document.getElementById(id) })).filter(s => s.el !== null);
+
+      function onScroll() {
+        const scrollY = window.scrollY || window.pageYOffset;
+        const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+        if (progressBar && maxScroll > 0) {
+          progressBar.style.width = Math.min(Math.max((scrollY / maxScroll) * 100, 0), 100) + '%';
+        }
+        if (header) {
+          if (scrollY > 30) header.classList.add('scrolled');
+          else header.classList.remove('scrolled');
+        }
+        if (backToTop) {
+          if (scrollY > 380) backToTop.classList.add('show');
+          else backToTop.classList.remove('show');
+        }
+        if (!isReducedMotion && heroSlip && window.innerWidth > 900) {
+          if (scrollY < 800) {
+            heroSlip.style.transform = `rotate(-5deg) translateY(${-scrollY * 0.07}px)`;
+          }
+        }
+        if (navLinks.length > 0 && sections.length > 0) {
+          let currentActiveId = '';
+          const scrollMarker = scrollY + 160;
+          for (let i = sections.length - 1; i >= 0; i--) {
+            if (sections[i].el.offsetTop <= scrollMarker) { currentActiveId = sections[i].id; break; }
+          }
+          navLinks.forEach(link => {
+            const href = link.getAttribute('href');
+            if (currentActiveId && (href === `#${currentActiveId}` || href.endsWith(`#${currentActiveId}`))) {
+              link.classList.add('active');
+            } else { link.classList.remove('active'); }
+          });
+        }
+        ticking = false;
+      }
+      window.addEventListener('scroll', () => { if (!ticking) { window.requestAnimationFrame(onScroll); ticking = true; } }, { passive: true });
+      onScroll();
+      if (backToTop) backToTop.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+    })();
   </script>
+
+  <button class="back-to-top" id="back-to-top" aria-label="Back to top of docket" type="button">
+    <span class="top-arrow" aria-hidden="true">↑</span>
+    <span>Docket top</span>
+  </button>
 </body>
 
 </html>

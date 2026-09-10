@@ -1,0 +1,109 @@
+---
+// PracticeDossier.astro — Interactive Practice Areas & Dossier Inspector
+---
+
+<section class="content-section" id="practice">
+  <div class="section-header reveal-init">
+    <div class="section-kicker">Practice Index</div>
+    <div>
+      <h2 class="section-title">Focused representation across the <em>areas that matter most.</em></h2>
+      <p class="section-intro">
+        Select a practice area to review its procedural focus, statutory jurisdiction, and representative legal work.
+      </p>
+    </div>
+  </div>
+
+  <div class="dossier-filter-bar reveal-init" data-delay="100">
+    <span class="filter-label">Jurisdiction Filter:</span>
+    <button class="filter-chip active" data-category="all" type="button">All Practice Areas</button>
+    <button class="filter-chip" data-category="Constitutional" type="button">Constitutional &amp; Writs</button>
+    <button class="filter-chip" data-category="Appellate" type="button">Appellate Practice</button>
+    <button class="filter-chip" data-category="Arbitration" type="button">Arbitration</button>
+    <button class="filter-chip" data-category="Commercial" type="button">Commercial &amp; Company</button>
+  </div>
+
+  <div class="practice-grid reveal-init" data-delay="150">
+    <div class="practice-list" id="practice-list"></div>
+    <aside class="case-sheet" id="case-sheet" aria-live="polite"></aside>
+  </div>
+</section>
+
+<script is:inline>
+  (function initPracticeDossier() {
+    const areas = [
+      ["01", "Constitutional Law", "Writ jurisdiction & fundamental-rights petitions before the High Court.", "Fundamental-rights petitions, writ jurisdiction (Articles 226 & 32), and matters of public importance approached through precise record preparation and considered advocacy.", ["Fundamental-rights petitions", "Writ jurisdiction (Articles 226 & 32)", "Public importance matters"], "Constitutional"],
+      ["02", "Criminal Defence", "Bail, trial, and appellate representation grounded in meticulous case strategy.", "Bail, trial, and appellate representation grounded in meticulous case strategy and purposeful preparation at each stage before trial and appellate courts.", ["Bail representation", "Trial strategy", "Appellate representation"], "Appellate"],
+      ["03", "Civil Litigation", "Property, contract, and injunction disputes resolved with disciplined advocacy.", "Property, contract, and injunction disputes resolved with disciplined advocacy, close attention to the trial record, and a clear litigation plan.", ["Property disputes", "Contract disputes", "Injunction matters"], "Commercial"],
+      ["04", "Corporate & Commercial", "Company disputes, NCLT proceedings, and advisory for institutions.", "Company disputes, regulatory matters, NCLT proceedings, and practical advisory support for institutions navigating important commercial decisions.", ["Company disputes & NCLT", "Regulatory matters", "Institutional advisory"], "Commercial"],
+      ["05", "Arbitration", "Domestic and institutional arbitration, from appointment through enforcement.", "Domestic and institutional arbitration support under the 1996 Act from appointment through enforcement, with every step organised around the issues.", ["Domestic arbitration", "Institutional arbitration", "Enforcement under 1996 Act"], "Arbitration"],
+      ["06", "Appellate Practice", "Focused appellate briefs and oral argument before superior courts.", "Focused appellate briefs and oral argument before superior courts, built on a structured record and carefully framed legal questions.", ["Appellate briefs", "Oral argument", "Superior courts"], "Appellate"]
+    ];
+
+    const list = document.querySelector('#practice-list');
+    const sheet = document.querySelector('#case-sheet');
+    const filterChips = document.querySelectorAll('.filter-chip');
+    let currentCategory = 'all';
+
+    function renderList(filteredAreas) {
+      if (!list) return;
+      list.innerHTML = filteredAreas.map((area, i) => `
+        <button class="practice-row ${i === 0 ? 'active' : ''}" type="button" data-area-id="${area[0]}">
+          <span class="row-id">${area[0]}</span>
+          <span>
+            <h3>${area[1]}</h3>
+            <p>${area[2]}</p>
+          </span>
+          <span class="row-arrow">→</span>
+        </button>
+      `).join('');
+
+      // Add click handlers to rendered rows
+      const rows = list.querySelectorAll('.practice-row');
+      rows.forEach((row, i) => {
+        row.addEventListener('click', () => {
+          rows.forEach(r => r.classList.remove('active'));
+          row.classList.add('active');
+          renderSheet(filteredAreas[i]);
+        });
+      });
+
+      if (filteredAreas.length > 0) {
+        renderSheet(filteredAreas[0]);
+      }
+    }
+
+    function renderSheet(area) {
+      if (!sheet || !area) return;
+      const [id, title, short, detail, points] = area;
+      sheet.classList.add('sheet-updating');
+      setTimeout(() => {
+        sheet.innerHTML = `
+          <span class="case-tab">Selected Brief / ${id}</span>
+          <h3>${title}</h3>
+          <p>${detail}</p>
+          <ul>${points.map(point => `<li>✓ ${point}</li>`).join('')}</ul>
+          <span class="sheet-mark">B&amp;G</span>
+        `;
+        sheet.classList.remove('sheet-updating');
+      }, 90);
+    }
+
+    // Filter handling
+    filterChips.forEach(chip => {
+      chip.addEventListener('click', () => {
+        filterChips.forEach(c => c.classList.remove('active'));
+        chip.classList.add('active');
+        currentCategory = chip.getAttribute('data-category');
+        
+        const filtered = currentCategory === 'all' 
+          ? areas 
+          : areas.filter(a => a[5] === currentCategory || a[1].includes(currentCategory));
+        
+        renderList(filtered);
+      });
+    });
+
+    // Initial render
+    renderList(areas);
+  })();
+</script>

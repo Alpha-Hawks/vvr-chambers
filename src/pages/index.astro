@@ -1,243 +1,327 @@
 ---
 // Brief & Gavel — Legal Advocate Studio
+import CourtStatusClock from "../components/CourtStatusClock.astro";
+import HeroSection from "../components/HeroSection.astro";
+import ProfileSection from "../components/ProfileSection.astro";
+import PracticeDossier from "../components/PracticeDossier.astro";
+import ChambersRollPreview from "../components/ChambersRollPreview.astro";
+import ConsultationModal from "../components/ConsultationModal.astro";
+import BackToTop from "../components/BackToTop.astro";
+import "../styles/global.css";
 ---
 <!doctype html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Brief & Gavel — Vimal Vasireddy, Advocate practice" />
-  <title>Brief & Gavel — Vimal Vasireddy | Legal Advocate Studio</title>
+  <meta name="description" content="Brief & Gavel — Vimal Vasireddy, Advocate practice, High Court of Telangana & NCLT" />
+  <title>Brief &amp; Gavel — Vimal Vasireddy | Legal Advocate Studio</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&display=swap" rel="stylesheet" />
-  <style is:global>
-    :root { --paper:#f7f1e5; --paper-deep:#eee2cd; --ink:#162630; --ink-soft:#526069; --oxblood:#a63a32; --brass:#a67c3d; --line:rgba(22,38,48,.18); --white:#fffaf0; --ease:cubic-bezier(.23,1,.32,1); }
-    * { box-sizing:border-box; }
-    html { scroll-behavior:smooth; }
-    body { margin:0; color:var(--ink); background:var(--paper); font-family:"DM Sans",sans-serif; }
-    button,input,select { font:inherit; }
-    button { cursor:pointer; }
-    img { display:block; max-width:100%; }
-    a { color:inherit; text-decoration:none; }
-    .site-shell { overflow:hidden; background:linear-gradient(rgba(255,255,255,.24),rgba(255,255,255,.24)),var(--paper); }
-
-    .site-header { position:sticky; z-index:40; top:0; border-bottom:1px solid var(--line); background:rgba(247,241,229,.92); backdrop-filter:blur(14px); }
-    .header-inner { display:flex; align-items:center; justify-content:space-between; gap:24px; min-height:80px; max-width:1440px; margin:auto; padding:10px 28px; }
-    .brand-lockup,.footer-brand { display:flex; align-items:center; gap:11px; font-family:Fraunces,serif; font-weight:600; font-size:23px; letter-spacing:-.06em; }
-    .brand-lockup span { font-family:"DM Sans",sans-serif; font-size:11px; letter-spacing:.1em; text-transform:uppercase; }
-    .brand-mark { width:53px; height:53px; object-fit:cover; border:1px solid rgba(166,124,61,.45); box-shadow:4px 4px 0 rgba(166,124,61,.1); }
-    .desk-nav { display:flex; gap:28px; font-size:11px; font-weight:700; letter-spacing:.12em; text-transform:uppercase; }
-    .desk-nav a:hover { color:var(--oxblood); }
-    .header-cta,.desk-button { display:inline-flex; align-items:center; justify-content:center; gap:11px; min-height:47px; border:1px solid var(--ink); padding:0 19px; background:var(--oxblood); color:var(--white); font-size:11px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; transition:transform .18s var(--ease),background .18s var(--ease); }
-    .header-cta:hover,.desk-button:hover { background:#7f2b28; transform:translateY(-2px); }
-    .desk-button { background:var(--ink); }
-    .desk-button.ghost { background:transparent; color:var(--ink); }
-    .menu-toggle { display:none; width:47px; height:47px; border:0; background:transparent; color:var(--ink); }
-    .menu-symbol-frame { display:block; width:36px; height:36px; margin:auto; overflow:hidden; }
-    .menu-symbol-video,.menu-symbol-fallback { display:block; width:36px; height:36px; object-fit:cover; mix-blend-mode:multiply; }
-    .menu-symbol-fallback { display:none; object-fit:contain; mix-blend-mode:normal; }
-    .mobile-drawer { display:none; }
-
-    .hero { position:relative; display:grid; grid-template-columns:minmax(0,.9fr) minmax(390px,1.1fr); gap:60px; min-height:690px; max-width:1440px; margin:auto; padding:92px 90px 74px; }
-    .evidence-rail { position:absolute; top:245px; left:29px; color:var(--ink-soft); font-size:9px; font-weight:700; letter-spacing:.18em; text-transform:uppercase; writing-mode:vertical-rl; transform:rotate(180deg); }
-    .evidence-rail::after { display:block; width:1px; height:70px; margin:12px auto 0; background:var(--brass); content:""; }
-    .hero-copy { align-self:center; max-width:550px; }
-    .file-tab,.section-kicker,.dialog-label { color:var(--oxblood); font-size:10px; font-weight:700; letter-spacing:.15em; text-transform:uppercase; }
-    .file-tab::before,.section-kicker::before { display:inline-block; width:28px; height:2px; margin:0 10px 3px 0; background:var(--oxblood); content:""; }
-    h1,h2,h3,p { margin-top:0; }
-    h1 { margin:24px 0; font-family:Fraunces,serif; font-size:clamp(3.2rem,5vw,5.75rem); font-weight:500; letter-spacing:-.08em; line-height:.91; }
-    em { color:var(--oxblood); font-weight:500; }
-    .hero-summary { max-width:490px; color:var(--ink-soft); font-size:17px; line-height:1.68; }
-    .hero-actions { display:flex; flex-wrap:wrap; gap:13px; margin-top:30px; }
-    .hero-note { display:flex; align-items:center; gap:8px; margin:34px 0 0; font-size:12px; color:var(--ink-soft); }
-    .hero-note b { color:var(--ink); }
-    .hero-object { position:relative; align-self:center; height:555px; overflow:hidden; border:1px solid rgba(166,124,61,.6); box-shadow:15px 17px 0 rgba(166,124,61,.13); }
-    .hero-object::after { position:absolute; inset:14px; border:1px solid rgba(255,255,255,.5); content:""; pointer-events:none; }
-    .hero-object img { width:100%; height:100%; object-fit:cover; }
-    .object-number { position:absolute; top:20px; right:20px; display:grid; width:43px; height:43px; place-items:center; border:1px solid rgba(255,255,255,.7); border-radius:50%; color:white; font:500 15px Fraunces,serif; }
-    .object-label { position:absolute; right:0; bottom:35px; padding:9px 17px; background:var(--oxblood); color:white; font-size:10px; font-weight:700; letter-spacing:.14em; text-transform:uppercase; }
-    .hero-brief-slip { position:absolute; z-index:2; bottom:37px; left:47%; width:184px; padding:18px; border:1px solid rgba(166,124,61,.7); background:rgba(255,250,240,.97); box-shadow:12px 12px 0 rgba(22,38,48,.09); transform:rotate(-5deg); }
-    .hero-brief-slip span,.hero-brief-slip i { display:block; color:var(--oxblood); font-size:9px; font-style:normal; font-weight:700; letter-spacing:.14em; text-transform:uppercase; }
-    .hero-brief-slip strong { display:block; margin:17px 0 20px; font:500 29px/.88 Fraunces,serif; letter-spacing:-.06em; }
-    .hero-brief-slip i { color:var(--ink-soft); }
-
-    .advocate-profile { border-top:1px solid var(--line); border-bottom:1px solid var(--line); background:rgba(238,226,205,.55); }
-    .profile-inner { display:grid; grid-template-columns:.65fr 1.35fr; max-width:1440px; margin:auto; }
-    .profile-record { display:flex; min-height:390px; flex-direction:column; justify-content:space-between; padding:42px; background:var(--ink); color:var(--white); }
-    .profile-record span { color:#e1bc75; font-size:10px; font-weight:700; letter-spacing:.15em; text-transform:uppercase; }
-    .profile-record strong { margin:auto 0 14px; font:500 clamp(2.2rem,4vw,4rem)/.9 Fraunces,serif; letter-spacing:-.07em; }
-    .profile-record p { max-width:280px; margin:0; color:rgba(255,255,255,.72); font-size:13px; line-height:1.65; }
-    .hero-brief-slip .slip-avatar-wrap { width:54px; height:54px; margin-bottom:14px; border-radius:50%; border:1.5px solid var(--brass); padding:2px; background:rgba(255,250,240,.85); box-shadow:0 4px 10px rgba(22,38,48,.12); }
-    .hero-brief-slip .slip-avatar { display:block; width:100%; height:100%; border-radius:50%; object-fit:cover; }
-    .profile-content { padding:70px clamp(28px,6vw,90px); }
-    .section-title { max-width:760px; margin:19px 0; font:500 clamp(2.7rem,4.5vw,5rem)/.95 Fraunces,serif; letter-spacing:-.07em; }
-    .profile-note,.section-intro { max-width:690px; color:var(--ink-soft); font-size:15px; line-height:1.7; }
-    .credential-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:12px; max-width:720px; margin-top:29px; }
-    .credential-card { min-height:100px; padding:18px; border:1px solid var(--line); background:rgba(255,250,240,.7); }
-    .credential-card span { display:block; color:var(--oxblood); font-size:10px; font-weight:700; letter-spacing:.13em; text-transform:uppercase; }
-    .credential-card strong { display:block; margin-top:17px; font:500 19px Fraunces,serif; }
-
-    .quick-index { display:grid; grid-template-columns:repeat(3,1fr); max-width:1160px; margin:0 auto; border-right:1px solid var(--line); }
-    .index-item { display:flex; align-items:center; gap:14px; min-height:102px; border:0; border-bottom:1px solid var(--line); border-left:1px solid var(--line); background:transparent; color:var(--ink); text-align:left; }
-    .index-item:hover { background:rgba(255,250,240,.5); }
-    .stamp { display:grid; width:33px; height:33px; place-items:center; border:1px solid var(--brass); border-radius:50%; font:500 13px Fraunces,serif; }
-    .index-item div span,.index-item strong { display:block; }
-    .index-item div span { color:var(--ink-soft); font-size:9px; font-weight:700; letter-spacing:.14em; text-transform:uppercase; }
-    .index-item strong { margin-top:7px; font:500 21px Fraunces,serif; letter-spacing:-.05em; }
-
-    .content-section { max-width:1240px; margin:auto; padding:114px 30px; }
-    .section-header { display:grid; grid-template-columns:180px 1fr; gap:30px; margin-bottom:47px; }
-    .practice-grid { display:grid; grid-template-columns:1.14fr .86fr; gap:30px; }
-    .practice-list { border-top:1px solid var(--line); }
-    .practice-row { display:grid; grid-template-columns:47px 1fr 25px; gap:12px; width:100%; padding:21px 7px; border:0; border-bottom:1px solid var(--line); background:transparent; color:var(--ink); text-align:left; transition:background .18s var(--ease),padding .18s var(--ease); }
-    .practice-row:hover,.practice-row.active { padding-left:17px; background:rgba(255,250,240,.72); }
-    .practice-row.active { box-shadow:inset 3px 0 var(--oxblood); }
-    .row-id { color:var(--oxblood); font:500 17px Fraunces,serif; }
-    .practice-row h3 { margin:0 0 7px; font:500 24px Fraunces,serif; letter-spacing:-.05em; }
-    .practice-row p { margin:0; color:var(--ink-soft); font-size:13px; line-height:1.55; }
-    .case-sheet { position:relative; min-height:385px; padding:33px; overflow:hidden; border:1px solid var(--line); border-radius:50px; background:var(--white); box-shadow:11px 12px 0 rgba(22,38,48,.06); }
-    .case-sheet::before { position:absolute; top:0; left:0; width:60px; height:4px; background:var(--oxblood); content:""; }
-    .case-tab { color:var(--oxblood); font-size:10px; font-weight:700; letter-spacing:.13em; text-transform:uppercase; }
-    .case-sheet h3 { margin:25px 0 13px; font:500 39px/.95 Fraunces,serif; letter-spacing:-.06em; }
-    .case-sheet p { color:var(--ink-soft); font-size:15px; line-height:1.66; }
-    .case-sheet ul { padding:0; margin:25px 0 0; list-style:none; }
-    .case-sheet li { display:flex; gap:9px; margin-top:10px; font-size:13px; }
-    .sheet-mark { position:absolute; right:24px; bottom:19px; color:rgba(166,58,50,.3); font:500 36px Fraunces,serif; }
-
-    .approach-section { display:grid; grid-template-columns:.9fr 1.1fr; align-items:center; gap:80px; }
-    .approach-image { position:relative; min-height:535px; overflow:hidden; border:1px solid rgba(166,124,61,.6); box-shadow:14px 15px 0 rgba(166,124,61,.1); }
-    .approach-image img { width:100%; height:100%; object-fit:cover; }
-    .image-caption { position:absolute; right:0; bottom:0; padding:12px 17px; background:var(--ink); color:var(--white); font-size:10px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; }
-    .principles { margin-top:33px; border-top:1px solid var(--line); }
-    .principle { display:grid; grid-template-columns:48px 1fr; gap:15px; padding:22px 0; border-bottom:1px solid var(--line); }
-    .principle-number { color:var(--oxblood); font:500 17px Fraunces,serif; }
-    .principle h3 { margin:0 0 7px; font:500 22px Fraunces,serif; letter-spacing:-.05em; }
-    .principle p { margin:0; color:var(--ink-soft); font-size:13px; line-height:1.6; }
-    .contact-band { padding:87px 30px; background:var(--ink); color:var(--white); }
-    .contact-band-inner { max-width:900px; margin:auto; text-align:center; }
-    .contact-band .section-kicker { color:#e1bc75; }
-    .contact-band h2 { margin:20px 0 30px; font:500 clamp(2.8rem,5vw,5.5rem)/.94 Fraunces,serif; letter-spacing:-.07em; }
-    .contact-band .desk-button { background:var(--white); color:var(--ink); }
-    .contact-details { display:flex; flex-wrap:wrap; justify-content:center; gap:13px 23px; max-width:1000px; margin:55px auto 0; color:rgba(255,255,255,.68); font-size:12px; }
-    .site-footer { display:flex; align-items:center; justify-content:space-between; gap:24px; padding:27px; border-top:1px solid var(--line); }
-    .footer-brand { font-size:20px; }
-    .footer-brand img { width:34px; height:34px; }
-    .site-footer p { max-width:680px; margin:0; color:var(--ink-soft); font-size:11px; line-height:1.6; text-align:right; }
-    .site-footer a { text-decoration:underline; text-underline-offset:3px; }
-
-    .modal { position:fixed; z-index:80; inset:0; display:none; align-items:center; justify-content:center; padding:20px; background:rgba(11,22,28,.66); }
-    .modal.open { display:flex; }
-    .modal-card { position:relative; width:min(610px,100%); padding:36px; border:1px solid var(--brass); background:var(--white); box-shadow:15px 17px 0 rgba(0,0,0,.2); }
-    .modal-close { position:absolute; top:13px; right:13px; width:38px; height:38px; border:0; background:transparent; font-size:24px; }
-    .modal-card h2 { margin:11px 0 15px; font:500 45px/.95 Fraunces,serif; letter-spacing:-.06em; }
-    .modal-card > p { color:var(--ink-soft); line-height:1.6; }
-    .intake-grid { display:grid; grid-template-columns:1fr 1fr; gap:15px; margin-top:25px; }
-    .field.full { grid-column:1/-1; }
-    .field label { display:block; margin-bottom:7px; font-size:10px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; }
-    .field input,.field select { width:100%; min-height:47px; border:1px solid var(--line); border-radius:0; padding:0 12px; background:white; color:var(--ink); }
-    .intake-note { font-size:12px; color:var(--ink-soft); line-height:1.55; }
-    .form-message { display:none; margin-top:16px; padding:12px; border-left:3px solid var(--oxblood); background:var(--paper); font-size:13px; }
-    .form-message.show { display:block; }
-
-    @media (max-width:850px) {
-      .header-inner { min-height:67px; padding:7px 20px; }
-      .brand-mark { width:47px; height:47px; }.brand-lockup { font-size:21px; }
-      .desk-nav,.header-cta { display:none; }.menu-toggle { display:block; }
-      .mobile-drawer { padding:0 20px 20px; border-top:1px solid var(--line); background:var(--paper); }
-      .mobile-drawer.open { display:grid; gap:14px; }.mobile-drawer a { padding:9px 0; border-bottom:1px solid var(--line); font-size:12px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; }
-      .mobile-drawer .header-cta { display:flex; width:100%; margin-top:7px; }
-      .hero { grid-template-columns:1fr; gap:31px; min-height:auto; padding:68px 20px 52px; }.evidence-rail { display:none; }
-      h1 { font-size:3.8rem; }.hero-object { height:390px; }.hero-brief-slip { right:22px; bottom:8px; left:auto; width:165px; }
-      .profile-inner,.approach-section,.practice-grid { grid-template-columns:1fr; }.profile-record { min-height:250px; padding:30px; }.profile-content { padding:50px 20px; }
-      .quick-index { grid-template-columns:1fr; margin:0 20px; }.index-item { min-height:76px; padding:0 12px; }.index-item strong { font-size:19px; }
-      .content-section { padding:76px 20px; }.section-header { grid-template-columns:1fr; gap:13px; }.practice-row h3 { font-size:21px; }.case-sheet { min-height:320px; border-radius:35px; }
-      .approach-section { gap:35px; }.approach-image { min-height:405px; }.contact-band { padding:70px 20px; }.site-footer { display:block; }.site-footer p { margin-top:16px; text-align:left; }.intake-grid { grid-template-columns:1fr; }.field.full { grid-column:auto; }
-    }
-    @media (prefers-reduced-motion:reduce) { html { scroll-behavior:auto; }.menu-symbol-video { display:none; }.menu-symbol-fallback { display:block; } }
-  </style>
 </head>
 <body>
   <div class="site-shell">
-    <header class="site-header">
+    <header class="site-header" id="site-header">
       <div class="header-inner">
-        <a class="brand-lockup" href="#top" aria-label="Brief and Gavel home"><img class="brand-mark" src="https://briefgavel-xsdpi3fq.manus.space/manus-storage/brief-gavel-logo_2fd75830.png" alt="Brief and Gavel mark" /><span>Brief <small>&amp; Gavel</small></span></a>
-        <nav class="desk-nav" aria-label="Main navigation"><a href="#profile">Profile</a><a href="#practice">Practice</a><a href="#approach">Approach</a><a href="#contact">Contact</a></nav>
-        <button class="header-cta consultation-trigger">Request a consult ↗</button>
-        <button class="menu-toggle" id="menu-toggle" aria-label="Open navigation" aria-expanded="false"><span class="menu-symbol-frame" aria-hidden="true"><video id="menu-video" class="menu-symbol-video" src="https://briefgavel-xsdpi3fq.manus.space/manus-storage/brief-gavel-animated-menu_4ca20c15.mp4" muted playsinline preload="auto"></video><img class="menu-symbol-fallback" src="https://briefgavel-xsdpi3fq.manus.space/manus-storage/brief-gavel-video-menu-symbol_e43d4c99.png" alt="" /></span></button>
+        <a class="brand-lockup" href="#top" aria-label="Brief and Gavel home">
+          <img class="brand-mark" src="https://briefgavel-xsdpi3fq.manus.space/manus-storage/brief-gavel-logo_2fd75830.png" alt="Brief and Gavel mark" width="53" height="53" />
+          <span>Brief <small>&amp; Gavel</small></span>
+        </a>
+
+        <CourtStatusClock />
+
+        <nav class="desk-nav" id="desk-nav" aria-label="Main navigation">
+          <a href="#profile">Profile</a>
+          <a href="#practice">Practice</a>
+          <a href="#approach">Approach</a>
+          <a href="/chambers">The Roll</a>
+          <a href="#contact">Contact</a>
+        </nav>
+
+        <button class="header-cta consultation-trigger" type="button">Request a consult ↗</button>
+
+        <button class="menu-toggle" id="menu-toggle" aria-label="Open navigation" aria-expanded="false">
+          <span class="menu-symbol-frame" aria-hidden="true">
+            <video id="menu-video" class="menu-symbol-video" src="https://briefgavel-xsdpi3fq.manus.space/manus-storage/brief-gavel-animated-menu_4ca20c15.mp4" muted playsinline preload="auto"></video>
+            <img class="menu-symbol-fallback" src="https://briefgavel-xsdpi3fq.manus.space/manus-storage/brief-gavel-video-menu-symbol_e43d4c99.png" alt="" />
+          </span>
+        </button>
       </div>
-      <nav class="mobile-drawer" id="mobile-drawer" aria-label="Mobile navigation"><a href="#profile">Profile</a><a href="#practice">Practice</a><a href="#approach">Approach</a><a href="#contact">Contact</a><button class="header-cta consultation-trigger">Request a consultation ↗</button></nav>
+
+      <div class="scroll-progress-track" aria-hidden="true">
+        <div class="scroll-progress-bar" id="scroll-progress"></div>
+      </div>
+
+      <nav class="mobile-drawer" id="mobile-drawer" aria-label="Mobile navigation">
+        <a href="#profile">Profile</a>
+        <a href="#practice">Practice</a>
+        <a href="#approach">Approach</a>
+        <a href="/chambers">The Roll</a>
+        <a href="#contact">Contact</a>
+        <button class="header-cta consultation-trigger" type="button">Request a consultation ↗</button>
+      </nav>
     </header>
 
     <main id="top">
-      <section class="hero" aria-labelledby="hero-title">
-        <div class="evidence-rail">Case file / 2026</div>
-        <div class="hero-copy"><div class="file-tab">Advocacy with intent</div><h1 id="hero-title">A clear case begins with a <em>clear conversation.</em></h1><p class="hero-summary">Brief &amp; Gavel is the advocate practice of Vimal Vasireddy for people who need a considered legal strategy, not intimidating legal theatre.</p><div class="hero-actions"><button class="desk-button consultation-trigger">Discuss your matter ↗</button><a class="desk-button ghost" href="#practice">Explore practice areas →</a></div><p class="hero-note">⌾ <b>Practical. Private. Prepared.</b> Start with the facts, then choose the next right step.</p></div>
-        <div class="hero-object"><img src="https://briefgavel-xsdpi3fq.manus.space/manus-storage/brief-gavel-hero_fb3554c6.jpg" alt="A considered advocate desk with a gavel, case file, pen and papers" /><span class="object-number">01</span><span class="object-label">The working brief</span></div>
-        <aside class="hero-brief-slip">
-          <div class="slip-avatar-wrap">
-            <img class="slip-avatar" src="/img/vimal-vasireddy.png" alt="Vimal Vasireddy, Advocate" />
+      <!-- 1. Hero Section -->
+      <HeroSection />
+
+      <!-- 2. Advocate Profile & Animated Stats -->
+      <ProfileSection />
+
+      <!-- Quick Index Nav -->
+      <nav class="quick-index reveal-init" aria-label="Page highlights">
+        <a class="index-item" href="#profile">
+          <span class="stamp">01</span>
+          <div><span>Profile</span><strong>The advocate</strong></div>
+        </a>
+        <a class="index-item" href="#practice">
+          <span class="stamp">02</span>
+          <div><span>Practice</span><strong>Where we can help</strong></div>
+        </a>
+        <button class="index-item consultation-trigger" type="button">
+          <span class="stamp">03</span>
+          <div><span>First step</span><strong>Request a consult</strong></div>
+        </button>
+      </nav>
+
+      <!-- 3. Interactive Practice Dossier -->
+      <PracticeDossier />
+
+      <!-- 4. Working Method & Approach -->
+      <section class="content-section approach-section" id="approach">
+        <div class="approach-image reveal-scale">
+          <img src="https://briefgavel-xsdpi3fq.manus.space/manus-storage/brief-gavel-objects_07d4bc57.jpg" alt="A gavel, scale, pen and case file arranged on an advocate’s desk" width="600" height="450" loading="lazy" />
+          <span class="image-caption">The instruments of a considered argument</span>
+        </div>
+
+        <div class="approach-content reveal-init" data-delay="150">
+          <div class="section-kicker">The working method</div>
+          <h2 class="section-title">Bring the facts. We’ll build the <em>strategy.</em></h2>
+          <p class="section-intro">
+            Good advocacy feels calm because the hard preparation happens before the decisive moment. You should always understand the work, the reasons behind it, and the next choice in front of you.
+          </p>
+
+          <div class="principles">
+            <article class="principle reveal-init" data-delay="100">
+              <span class="principle-number">01</span>
+              <div>
+                <h3>Start with the record</h3>
+                <p>The facts, dates, and documents tell us where the case actually stands before we decide where it needs to go.</p>
+              </div>
+            </article>
+
+            <article class="principle reveal-init" data-delay="200">
+              <span class="principle-number">02</span>
+              <div>
+                <h3>Make the options legible</h3>
+                <p>You receive a plain-language view of realistic paths, risks, timing, and what each step asks of you.</p>
+              </div>
+            </article>
+
+            <article class="principle reveal-init" data-delay="300">
+              <span class="principle-number">03</span>
+              <div>
+                <h3>Act with purpose</h3>
+                <p>Every filing, meeting, and negotiation is tied to a clear strategic objective—not activity for its own sake.</p>
+              </div>
+            </article>
           </div>
-          <span>Advocate</span>
-          <strong>Vimal<br />Vasireddy</strong>
-          <i>Case record / 01</i>
-        </aside>
+        </div>
       </section>
 
-      <section class="advocate-profile" id="profile"><div class="profile-inner"><aside class="profile-record"><span>Advocate / profile</span><strong>Vimal<br />Vasireddy</strong><p>Credentials and court admissions are presented below for client confirmation before publication.</p></aside><div class="profile-content"><div class="section-kicker">About Vimal Vasireddy</div><h2 class="section-title">A steady hand when the stakes are <em>highest.</em></h2><p class="profile-note">A short, plain-spoken account of Vimal Vasireddy’s practice philosophy and the clients served will be added once approved by the client.</p><div class="credential-grid"><article class="credential-card"><span>Bar enrolment</span><strong>To be confirmed</strong></article><article class="credential-card"><span>Years in practice</span><strong>14+</strong></article><article class="credential-card"><span>Courts admitted</span><strong>Telangana High Court, AP High Court &amp; NCLT</strong></article><article class="credential-card"><span>Recognitions</span><strong>To be confirmed</strong></article></div></div></div></section>
+      <!-- 5. Chambers Roll Preview -->
+      <ChambersRollPreview />
 
-      <nav class="quick-index" aria-label="Page highlights"><a class="index-item" href="#profile"><span class="stamp">01</span><div><span>Profile</span><strong>The advocate</strong></div></a><a class="index-item" href="#practice"><span class="stamp">02</span><div><span>Practice</span><strong>Where we can help</strong></div></a><button class="index-item consultation-trigger"><span class="stamp">03</span><div><span>First step</span><strong>Request a consult</strong></div></button></nav>
-
-      <section class="content-section" id="practice"><div class="section-header"><div class="section-kicker">Practice index</div><div><h2 class="section-title">Focused representation across the <em>areas that matter most.</em></h2><p class="section-intro">Select a practice area to view its focus and the legal work it can involve.</p></div></div><div class="practice-grid"><div class="practice-list" id="practice-list"></div><aside class="case-sheet" id="case-sheet" aria-live="polite"></aside></div></section>
-
-      <section class="content-section approach-section" id="approach"><div class="approach-image"><img src="https://briefgavel-xsdpi3fq.manus.space/manus-storage/brief-gavel-objects_07d4bc57.jpg" alt="A gavel, scale, pen and case file arranged on an advocate’s desk" /><span class="image-caption">The instruments of a considered argument</span></div><div><div class="section-kicker">The working method</div><h2 class="section-title">Bring the facts. We’ll build the <em>strategy.</em></h2><p class="section-intro">Good advocacy feels calm because the hard preparation happens before the decisive moment. You should always understand the work, the reasons behind it, and the next choice in front of you.</p><div class="principles"><article class="principle"><span class="principle-number">01</span><div><h3>Start with the record</h3><p>The facts, dates, and documents tell us where the case actually stands before we decide where it needs to go.</p></div></article><article class="principle"><span class="principle-number">02</span><div><h3>Make the options legible</h3><p>You receive a plain-language view of realistic paths, risks, timing, and what each step asks of you.</p></div></article><article class="principle"><span class="principle-number">03</span><div><h3>Act with purpose</h3><p>Every filing, meeting, and negotiation is tied to a clear strategic objective—not activity for its own sake.</p></div></article></div></div></section>
-
-      <section class="contact-band" id="contact"><div class="contact-band-inner"><div class="section-kicker">Open a conversation</div><h2>A considered next step is often the <em>most important one.</em></h2><button class="desk-button consultation-trigger">Request a consultation ↗</button></div><div class="contact-details"><span>Private consultations by appointment</span><span>Discreet first conversations</span><span>In-person and online meetings</span><span>By appointment</span></div></section>
+      <!-- 6. Contact Band -->
+      <section class="contact-band" id="contact">
+        <div class="contact-band-inner reveal-init">
+          <div class="section-kicker">Open a conversation</div>
+          <h2>A considered next step is often the <em>most important one.</em></h2>
+          <button class="desk-button consultation-trigger" type="button">Request a consultation ↗</button>
+        </div>
+        <div class="contact-details reveal-init" data-delay="150">
+          <span>Private consultations by appointment</span>
+          <span>Discreet first conversations</span>
+          <span>In-person and online meetings</span>
+          <span>By appointment</span>
+        </div>
+      </section>
     </main>
-    <footer class="site-footer"><a class="footer-brand" href="#top"><img src="https://briefgavel-xsdpi3fq.manus.space/manus-storage/brief-gavel-logo_2fd75830.png" alt="Brief and Gavel mark" />Brief &amp; Gavel</a><p>© 2026 Brief &amp; Gavel. Information on this site is general in nature and is not legal advice. A consultation helps determine whether we can assist with your particular matter. <a href="#top">Back to top</a></p></footer>
+
+    <footer class="site-footer">
+      <a class="footer-brand" href="#top">
+        <img src="https://briefgavel-xsdpi3fq.manus.space/manus-storage/brief-gavel-logo_2fd75830.png" alt="Brief and Gavel mark" width="34" height="34" />
+        Brief &amp; Gavel
+      </a>
+      <p>
+        © 2026 Brief &amp; Gavel. Information on this site is general in nature and is not legal advice. A consultation helps determine whether we can assist with your particular matter. <a href="#top">Back to top</a>
+      </p>
+    </footer>
   </div>
 
-  <div class="modal" id="consultation-modal" role="dialog" aria-modal="true" aria-labelledby="consultation-title"><div class="modal-card"><button class="modal-close" id="modal-close" aria-label="Close consultation form">×</button><div class="dialog-label">Initial consultation</div><h2 id="consultation-title">Start with what you know.</h2><p>A short, private first note is enough to begin a useful conversation. We will use it to prepare for the questions that matter most.</p><form id="consultation-form"><div class="intake-grid"><div class="field"><label for="name">Your name</label><input id="name" required placeholder="Name" /></div><div class="field"><label for="contact-info">Phone or email</label><input id="contact-info" required placeholder="How should we reply?" /></div><div class="field full"><label for="matter">Matter type</label><select id="matter" required><option value="">Select the closest option</option><option>Constitutional Law</option><option>Criminal Defence</option><option>Civil Litigation</option><option>Corporate &amp; Commercial</option><option>Arbitration</option><option>Appellate Practice</option></select></div><div class="field full"><label for="timing">When would you like to speak?</label><select id="timing" required><option value="">Choose a preferred time</option><option>This week</option><option>Within two weeks</option><option>Not urgent — I need initial guidance</option></select></div></div><p class="intake-note">Please avoid sharing highly sensitive facts or documents in an initial online note. We can discuss a secure way to share relevant materials during your consultation.</p><button class="desk-button" type="submit">Save the intake note ↗</button><div class="form-message" id="form-message">Thank you. Your note is ready for review.</div></form></div></div>
+  <ConsultationModal />
+  <BackToTop />
 
   <script is:inline>
-    const areas = [
-      ["01","Constitutional Law","Fundamental-rights petitions, writ jurisdiction, and matters of public importance.","Fundamental-rights petitions, writ jurisdiction, and matters of public importance approached through precise preparation and considered advocacy.",["Fundamental-rights petitions","Writ jurisdiction","Public importance matters"]],
-      ["02","Criminal Defence","Bail, trial, and appellate representation grounded in meticulous case strategy.","Bail, trial, and appellate representation grounded in meticulous case strategy and purposeful preparation at each stage.",["Bail representation","Trial strategy","Appellate representation"]],
-      ["03","Civil Litigation","Property, contract, and injunction disputes resolved with disciplined advocacy.","Property, contract, and injunction disputes resolved with disciplined advocacy, close attention to the record, and a clear litigation plan.",["Property disputes","Contract disputes","Injunction matters"]],
-      ["04","Corporate & Commercial","Company disputes, regulatory matters, and advisory for institutions and founders.","Company disputes, regulatory matters, and practical advisory support for institutions and founders navigating important commercial decisions.",["Company disputes","Regulatory matters","Institutional advisory"]],
-      ["05","Arbitration","Domestic and institutional arbitration, from appointment through enforcement.","Domestic and institutional arbitration support from appointment through enforcement, with every step organised around the matters in issue.",["Domestic arbitration","Institutional arbitration","Enforcement"]],
-      ["06","Appellate Practice","Focused appellate briefs and oral argument before superior courts.","Focused appellate briefs and oral argument before superior courts, built on a structured record and carefully framed legal questions.",["Appellate briefs","Oral argument","Superior courts"]]
-    ];
-    const list = document.querySelector('#practice-list');
-    const sheet = document.querySelector('#case-sheet');
-    function selectArea(index) {
-      const [id,title,short,detail,points] = areas[index];
-      list.innerHTML = areas.map((area,i) => `<button class="practice-row ${i===index?'active':''}" type="button" aria-pressed="${i===index}"><span class="row-id">${area[0]}</span><span><h3>${area[1]}</h3><p>${area[2]}</p></span><span>→</span></button>`).join('');
-      sheet.innerHTML = `<span class="case-tab">Selected brief / ${id}</span><h3>${title}</h3><p>${detail}</p><ul>${points.map(point=>`<li>✓ ${point}</li>`).join('')}</ul><span class="sheet-mark">B&amp;G</span>`;
-      [...list.querySelectorAll('.practice-row')].forEach((button,i)=>button.addEventListener('click',()=>selectArea(i)));
-    }
-    selectArea(0);
+    // Header Drawer & Consultation Modal Event Controller
+    (function initUIControls() {
+      const menuButton = document.querySelector('#menu-toggle');
+      const drawer = document.querySelector('#mobile-drawer');
+      const menuVideo = document.querySelector('#menu-video');
 
-    const menuButton = document.querySelector('#menu-toggle');
-    const drawer = document.querySelector('#mobile-drawer');
-    const menuVideo = document.querySelector('#menu-video');
-    function resetMenuAnimation() { menuVideo.pause(); menuVideo.currentTime = 0; }
-    function closeMenu() { drawer.classList.remove('open'); menuButton.setAttribute('aria-expanded','false'); menuButton.setAttribute('aria-label','Open navigation'); resetMenuAnimation(); }
-    menuButton.addEventListener('click', () => {
-      const isOpen = drawer.classList.contains('open');
-      if (isOpen) return closeMenu();
-      menuVideo.pause(); menuVideo.currentTime = 0; menuVideo.play().catch(()=>{});
-      drawer.classList.add('open'); menuButton.setAttribute('aria-expanded','true'); menuButton.setAttribute('aria-label','Close navigation');
-    });
-    drawer.querySelectorAll('a').forEach(link => link.addEventListener('click', closeMenu));
+      function resetMenuAnimation() {
+        if (menuVideo) { menuVideo.pause(); menuVideo.currentTime = 0; }
+      }
 
-    const modal = document.querySelector('#consultation-modal');
-    const closeModal = () => modal.classList.remove('open');
-    document.querySelectorAll('.consultation-trigger').forEach(button => button.addEventListener('click', () => modal.classList.add('open')));
-    document.querySelector('#modal-close').addEventListener('click', closeModal);
-    modal.addEventListener('click', event => { if (event.target === modal) closeModal(); });
-    document.addEventListener('keydown', event => { if (event.key === 'Escape') { closeModal(); closeMenu(); } });
-    document.querySelector('#consultation-form').addEventListener('submit', event => { event.preventDefault(); document.querySelector('#form-message').classList.add('show'); });
+      function closeMenu() {
+        if (!drawer || !menuButton) return;
+        drawer.classList.remove('open');
+        menuButton.setAttribute('aria-expanded', 'false');
+        menuButton.setAttribute('aria-label', 'Open navigation');
+        resetMenuAnimation();
+      }
+
+      if (menuButton && drawer) {
+        menuButton.addEventListener('click', () => {
+          const isOpen = drawer.classList.contains('open');
+          if (isOpen) return closeMenu();
+          if (menuVideo) { menuVideo.pause(); menuVideo.currentTime = 0; menuVideo.play().catch(() => {}); }
+          drawer.classList.add('open');
+          menuButton.setAttribute('aria-expanded', 'true');
+          menuButton.setAttribute('aria-label', 'Close navigation');
+        });
+        drawer.querySelectorAll('a').forEach(link => link.addEventListener('click', closeMenu));
+      }
+
+      const modal = document.querySelector('#consultation-modal');
+      const modalClose = document.querySelector('#modal-close');
+      const consultationForm = document.querySelector('#consultation-form');
+      const formMessage = document.querySelector('#form-message');
+
+      const closeModal = () => modal && modal.classList.remove('open');
+
+      document.querySelectorAll('.consultation-trigger').forEach(btn => {
+        btn.addEventListener('click', () => modal && modal.classList.add('open'));
+      });
+
+      if (modalClose) modalClose.addEventListener('click', closeModal);
+      if (modal) {
+        modal.addEventListener('click', event => { if (event.target === modal) closeModal(); });
+      }
+
+      document.addEventListener('keydown', event => {
+        if (event.key === 'Escape') { closeModal(); closeMenu(); }
+      });
+
+      if (consultationForm && formMessage) {
+        consultationForm.addEventListener('submit', event => {
+          event.preventDefault();
+          formMessage.classList.add('show');
+        });
+      }
+    })();
+
+    /* ============================================================
+       Scroll Reveal, Progress & ScrollSpy Controller
+       ============================================================ */
+    (function initScrollController() {
+      const isReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const revealElements = document.querySelectorAll('.reveal-init, .reveal-left, .reveal-right, .reveal-scale');
+      const progressBar = document.querySelector('#scroll-progress');
+      const header = document.querySelector('#site-header') || document.querySelector('.site-header');
+      const backToTop = document.querySelector('#back-to-top');
+      const heroSlip = document.querySelector('#hero-brief-slip');
+      const navLinks = document.querySelectorAll('.desk-nav a');
+
+      // 1. IntersectionObserver for Reveal Animations
+      if (!isReducedMotion && 'IntersectionObserver' in window) {
+        const revealObserver = new IntersectionObserver((entries, observer) => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add('is-revealed');
+              observer.unobserve(entry.target);
+            }
+          });
+        }, { threshold: 0.1, rootMargin: '0px 0px -30px 0px' });
+
+        revealElements.forEach(el => revealObserver.observe(el));
+        setTimeout(() => revealElements.forEach(el => el.classList.add('is-revealed')), 1400);
+      } else {
+        revealElements.forEach(el => el.classList.add('is-revealed'));
+      }
+
+      // 2. Throttled Scroll Listener (RAF)
+      let ticking = false;
+      const sections = ['profile', 'practice', 'approach', 'contact'].map(id => ({
+        id,
+        el: document.getElementById(id)
+      })).filter(s => s.el !== null);
+
+      function onScroll() {
+        const scrollY = window.scrollY || window.pageYOffset;
+        const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+
+        if (progressBar && maxScroll > 0) {
+          const progress = Math.min(Math.max((scrollY / maxScroll) * 100, 0), 100);
+          progressBar.style.width = progress + '%';
+        }
+
+        if (header) {
+          if (scrollY > 30) header.classList.add('scrolled');
+          else header.classList.remove('scrolled');
+        }
+
+        if (backToTop) {
+          if (scrollY > 350) backToTop.classList.add('show');
+          else backToTop.classList.remove('show');
+        }
+
+        if (!isReducedMotion && heroSlip && window.innerWidth > 900) {
+          if (scrollY < 800) {
+            const slipShift = scrollY * 0.07;
+            heroSlip.style.transform = `rotate(-5deg) translateY(${-slipShift}px)`;
+          }
+        }
+
+        if (navLinks.length > 0 && sections.length > 0) {
+          let currentActiveId = '';
+          const scrollMarker = scrollY + 160;
+          for (let i = sections.length - 1; i >= 0; i--) {
+            if (sections[i].el.offsetTop <= scrollMarker) {
+              currentActiveId = sections[i].id;
+              break;
+            }
+          }
+          navLinks.forEach(link => {
+            const href = link.getAttribute('href');
+            if (currentActiveId && (href === `#${currentActiveId}` || href.endsWith(`#${currentActiveId}`))) {
+              link.classList.add('active');
+            } else {
+              link.classList.remove('active');
+            }
+          });
+        }
+
+        ticking = false;
+      }
+
+      window.addEventListener('scroll', () => {
+        if (!ticking) {
+          window.requestAnimationFrame(onScroll);
+          ticking = true;
+        }
+      }, { passive: true });
+
+      onScroll();
+
+      if (backToTop) {
+        backToTop.addEventListener('click', () => {
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+      }
+    })();
   </script>
 </body>
 </html>
