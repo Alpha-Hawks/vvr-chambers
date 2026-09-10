@@ -4,24 +4,31 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Brief & Gavel — Vimal Vasireddy, Advocate practice" />
-  <title>Brief & Gavel — Vimal Vasireddy | Legal Advocate Studio</title>
+  <meta name="description" content="Brief & Gavel — Vimal Vasireddy, Advocate practice | High Court of Telangana & NCLT" />
+  <title>Brief &amp; Gavel — Vimal Vasireddy | Legal Advocate Studio</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link
-    href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&display=swap"
+    href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=IBM+Plex+Mono:wght@400;500&display=swap"
     rel="stylesheet" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
   <style>
     :root {
-      --paper: #f7f1e5;
-      --paper-deep: #eee2cd;
-      --ink: #162630;
-      --ink-soft: #526069;
-      --oxblood: #a63a32;
-      --brass: #a67c3d;
-      --line: rgba(22, 38, 48, .18);
-      --white: #fffaf0;
-      --ease: cubic-bezier(.23, 1, .32, 1);
+      --bg-obsidian: #f7f4ed;
+      --bg-charcoal: #ede8df;
+      --bg-card: rgba(247, 244, 237, 0.85);
+      --oxblood: #8c2a26;
+      --oxblood-glow: rgba(140, 42, 38, 0.25);
+      --gold: #a67c2e;
+      --gold-bright: #8f6820;
+      --gold-glow: rgba(166, 124, 46, 0.2);
+      --ink-main: #14171d;
+      --ink-muted: #5e6573;
+      --line-gold: rgba(166, 124, 46, 0.25);
+      --line-glass: rgba(20, 23, 29, 0.08);
+      --glass-panel-bg: rgba(20, 23, 29, 0.03);
+      --glass-panel-border: rgba(20, 23, 29, 0.12);
+      --ease-cinematic: cubic-bezier(0.16, 1, 0.3, 1);
     }
 
     * {
@@ -30,13 +37,15 @@
 
     html {
       scroll-behavior: smooth;
+      background-color: var(--bg-obsidian);
     }
 
     body {
       margin: 0;
-      color: var(--ink);
-      background: var(--paper);
+      color: var(--ink-main);
+      background-color: var(--bg-obsidian);
       font-family: "DM Sans", sans-serif;
+      overflow-x: hidden;
     }
 
     button,
@@ -59,24 +68,113 @@
       text-decoration: none;
     }
 
-    .site-shell {
-      overflow: hidden;
-      background: linear-gradient(rgba(255, 255, 255, .24), rgba(255, 255, 255, .24)), var(--paper);
+    /* Ambient Canvas & Background Grid */
+    #particle-canvas {
+      position: fixed;
+      inset: 0;
+      z-index: 1;
+      pointer-events: none;
+      opacity: 0.6;
     }
 
+    .bg-grid-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 2;
+      background-image: 
+        linear-gradient(rgba(197, 160, 89, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(197, 160, 89, 0.03) 1px, transparent 1px);
+      background-size: 80px 80px;
+      pointer-events: none;
+    }
+
+    /* Cinematic Opening Loader */
+    .cinematic-loader {
+      position: fixed;
+      z-index: 100;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: var(--bg-obsidian);
+      transition: opacity 0.8s var(--ease-cinematic), visibility 0.8s;
+    }
+
+    .cinematic-loader.done {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+
+    .loader-emblem {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+      transform: scale(0.92);
+      filter: blur(12px);
+      transition: transform 1.2s var(--ease-cinematic), filter 1.2s var(--ease-cinematic);
+    }
+
+    .cinematic-loader.loaded .loader-emblem {
+      transform: scale(1);
+      filter: blur(0px);
+    }
+
+    .loader-mark {
+      width: 72px;
+      height: 72px;
+      border: 1px solid var(--gold);
+      box-shadow: 0 0 35px var(--gold-glow);
+      object-fit: cover;
+    }
+
+    .loader-title {
+      font-family: Fraunces, serif;
+      font-size: 26px;
+      letter-spacing: -.05em;
+      color: var(--gold-bright);
+    }
+
+    .loader-frame {
+      position: absolute;
+      width: 220px;
+      height: 220px;
+      border: 1px solid var(--line-gold);
+      opacity: 0;
+      transform: scale(0.85);
+      transition: opacity 1s var(--ease-cinematic) 0.3s, transform 1s var(--ease-cinematic) 0.3s;
+    }
+
+    .cinematic-loader.loaded .loader-frame {
+      opacity: 0.7;
+      transform: scale(1);
+    }
+
+    /* Site Shell */
+    .site-shell {
+      position: relative;
+      z-index: 10;
+    }
+
+    /* Translucent Liquid Glass Sticky Header */
     .site-header {
       position: sticky;
-      z-index: 40;
+      z-index: 50;
       top: 0;
-      border-bottom: 1px solid var(--line);
-      background: rgba(247, 241, 229, .92);
-      backdrop-filter: blur(14px);
-      transition: background .25s var(--ease), box-shadow .25s var(--ease);
+      border-bottom: 1px solid var(--line-glass);
+      background: rgba(247, 244, 237, 0.85);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      transition: background 0.3s var(--ease-cinematic), border-color 0.3s, box-shadow 0.3s;
     }
 
     .site-header.scrolled {
-      background: rgba(247, 241, 229, .97);
-      box-shadow: 0 4px 20px rgba(22, 38, 48, .07);
+      background: rgba(247, 244, 237, 0.96);
+      border-bottom-color: var(--line-gold);
+      box-shadow: 0 10px 30px rgba(20, 23, 29, 0.08);
     }
 
     .header-inner {
@@ -84,76 +182,60 @@
       align-items: center;
       justify-content: space-between;
       gap: 24px;
-      min-height: 80px;
+      min-height: 84px;
       max-width: 1440px;
       margin: auto;
-      padding: 10px 28px;
-      transition: min-height .25s var(--ease), padding .25s var(--ease);
+      padding: 10px 36px;
+      transition: min-height 0.3s var(--ease-cinematic), padding 0.3s;
     }
 
     .site-header.scrolled .header-inner {
-      min-height: 68px;
-      padding: 6px 28px;
-    }
-
-    .scroll-progress-track {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      width: 100%;
-      height: 2.5px;
-      background: rgba(22, 38, 48, .07);
-      overflow: hidden;
-      pointer-events: none;
-    }
-
-    .scroll-progress-bar {
-      height: 100%;
-      width: 0%;
-      background: linear-gradient(90deg, var(--brass), var(--oxblood));
-      transform-origin: left;
-      will-change: width;
+      min-height: 70px;
+      padding: 6px 36px;
     }
 
     .brand-lockup,
     .footer-brand {
       display: flex;
       align-items: center;
-      gap: 11px;
+      gap: 13px;
       font-family: Fraunces, serif;
       font-weight: 600;
-      font-size: 23px;
-      letter-spacing: -.06em;
+      font-size: 24px;
+      letter-spacing: -.05em;
+      color: var(--ink-main);
     }
 
     .brand-lockup span {
       font-family: "DM Sans", sans-serif;
       font-size: 11px;
-      letter-spacing: .1em;
+      letter-spacing: .12em;
       text-transform: uppercase;
+      color: var(--gold);
     }
 
     .brand-mark {
-      width: 53px;
-      height: 53px;
+      width: 52px;
+      height: 52px;
       object-fit: cover;
-      border: 1px solid rgba(166, 124, 61, .45);
-      box-shadow: 4px 4px 0 rgba(166, 124, 61, .1);
+      border: 1px solid var(--gold);
+      box-shadow: 0 0 15px var(--gold-glow);
     }
 
     .desk-nav {
       display: flex;
-      gap: 28px;
+      gap: 32px;
       font-size: 11px;
       font-weight: 700;
-      letter-spacing: .12em;
+      letter-spacing: .14em;
       text-transform: uppercase;
     }
 
     .desk-nav a {
       position: relative;
-      padding: 4px 0;
-      transition: color .2s var(--ease);
+      padding: 6px 0;
+      color: var(--ink-muted);
+      transition: color 0.25s var(--ease-cinematic);
     }
 
     .desk-nav a::after {
@@ -163,13 +245,13 @@
       left: 0;
       width: 0;
       height: 2px;
-      background: var(--oxblood);
-      transition: width .25s var(--ease);
+      background: linear-gradient(90deg, var(--gold), var(--oxblood));
+      transition: width 0.3s var(--ease-cinematic);
     }
 
     .desk-nav a:hover,
     .desk-nav a.active {
-      color: var(--oxblood);
+      color: var(--gold-bright);
     }
 
     .desk-nav a:hover::after,
@@ -177,94 +259,404 @@
       width: 100%;
     }
 
-    .header-cta,
-    .desk-button {
+    /* Magnetic Liquid Glass Buttons */
+    .liquid-btn {
+      position: relative;
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      gap: 11px;
-      min-height: 47px;
-      border: 1px solid var(--ink);
-      padding: 0 19px;
-      background: var(--oxblood);
-      color: var(--white);
+      gap: 12px;
+      min-height: 48px;
+      padding: 0 24px;
+      border: 1px solid var(--glass-border-gold);
+      background: rgba(197, 160, 89, 0.08);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      color: var(--ink-main);
       font-size: 11px;
       font-weight: 700;
-      letter-spacing: .1em;
+      letter-spacing: .12em;
       text-transform: uppercase;
-      transition: transform .18s var(--ease), background .18s var(--ease);
+      overflow: hidden;
+      transition: transform 0.25s var(--ease-cinematic), background 0.25s, border-color 0.25s, box-shadow 0.25s;
     }
 
-    .header-cta:hover,
-    .desk-button:hover {
-      background: #7f2b28;
-      transform: translateY(-2px);
+    .liquid-btn::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+      transition: left 0.6s var(--ease-cinematic);
     }
 
-    .desk-button {
-      background: var(--ink);
+    .liquid-btn:hover::before {
+      left: 100%;
     }
 
-    .desk-button.ghost {
+    .liquid-btn:hover {
+      background: rgba(197, 160, 89, 0.18);
+      border-color: var(--gold-bright);
+      box-shadow: 0 0 25px var(--gold-glow);
+    }
+
+    .liquid-btn.primary {
+      background: linear-gradient(135deg, rgba(140, 42, 38, 0.85), rgba(9, 11, 14, 0.9));
+      border-color: var(--oxblood);
+      box-shadow: 0 0 20px var(--oxblood-glow);
+    }
+
+    .liquid-btn.primary:hover {
+      background: linear-gradient(135deg, rgba(166, 50, 45, 0.95), rgba(140, 42, 38, 0.8));
+      border-color: var(--gold);
+    }
+
+    .liquid-btn.ghost {
       background: transparent;
-      color: var(--ink);
+      border-color: var(--glass-panel-border);
     }
 
     .menu-toggle {
       display: none;
-      width: 47px;
-      height: 47px;
-      border: 0;
-      background: transparent;
-      color: var(--ink);
-    }
-
-    .menu-symbol-frame {
-      display: block;
-      width: 36px;
-      height: 36px;
-      margin: auto;
-      overflow: hidden;
-    }
-
-    .menu-symbol-video,
-    .menu-symbol-fallback {
-      display: block;
-      width: 36px;
-      height: 36px;
-      object-fit: cover;
-      mix-blend-mode: multiply;
-    }
-
-    .menu-symbol-fallback {
-      display: none;
-      object-fit: contain;
-      mix-blend-mode: normal;
+      width: 48px;
+      height: 48px;
+      border: 1px solid var(--glass-panel-border);
+      background: var(--glass-panel-bg);
+      color: var(--ink-main);
     }
 
     .mobile-drawer {
       display: none;
+      transform-origin: top center;
+      transform: rotateX(-90deg);
+      opacity: 0;
+      transition: transform 0.4s var(--ease-cinematic), opacity 0.4s;
     }
 
-    .hero {
-      position: relative;
+    .mobile-drawer.open {
       display: grid;
-      grid-template-columns: minmax(0, .9fr) minmax(390px, 1.1fr);
-      gap: 60px;
-      min-height: 690px;
+      transform: rotateX(0deg);
+      opacity: 1;
+      padding: 20px;
+      border-top: 1px solid var(--line-glass);
+      background: rgba(9, 11, 14, 0.95);
+      backdrop-filter: blur(24px);
+    }
+
+    .scroll-progress-track {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 2px;
+      background: rgba(255, 255, 255, 0.05);
+      overflow: hidden;
+      pointer-events: none;
+    }
+
+    .scroll-progress-bar {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, var(--oxblood), var(--gold));
+      will-change: width;
+    }
+
+    /* Fullscreen Pinned Hero Section with Cinema Opening Reveal */
+    .hero-pinned-wrapper {
+      position: relative;
+      height: 280vh;
+      width: 100%;
+    }
+
+    /* Cinema Opening Scene Layer */
+    .hero-cinema-title-layer {
+      position: absolute;
+      inset: 0;
+      z-index: 9;
+      pointer-events: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      overflow: hidden;
+      will-change: opacity;
+    }
+
+    /* Widescreen Anamorphic Letterbox Bars */
+    .cinema-letterbox-top,
+    .cinema-letterbox-bottom {
+      position: absolute;
+      left: 0;
+      right: 0;
+      height: 0px;
+      background: #090b0e;
+      z-index: 10;
+      pointer-events: none;
+      will-change: height;
+    }
+
+    .cinema-letterbox-top {
+      top: 0;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+    }
+
+    .cinema-letterbox-bottom {
+      bottom: 0;
+      box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.6);
+    }
+
+    /* Anamorphic Blue-Gold Lens Flare Beam */
+    .cinema-anamorphic-flare {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 120vw;
+      height: 3px;
+      background: linear-gradient(90deg, 
+        transparent 0%, 
+        rgba(166, 124, 46, 0.05) 15%, 
+        rgba(212, 175, 55, 0.5) 42%, 
+        #ffffff 50%, 
+        rgba(212, 175, 55, 0.5) 58%, 
+        rgba(166, 124, 46, 0.05) 85%, 
+        transparent 100%
+      );
+      filter: blur(1px);
+      box-shadow: 
+        0 0 45px 12px rgba(166, 124, 46, 0.45),
+        0 0 90px 25px rgba(140, 42, 38, 0.25);
+      opacity: 0;
+      pointer-events: none;
+      will-change: transform, opacity;
+    }
+
+    /* Ambient Golden Volumetric Glow */
+    .cinema-ambient-glow {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 700px;
+      height: 420px;
+      background: radial-gradient(ellipse, rgba(166, 124, 46, 0.25) 0%, rgba(140, 42, 38, 0.12) 45%, transparent 75%);
+      filter: blur(50px);
+      pointer-events: none;
+      opacity: 0;
+      will-change: opacity;
+    }
+
+    /* Cinema Title Stage Container */
+    .cinema-title-container {
+      position: relative;
+      z-index: 11;
+      text-align: center;
+      padding: 0 32px;
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      will-change: transform, filter;
+    }
+
+    .cinema-kicker-line {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 20px;
+      margin-bottom: 20px;
+      width: 100%;
+      max-width: 520px;
+    }
+
+    .cinema-rule {
+      flex: 1;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--gold));
+      opacity: 0.85;
+      transform-origin: left;
+      transform: scaleX(0);
+      will-change: transform;
+    }
+
+    .cinema-rule.right {
+      background: linear-gradient(90deg, var(--gold), transparent);
+      transform-origin: right;
+    }
+
+    .cinema-kicker-text {
+      font-family: var(--font-mono, monospace), monospace;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.4em;
+      text-transform: uppercase;
+      color: var(--gold-bright);
+      text-shadow: 0 0 14px var(--gold-glow);
+    }
+
+    .cinema-advocate-name {
+      margin: 0;
+      font-family: Fraunces, "Times New Roman", serif;
+      font-size: clamp(3.2rem, 8.5vw, 8.2rem);
+      font-weight: 500;
+      line-height: 0.94;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: #f7f4ed;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 0.2em 0.45em;
+      background: linear-gradient(135deg, #ffffff 0%, #fff6e5 25%, #e8c87e 60%, #b88a38 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      filter: drop-shadow(0 15px 45px rgba(0, 0, 0, 0.9));
+      text-shadow: 0 0 40px rgba(166, 124, 46, 0.35);
+      will-change: letter-spacing;
+    }
+
+    .cinema-name-word {
+      display: inline-block;
+      white-space: nowrap;
+    }
+
+    .cinema-designation {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      margin-top: 26px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 0.28em;
+      text-transform: uppercase;
+      color: rgba(247, 244, 237, 0.95);
+      text-shadow: 0 2px 10px rgba(0, 0, 0, 0.8);
+      flex-wrap: wrap;
+    }
+
+    .cinema-designation .cinema-bullet {
+      color: var(--gold);
+      font-size: 16px;
+    }
+
+    .cinema-bottom-tag {
+      margin-top: 16px;
+      font-family: var(--font-mono, monospace), monospace;
+      font-size: 11px;
+      letter-spacing: 0.32em;
+      text-transform: uppercase;
+      color: var(--gold-bright);
+      opacity: 0.85;
+      text-shadow: 0 0 10px var(--gold-glow);
+    }
+
+    @media (max-width: 768px) {
+      .cinema-advocate-name {
+        font-size: clamp(2.5rem, 11vw, 4.2rem);
+        letter-spacing: 0.16em;
+        flex-direction: column;
+        gap: 0.1em;
+      }
+      .cinema-kicker-text {
+        font-size: 10px;
+        letter-spacing: 0.25em;
+      }
+      .cinema-designation {
+        font-size: 11px;
+        letter-spacing: 0.18em;
+        gap: 10px;
+      }
+    }
+
+    .hero-sticky-frame {
+      position: sticky;
+      top: 0;
+      width: 100%;
+      height: 100vh;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .hero-fullscreen-canvas-wrap {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100vh;
+      z-index: 1;
+    }
+
+    .hero-fullscreen-canvas-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      filter: brightness(0.65) contrast(1.1);
+      transition: opacity 0.6s var(--ease-cinematic);
+    }
+
+    .hero-fullscreen-canvas-wrap .dissolve-canvas {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 2;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.6s var(--ease-cinematic);
+    }
+
+    .hero-fullscreen-canvas-wrap .dissolve-canvas.active {
+      opacity: 1;
+    }
+
+    .hero-overlay-vignette {
+      position: absolute;
+      inset: 0;
+      z-index: 3;
+      background: 
+        radial-gradient(circle at 70% 50%, rgba(9, 11, 14, 0.25) 0%, rgba(9, 11, 14, 0.85) 100%),
+        linear-gradient(180deg, rgba(9, 11, 14, 0.7) 0%, transparent 30%, transparent 70%, rgba(9, 11, 14, 0.98) 100%);
+      pointer-events: none;
+    }
+
+    .hero-content-layer {
+      position: relative;
+      z-index: 10;
+      width: 100%;
       max-width: 1440px;
-      margin: auto;
-      padding: 92px 90px 74px;
+      margin: 0 auto;
+      padding: 0 72px;
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+    }
+
+    .hero-light-beam {
+      position: absolute;
+      top: -100px;
+      left: 20%;
+      width: 600px;
+      height: 600px;
+      background: radial-gradient(circle, var(--gold-glow) 0%, transparent 70%);
+      pointer-events: none;
+      opacity: 0.5;
     }
 
     .evidence-rail {
       position: absolute;
-      top: 245px;
-      left: 29px;
-      color: var(--ink-soft);
+      top: 180px;
+      left: 24px;
+      color: var(--gold);
       font-size: 9px;
       font-weight: 700;
-      letter-spacing: .18em;
+      letter-spacing: .2em;
       text-transform: uppercase;
       writing-mode: vertical-rl;
       transform: rotate(180deg);
@@ -274,23 +666,22 @@
       display: block;
       width: 1px;
       height: 70px;
-      margin: 12px auto 0;
-      background: var(--brass);
+      margin: 14px auto 0;
+      background: var(--gold);
       content: "";
     }
 
     .hero-copy {
       align-self: center;
-      max-width: 550px;
+      max-width: 680px;
     }
 
     .file-tab,
-    .section-kicker,
-    .dialog-label {
-      color: var(--oxblood);
+    .section-kicker {
+      color: var(--gold);
       font-size: 10px;
       font-weight: 700;
-      letter-spacing: .15em;
+      letter-spacing: .18em;
       text-transform: uppercase;
     }
 
@@ -300,199 +691,132 @@
       width: 28px;
       height: 2px;
       margin: 0 10px 3px 0;
-      background: var(--oxblood);
+      background: var(--gold);
       content: "";
-    }
-
-    h1,
-    h2,
-    h3,
-    p {
-      margin-top: 0;
     }
 
     h1 {
       margin: 24px 0;
       font-family: Fraunces, serif;
-      font-size: clamp(3.2rem, 5vw, 5.75rem);
+      font-size: clamp(3.4rem, 5.2vw, 5.8rem);
       font-weight: 500;
-      letter-spacing: -.08em;
-      line-height: .91;
+      letter-spacing: -.07em;
+      line-height: .92;
+      color: var(--ink-main);
     }
 
-    em {
-      color: var(--oxblood);
-      font-weight: 500;
+    h1 em {
+      color: var(--gold-bright);
+      font-style: italic;
     }
 
     .hero-summary {
-      max-width: 490px;
-      color: var(--ink-soft);
+      max-width: 500px;
+      color: var(--ink-muted);
       font-size: 17px;
-      line-height: 1.68;
+      line-height: 1.7;
     }
 
     .hero-actions {
       display: flex;
       flex-wrap: wrap;
-      gap: 13px;
-      margin-top: 30px;
+      gap: 16px;
+      margin-top: 36px;
     }
 
     .hero-note {
       display: flex;
       align-items: center;
-      gap: 8px;
-      margin: 34px 0 0;
+      gap: 10px;
+      margin-top: 38px;
       font-size: 12px;
-      color: var(--ink-soft);
+      color: var(--ink-muted);
     }
 
     .hero-note b {
-      color: var(--ink);
+      color: var(--gold);
     }
 
-    .hero-object {
+    .hero-badge-column {
       position: relative;
-      align-self: center;
-      height: 555px;
-      overflow: hidden;
-      border: 1px solid rgba(166, 124, 61, .6);
-      box-shadow: 15px 17px 0 rgba(166, 124, 61, .13);
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 28px;
     }
 
-    .hero-object::after {
-      position: absolute;
-      inset: 14px;
-      border: 1px solid rgba(255, 255, 255, .5);
-      content: "";
-      pointer-events: none;
+    .hero-status-seal {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 12px 22px;
+      border: 1px solid var(--glass-border-gold);
+      border-radius: 40px;
+      background: rgba(17, 21, 30, 0.75);
+      backdrop-filter: blur(16px);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
     }
 
-    .hero-object img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
+    .seal-number {
+      font: 500 16px Fraunces, serif;
+      color: var(--gold-bright);
     }
 
-    .object-number {
-      position: absolute;
-      top: 20px;
-      right: 20px;
-      display: grid;
-      width: 43px;
-      height: 43px;
-      place-items: center;
-      border: 1px solid rgba(255, 255, 255, .7);
-      border-radius: 50%;
-      color: white;
-      font: 500 15px Fraunces, serif;
-    }
-
-    .object-label {
-      position: absolute;
-      right: 0;
-      bottom: 35px;
-      padding: 9px 17px;
-      background: var(--oxblood);
-      color: white;
+    .seal-label {
       font-size: 10px;
       font-weight: 700;
-      letter-spacing: .14em;
+      letter-spacing: .16em;
       text-transform: uppercase;
+      color: var(--ink-main);
+    }
+
+    .hero-scroll-indicator {
+      position: absolute;
+      bottom: 26px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 12;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      color: var(--gold-bright);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      opacity: 0.85;
+      pointer-events: none;
+      animation: pulseIndicator 2.2s infinite ease-in-out;
+    }
+
+    @keyframes pulseIndicator {
+      0%, 100% { opacity: 0.5; transform: translate(-50%, 0); }
+      50% { opacity: 1; transform: translate(-50%, 6px); }
     }
 
     .hero-brief-slip {
-      position: absolute;
-      z-index: 2;
-      bottom: 37px;
-      left: 47%;
-      width: 184px;
-      padding: 18px;
-      border: 1px solid rgba(166, 124, 61, .7);
-      background: rgba(255, 250, 240, .97);
-      box-shadow: 12px 12px 0 rgba(22, 38, 48, .09);
-      transform: rotate(-5deg);
-      transition: transform .3s var(--ease), box-shadow .3s var(--ease);
-      will-change: transform;
-    }
-
-    .hero-brief-slip span,
-    .hero-brief-slip i {
-      display: block;
-      color: var(--oxblood);
-      font-size: 9px;
-      font-style: normal;
-      font-weight: 700;
-      letter-spacing: .14em;
-      text-transform: uppercase;
-    }
-
-    .hero-brief-slip strong {
-      display: block;
-      margin: 17px 0 20px;
-      font: 500 29px/.88 Fraunces, serif;
-      letter-spacing: -.06em;
-    }
-
-    .hero-brief-slip i {
-      color: var(--ink-soft);
-    }
-
-    .advocate-profile {
-      border-top: 1px solid var(--line);
-      border-bottom: 1px solid var(--line);
-      background: rgba(238, 226, 205, .55);
-    }
-
-    .profile-inner {
-      display: grid;
-      grid-template-columns: .65fr 1.35fr;
-      max-width: 1440px;
-      margin: auto;
-    }
-
-    .profile-record {
-      display: flex;
-      min-height: 390px;
-      flex-direction: column;
-      justify-content: space-between;
-      padding: 42px;
-      background: var(--ink);
-      color: var(--white);
-    }
-
-    .profile-record span {
-      color: #e1bc75;
-      font-size: 10px;
-      font-weight: 700;
-      letter-spacing: .15em;
-      text-transform: uppercase;
-    }
-
-    .profile-record strong {
-      margin: auto 0 14px;
-      font: 500 clamp(2.2rem, 4vw, 4rem)/.9 Fraunces, serif;
-      letter-spacing: -.07em;
-    }
-
-    .profile-record p {
-      max-width: 280px;
-      margin: 0;
-      color: rgba(255, 255, 255, .72);
-      font-size: 13px;
-      line-height: 1.65;
+      position: relative;
+      z-index: 10;
+      width: 200px;
+      padding: 22px;
+      border: 1px solid var(--glass-border-gold);
+      background: rgba(17, 21, 30, 0.85);
+      backdrop-filter: blur(20px);
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+      transform: rotate(-3deg);
+      transition: transform 0.3s var(--ease-cinematic);
     }
 
     .hero-brief-slip .slip-avatar-wrap {
-      width: 54px;
-      height: 54px;
+      width: 56px;
+      height: 56px;
       margin-bottom: 14px;
       border-radius: 50%;
-      border: 1.5px solid var(--brass);
+      border: 1.5px solid var(--gold);
       padding: 2px;
-      background: rgba(255, 250, 240, .85);
-      box-shadow: 0 4px 10px rgba(22, 38, 48, .12);
+      background: rgba(9, 11, 14, 0.7);
+      box-shadow: 0 0 15px var(--gold-glow);
     }
 
     .hero-brief-slip .slip-avatar {
@@ -503,21 +827,97 @@
       object-fit: cover;
     }
 
+    .hero-brief-slip span,
+    .hero-brief-slip i {
+      display: block;
+      color: var(--gold);
+      font-size: 9px;
+      font-style: normal;
+      font-weight: 700;
+      letter-spacing: .15em;
+      text-transform: uppercase;
+    }
+
+    .hero-brief-slip strong {
+      display: block;
+      margin: 14px 0 18px;
+      font: 500 28px/.9 Fraunces, serif;
+      letter-spacing: -.05em;
+      color: var(--ink-main);
+    }
+
+    .hero-brief-slip i {
+      color: var(--ink-muted);
+    }
+
+    /* Profile Section */
+    .advocate-profile {
+      position: relative;
+      border-top: 1px solid var(--line-gold);
+      border-bottom: 1px solid var(--line-gold);
+      background: linear-gradient(180deg, rgba(17, 21, 30, 0.6), rgba(9, 11, 14, 0.9));
+    }
+
+    .profile-inner {
+      display: grid;
+      grid-template-columns: 0.65fr 1.35fr;
+      max-width: 1440px;
+      margin: auto;
+    }
+
+    .profile-record {
+      display: flex;
+      min-height: 420px;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 48px;
+      background: rgba(14, 18, 26, 0.9);
+      border-right: 1px solid var(--line-gold);
+    }
+
+    .profile-record span {
+      color: var(--gold);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: .15em;
+      text-transform: uppercase;
+    }
+
+    .profile-record strong {
+      margin: auto 0 16px;
+      font: 500 clamp(2.3rem, 4vw, 4rem)/.92 Fraunces, serif;
+      letter-spacing: -.06em;
+      color: var(--gold-bright);
+    }
+
+    .profile-record p {
+      max-width: 290px;
+      margin: 0;
+      color: var(--ink-muted);
+      font-size: 13px;
+      line-height: 1.65;
+    }
+
     .profile-content {
-      padding: 70px clamp(28px, 6vw, 90px);
+      padding: 76px clamp(32px, 6vw, 96px);
     }
 
     .section-title {
-      max-width: 760px;
-      margin: 19px 0;
-      font: 500 clamp(2.7rem, 4.5vw, 5rem)/.95 Fraunces, serif;
-      letter-spacing: -.07em;
+      max-width: 780px;
+      margin: 20px 0;
+      font: 500 clamp(2.6rem, 4.2vw, 4.8rem)/.96 Fraunces, serif;
+      letter-spacing: -.06em;
+      color: var(--ink-main);
+    }
+
+    .section-title em {
+      color: var(--gold-bright);
     }
 
     .profile-note,
     .section-intro {
-      max-width: 690px;
-      color: var(--ink-soft);
+      max-width: 700px;
+      color: var(--ink-muted);
       font-size: 15px;
       line-height: 1.7;
     }
@@ -525,161 +925,203 @@
     .credential-grid {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
-      gap: 12px;
-      max-width: 720px;
-      margin-top: 29px;
+      gap: 16px;
+      max-width: 760px;
+      margin-top: 36px;
     }
 
     .credential-card {
-      min-height: 100px;
-      padding: 18px;
-      border: 1px solid var(--line);
-      background: rgba(255, 250, 240, .7);
+      min-height: 110px;
+      padding: 22px;
+      border: 1px solid var(--glass-panel-border);
+      background: var(--glass-panel-bg);
+      backdrop-filter: blur(12px);
+      transition: border-color 0.3s, background 0.3s;
+    }
+
+    .credential-card:hover {
+      border-color: var(--gold);
+      background: rgba(197, 160, 89, 0.06);
     }
 
     .credential-card span {
       display: block;
-      color: var(--oxblood);
+      color: var(--gold);
       font-size: 10px;
-      font-weight: 700;
-      letter-spacing: .13em;
-      text-transform: uppercase;
-    }
-
-    .credential-card strong {
-      display: block;
-      margin-top: 17px;
-      font: 500 19px Fraunces, serif;
-    }
-
-    .quick-index {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      max-width: 1160px;
-      margin: 0 auto;
-      border-right: 1px solid var(--line);
-    }
-
-    .index-item {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      min-height: 102px;
-      border: 0;
-      border-bottom: 1px solid var(--line);
-      border-left: 1px solid var(--line);
-      background: transparent;
-      color: var(--ink);
-      text-align: left;
-    }
-
-    .index-item:hover {
-      background: rgba(255, 250, 240, .5);
-    }
-
-    .stamp {
-      display: grid;
-      width: 33px;
-      height: 33px;
-      place-items: center;
-      border: 1px solid var(--brass);
-      border-radius: 50%;
-      font: 500 13px Fraunces, serif;
-    }
-
-    .index-item div span,
-    .index-item strong {
-      display: block;
-    }
-
-    .index-item div span {
-      color: var(--ink-soft);
-      font-size: 9px;
       font-weight: 700;
       letter-spacing: .14em;
       text-transform: uppercase;
     }
 
-    .index-item strong {
-      margin-top: 7px;
-      font: 500 21px Fraunces, serif;
-      letter-spacing: -.05em;
+    .credential-card strong {
+      display: block;
+      margin-top: 14px;
+      font: 500 18px Fraunces, serif;
+      color: var(--ink-main);
     }
 
+    /* Animated Counter Statistics */
+    .stats-docket {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 20px;
+      max-width: 760px;
+      margin-top: 40px;
+      padding-top: 32px;
+      border-top: 1px solid var(--line-gold);
+    }
+
+    .stat-item {
+      text-align: left;
+    }
+
+    .stat-num {
+      display: block;
+      font: 500 36px Fraunces, serif;
+      color: var(--gold-bright);
+    }
+
+    .stat-label {
+      display: block;
+      margin-top: 4px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: var(--ink-muted);
+    }
+
+    /* Quick Index */
+    .quick-index {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      max-width: 1200px;
+      margin: 0 auto;
+      border-right: 1px solid var(--line-gold);
+    }
+
+    .index-item {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      min-height: 106px;
+      padding: 0 24px;
+      border: 0;
+      border-bottom: 1px solid var(--line-gold);
+      border-left: 1px solid var(--line-gold);
+      background: transparent;
+      color: var(--ink-main);
+      text-align: left;
+      transition: background 0.3s var(--ease-cinematic);
+    }
+
+    .index-item:hover {
+      background: rgba(197, 160, 89, 0.08);
+    }
+
+    .stamp {
+      display: grid;
+      width: 36px;
+      height: 36px;
+      place-items: center;
+      border: 1px solid var(--gold);
+      border-radius: 50%;
+      color: var(--gold);
+      font: 500 13px Fraunces, serif;
+    }
+
+    .index-item div span {
+      color: var(--ink-muted);
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: .15em;
+      text-transform: uppercase;
+    }
+
+    .index-item strong {
+      margin-top: 6px;
+      font: 500 22px Fraunces, serif;
+      letter-spacing: -.05em;
+      color: var(--ink-main);
+    }
+
+    /* Content Section */
     .content-section {
-      max-width: 1240px;
+      max-width: 1280px;
       margin: auto;
-      padding: 114px 30px;
+      padding: 120px 36px;
     }
 
     .section-header {
       display: grid;
       grid-template-columns: 180px 1fr;
-      gap: 30px;
-      margin-bottom: 47px;
+      gap: 32px;
+      margin-bottom: 50px;
     }
 
     .practice-grid {
       display: grid;
-      grid-template-columns: 1.14fr .86fr;
-      gap: 30px;
+      grid-template-columns: 1.15fr .85fr;
+      gap: 36px;
     }
 
     .practice-list {
-      border-top: 1px solid var(--line);
+      border-top: 1px solid var(--line-gold);
     }
 
     .practice-row {
       display: grid;
-      grid-template-columns: 47px 1fr 25px;
-      gap: 12px;
+      grid-template-columns: 48px 1fr 28px;
+      gap: 16px;
       width: 100%;
-      padding: 21px 7px;
+      padding: 24px 12px;
       border: 0;
-      border-bottom: 1px solid var(--line);
+      border-bottom: 1px solid var(--line-gold);
       background: transparent;
-      color: var(--ink);
+      color: var(--ink-main);
       text-align: left;
-      transition: background .18s var(--ease), padding .18s var(--ease);
+      transition: background 0.25s var(--ease-cinematic), padding 0.25s;
     }
 
     .practice-row:hover,
     .practice-row.active {
-      padding-left: 17px;
-      background: rgba(255, 250, 240, .72);
+      padding-left: 22px;
+      background: rgba(197, 160, 89, 0.08);
     }
 
     .practice-row.active {
-      box-shadow: inset 3px 0 var(--oxblood);
+      box-shadow: inset 3px 0 var(--gold);
     }
 
     .row-id {
-      color: var(--oxblood);
-      font: 500 17px Fraunces, serif;
+      color: var(--gold);
+      font: 500 18px Fraunces, serif;
     }
 
     .practice-row h3 {
-      margin: 0 0 7px;
+      margin: 0 0 8px;
       font: 500 24px Fraunces, serif;
       letter-spacing: -.05em;
+      color: var(--ink-main);
     }
 
     .practice-row p {
       margin: 0;
-      color: var(--ink-soft);
+      color: var(--ink-muted);
       font-size: 13px;
-      line-height: 1.55;
+      line-height: 1.6;
     }
 
     .case-sheet {
       position: relative;
-      min-height: 385px;
-      padding: 33px;
+      min-height: 400px;
+      padding: 38px;
       overflow: hidden;
-      border: 1px solid var(--line);
-      border-radius: 50px;
-      background: var(--white);
-      box-shadow: 11px 12px 0 rgba(22, 38, 48, .06);
+      border: 1px solid var(--glass-border-gold);
+      border-radius: 40px;
+      background: var(--bg-card);
+      backdrop-filter: blur(20px);
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
     }
 
     .case-sheet::before {
@@ -688,51 +1130,389 @@
       left: 0;
       width: 60px;
       height: 4px;
-      background: var(--oxblood);
+      background: var(--gold);
       content: "";
     }
 
     .case-tab {
-      color: var(--oxblood);
+      color: var(--gold);
       font-size: 10px;
       font-weight: 700;
-      letter-spacing: .13em;
+      letter-spacing: .15em;
       text-transform: uppercase;
     }
 
     .case-sheet h3 {
-      margin: 25px 0 13px;
-      font: 500 39px/.95 Fraunces, serif;
-      letter-spacing: -.06em;
+      margin: 26px 0 14px;
+      font: 500 38px/.96 Fraunces, serif;
+      letter-spacing: -.05em;
+      color: var(--gold-bright);
     }
 
     .case-sheet p {
-      color: var(--ink-soft);
+      color: var(--ink-muted);
       font-size: 15px;
-      line-height: 1.66;
+      line-height: 1.68;
     }
 
     .case-sheet ul {
       padding: 0;
-      margin: 25px 0 0;
+      margin: 26px 0 0;
       list-style: none;
     }
 
     .case-sheet li {
       display: flex;
-      gap: 9px;
-      margin-top: 10px;
+      gap: 10px;
+      margin-top: 12px;
       font-size: 13px;
+      color: var(--ink-main);
     }
 
     .sheet-mark {
       position: absolute;
-      right: 24px;
-      bottom: 19px;
-      color: rgba(166, 58, 50, .3);
-      font: 500 36px Fraunces, serif;
+      right: 28px;
+      bottom: 22px;
+      color: rgba(197, 160, 89, 0.25);
+      font: 500 38px Fraunces, serif;
     }
 
+    /* Case Experience Storytelling Timeline */
+    /* VengeanceUI Testimonials Card 3D Stack for Experience Section */
+    .v-testimonials-wrapper {
+      max-width: 1160px;
+      margin: 50px auto 0;
+      position: relative;
+    }
+
+    .v-testimonials-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 40px;
+      align-items: center;
+      position: relative;
+    }
+
+    @media (min-width: 880px) {
+      .v-testimonials-grid {
+        grid-template-columns: minmax(360px, 490px) 1fr;
+        gap: 60px;
+      }
+    }
+
+    /* 3D Card Stack Viewport (Perspective 1400px) */
+    .v-card-stack-viewport {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 4 / 3.4;
+      min-height: 350px;
+      max-height: 420px;
+      perspective: 1400px;
+      transform-style: preserve-3d;
+      user-select: none;
+    }
+
+    .v-stack-card {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      border-radius: 24px;
+      overflow: hidden;
+      border: 5px solid rgba(247, 244, 237, 0.94);
+      background: var(--bg-charcoal);
+      box-shadow: 0 25px 60px -10px rgba(20, 23, 29, 0.2), 0 0 25px rgba(166, 124, 46, 0.08);
+      cursor: pointer;
+      will-change: transform, opacity;
+      transform-style: preserve-3d;
+      transition: border-color 0.4s ease, box-shadow 0.4s ease;
+    }
+
+    .v-stack-card img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: transform 0.8s var(--ease-cinematic);
+    }
+
+    .v-stack-card:hover img {
+      transform: scale(1.04);
+    }
+
+    .v-stack-card-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, rgba(20, 23, 29, 0.88) 0%, rgba(20, 23, 29, 0.3) 55%, rgba(20, 23, 29, 0.1) 100%);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 24px;
+      pointer-events: none;
+    }
+
+    .v-card-top-meta {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .v-card-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 14px;
+      border-radius: 30px;
+      background: rgba(247, 244, 237, 0.92);
+      backdrop-filter: blur(10px);
+      color: var(--ink-main);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    .v-card-badge .dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--gold);
+      box-shadow: 0 0 8px var(--gold);
+    }
+
+    .v-card-num {
+      font-family: Fraunces, serif;
+      font-size: 22px;
+      font-weight: 600;
+      color: #ffffff;
+      text-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
+    }
+
+    .v-card-bottom-meta {
+      color: #ffffff;
+    }
+
+    .v-card-caption-title {
+      font-family: Fraunces, serif;
+      font-size: 20px;
+      font-weight: 500;
+      margin: 0 0 4px;
+      color: #ffffff;
+      text-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
+    }
+
+    .v-card-caption-sub {
+      font-size: 12px;
+      color: rgba(255, 255, 255, 0.85);
+      letter-spacing: 0.05em;
+    }
+
+    /* Right Column: Editorial Details & Controls */
+    .v-details-col {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .v-details-top-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 24px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--line-glass);
+    }
+
+    .v-era-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 14px;
+      border: 1px solid var(--line-gold);
+      border-radius: 30px;
+      background: rgba(166, 124, 46, 0.06);
+      color: var(--gold-bright);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .v-era-badge .dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--gold);
+      box-shadow: 0 0 8px var(--gold-glow);
+    }
+
+    .v-counter {
+      font-family: var(--font-mono, monospace), monospace;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--ink-muted);
+      letter-spacing: 0.15em;
+    }
+
+    .v-counter span {
+      color: var(--gold-bright);
+      font-weight: 700;
+      font-size: 16px;
+    }
+
+    /* Text Stage with Smooth Transition */
+    .v-text-stage {
+      min-height: 200px;
+      transition: opacity 0.22s ease, transform 0.22s ease;
+      will-change: opacity, transform;
+    }
+
+    .v-text-stage.transitioning {
+      opacity: 0;
+      transform: translateY(-12px);
+    }
+
+    .v-milestone-title {
+      font: 500 32px/1.15 Fraunces, serif;
+      letter-spacing: -0.03em;
+      color: var(--ink-main);
+      margin: 0 0 16px;
+    }
+
+    .v-milestone-title em {
+      font-style: italic;
+      color: var(--gold-bright);
+    }
+
+    .v-milestone-desc {
+      font-size: 15px;
+      line-height: 1.7;
+      color: var(--ink-muted);
+      margin: 0 0 24px;
+    }
+
+    .v-milestone-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 32px;
+    }
+
+    .v-tag-pill {
+      font-size: 11.5px;
+      font-weight: 600;
+      color: var(--ink-main);
+      background: var(--bg-card);
+      border: 1px solid var(--glass-panel-border);
+      backdrop-filter: blur(12px);
+      padding: 6px 14px;
+      border-radius: 20px;
+      box-shadow: 0 2px 8px rgba(20, 23, 29, 0.04);
+      transition: all 0.25s ease;
+    }
+
+    .v-tag-pill:hover {
+      border-color: var(--gold);
+      transform: translateY(-2px);
+    }
+
+    /* Controls: Arrows & Quick Jump Chips */
+    .v-controls-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      flex-wrap: wrap;
+      padding-top: 20px;
+      border-top: 1px solid var(--line-glass);
+    }
+
+    .v-nav-btns {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .v-nav-btn {
+      width: 46px;
+      height: 46px;
+      border-radius: 50%;
+      border: 1px solid var(--glass-panel-border);
+      background: var(--bg-card);
+      backdrop-filter: blur(16px);
+      color: var(--ink-main);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.3s var(--ease-cinematic);
+      box-shadow: 0 4px 15px rgba(20, 23, 29, 0.05);
+    }
+
+    .v-nav-btn:hover:not(:disabled) {
+      background: var(--gold);
+      border-color: var(--gold);
+      color: #ffffff;
+      transform: scale(1.08);
+      box-shadow: 0 8px 25px rgba(166, 124, 46, 0.3);
+    }
+
+    .v-nav-btn:disabled {
+      opacity: 0.3;
+      cursor: not-allowed;
+    }
+
+    .v-chips-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .v-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 14px;
+      border: 1px solid var(--glass-panel-border);
+      border-radius: 30px;
+      background: var(--bg-card);
+      backdrop-filter: blur(12px);
+      color: var(--ink-muted);
+      font-size: 11.5px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s var(--ease-cinematic);
+    }
+
+    .v-chip .dot {
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: var(--ink-muted);
+      transition: background 0.3s, transform 0.3s;
+    }
+
+    .v-chip:hover {
+      border-color: var(--gold);
+      color: var(--ink-main);
+    }
+
+    .v-chip.active {
+      border-color: var(--gold);
+      background: rgba(166, 124, 46, 0.08);
+      color: var(--gold-bright);
+    }
+
+    .v-chip.active .dot {
+      background: var(--gold);
+      box-shadow: 0 0 6px var(--gold-glow);
+      transform: scale(1.3);
+    }
+
+    /* Approach Section */
     .approach-section {
       display: grid;
       grid-template-columns: .9fr 1.1fr;
@@ -742,141 +1522,126 @@
 
     .approach-image {
       position: relative;
-      min-height: 535px;
+      min-height: 540px;
       overflow: hidden;
-      border: 1px solid rgba(166, 124, 61, .6);
-      box-shadow: 14px 15px 0 rgba(166, 124, 61, .1);
+      border: 1px solid var(--glass-border-gold);
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
     }
 
     .approach-image img {
       width: 100%;
       height: 100%;
       object-fit: cover;
+      filter: brightness(0.85);
+      transition: opacity 0.6s var(--ease-cinematic);
+    }
+
+    .dissolve-canvas {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 2;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.6s var(--ease-cinematic);
+    }
+
+    .dissolve-canvas.active {
+      opacity: 1;
     }
 
     .image-caption {
       position: absolute;
       right: 0;
       bottom: 0;
-      padding: 12px 17px;
-      background: var(--ink);
-      color: var(--white);
+      padding: 12px 20px;
+      background: var(--bg-obsidian);
+      color: var(--gold-bright);
       font-size: 10px;
       font-weight: 700;
-      letter-spacing: .1em;
+      letter-spacing: .12em;
       text-transform: uppercase;
     }
 
     .principles {
-      margin-top: 33px;
-      border-top: 1px solid var(--line);
+      margin-top: 36px;
+      border-top: 1px solid var(--line-gold);
     }
 
     .principle {
       display: grid;
       grid-template-columns: 48px 1fr;
-      gap: 15px;
-      padding: 22px 0;
-      border-bottom: 1px solid var(--line);
+      gap: 16px;
+      padding: 24px 0;
+      border-bottom: 1px solid var(--line-gold);
     }
 
     .principle-number {
-      color: var(--oxblood);
-      font: 500 17px Fraunces, serif;
+      color: var(--gold);
+      font: 500 18px Fraunces, serif;
     }
 
     .principle h3 {
-      margin: 0 0 7px;
+      margin: 0 0 8px;
       font: 500 22px Fraunces, serif;
       letter-spacing: -.05em;
+      color: var(--ink-main);
     }
 
     .principle p {
       margin: 0;
-      color: var(--ink-soft);
+      color: var(--ink-muted);
       font-size: 13px;
       line-height: 1.6;
     }
 
+    /* Security Consultation Section */
     .contact-band {
-      padding: 87px 30px;
-      background: var(--ink);
-      color: var(--white);
+      padding: 96px 36px;
+      background: linear-gradient(180deg, var(--bg-obsidian), #0d0f15);
+      border-top: 1px solid var(--line-gold);
     }
 
     .contact-band-inner {
-      max-width: 900px;
+      max-width: 920px;
       margin: auto;
       text-align: center;
     }
 
     .contact-band .section-kicker {
-      color: #e1bc75;
+      color: var(--gold);
     }
 
     .contact-band h2 {
-      margin: 20px 0 30px;
-      font: 500 clamp(2.8rem, 5vw, 5.5rem)/.94 Fraunces, serif;
-      letter-spacing: -.07em;
-    }
-
-    .contact-band .desk-button {
-      background: var(--white);
-      color: var(--ink);
+      margin: 22px 0 32px;
+      font: 500 clamp(2.8rem, 5vw, 5.2rem)/.95 Fraunces, serif;
+      letter-spacing: -.06em;
+      color: var(--ink-main);
     }
 
     .contact-details {
       display: flex;
       flex-wrap: wrap;
       justify-content: center;
-      gap: 13px 23px;
+      gap: 16px 28px;
       max-width: 1000px;
-      margin: 55px auto 0;
-      color: rgba(255, 255, 255, .68);
+      margin: 56px auto 0;
+      color: var(--ink-muted);
       font-size: 12px;
     }
 
-    .site-footer {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 24px;
-      padding: 27px;
-      border-top: 1px solid var(--line);
-    }
-
-    .footer-brand {
-      font-size: 20px;
-    }
-
-    .footer-brand img {
-      width: 34px;
-      height: 34px;
-    }
-
-    .site-footer p {
-      max-width: 680px;
-      margin: 0;
-      color: var(--ink-soft);
-      font-size: 11px;
-      line-height: 1.6;
-      text-align: right;
-    }
-
-    .site-footer a {
-      text-decoration: underline;
-      text-underline-offset: 3px;
-    }
-
+    /* Modal */
     .modal {
       position: fixed;
-      z-index: 80;
+      z-index: 90;
       inset: 0;
       display: none;
       align-items: center;
       justify-content: center;
-      padding: 20px;
-      background: rgba(11, 22, 28, .66);
+      padding: 24px;
+      background: rgba(5, 7, 10, 0.85);
+      backdrop-filter: blur(16px);
     }
 
     .modal.open {
@@ -885,40 +1650,66 @@
 
     .modal-card {
       position: relative;
-      width: min(610px, 100%);
-      padding: 36px;
-      border: 1px solid var(--brass);
-      background: var(--white);
-      box-shadow: 15px 17px 0 rgba(0, 0, 0, .2);
+      width: min(620px, 100%);
+      padding: 40px;
+      border: 1px solid var(--glass-border-gold);
+      background: var(--bg-card);
+      backdrop-filter: blur(24px);
+      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.7);
     }
 
     .modal-close {
       position: absolute;
-      top: 13px;
-      right: 13px;
-      width: 38px;
-      height: 38px;
-      border: 0;
+      top: 16px;
+      right: 16px;
+      width: 40px;
+      height: 40px;
+      border: 1px solid var(--glass-panel-border);
       background: transparent;
-      font-size: 24px;
+      color: var(--ink-main);
+      font-size: 22px;
+    }
+
+    .security-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 4px 12px;
+      border: 1px solid var(--line-gold);
+      background: rgba(197, 160, 89, 0.08);
+      color: var(--gold-bright);
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: .15em;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+
+    .security-badge .dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #4ade80;
+      box-shadow: 0 0 8px #4ade80;
     }
 
     .modal-card h2 {
-      margin: 11px 0 15px;
-      font: 500 45px/.95 Fraunces, serif;
-      letter-spacing: -.06em;
+      margin: 10px 0 16px;
+      font: 500 44px/.96 Fraunces, serif;
+      letter-spacing: -.05em;
+      color: var(--ink-main);
     }
 
-    .modal-card>p {
-      color: var(--ink-soft);
+    .modal-card > p {
+      color: var(--ink-muted);
       line-height: 1.6;
     }
 
     .intake-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 15px;
-      margin-top: 25px;
+      gap: 16px;
+      margin-top: 28px;
     }
 
     .field.full {
@@ -927,36 +1718,63 @@
 
     .field label {
       display: block;
-      margin-bottom: 7px;
+      margin-bottom: 8px;
       font-size: 10px;
       font-weight: 700;
-      letter-spacing: .1em;
+      letter-spacing: .12em;
       text-transform: uppercase;
+      color: var(--gold);
     }
 
     .field input,
     .field select {
       width: 100%;
-      min-height: 47px;
-      border: 1px solid var(--line);
+      min-height: 48px;
+      border: 1px solid rgba(20, 23, 29, 0.16);
       border-radius: 0;
-      padding: 0 12px;
-      background: white;
-      color: var(--ink);
+      padding: 0 14px;
+      background: #ffffff;
+      color: var(--ink-main);
+      font-size: 14px;
+      box-shadow: inset 0 1px 2px rgba(20, 23, 29, 0.04);
+      transition: border-color 0.25s ease, box-shadow 0.25s ease, background-color 0.25s ease;
+    }
+
+    .field input::placeholder {
+      color: #787f8f;
+      opacity: 1;
+    }
+
+    .field select {
+      cursor: pointer;
+    }
+
+    .field select option {
+      background-color: #ffffff;
+      color: var(--ink-main);
+    }
+
+    .field input:focus,
+    .field select:focus {
+      outline: none;
+      border-color: var(--gold);
+      background: #ffffff;
+      box-shadow: 0 0 0 3px rgba(166, 124, 46, 0.2), inset 0 1px 2px rgba(20, 23, 29, 0.04);
     }
 
     .intake-note {
       font-size: 12px;
-      color: var(--ink-soft);
-      line-height: 1.55;
+      color: var(--ink-muted);
+      line-height: 1.6;
     }
 
     .form-message {
       display: none;
-      margin-top: 16px;
-      padding: 12px;
-      border-left: 3px solid var(--oxblood);
-      background: var(--paper);
+      margin-top: 18px;
+      padding: 14px;
+      border-left: 3px solid var(--gold);
+      background: rgba(197, 160, 89, 0.1);
+      color: var(--gold-bright);
       font-size: 13px;
     }
 
@@ -964,171 +1782,31 @@
       display: block;
     }
 
-    @media (max-width:850px) {
-      .header-inner {
-        min-height: 67px;
-        padding: 7px 20px;
-      }
-
-      .brand-mark {
-        width: 47px;
-        height: 47px;
-      }
-
-      .brand-lockup {
-        font-size: 21px;
-      }
-
-      .desk-nav,
-      .header-cta {
-        display: none;
-      }
-
-      .menu-toggle {
-        display: block;
-      }
-
-      .mobile-drawer {
-        padding: 0 20px 20px;
-        border-top: 1px solid var(--line);
-        background: var(--paper);
-      }
-
-      .mobile-drawer.open {
-        display: grid;
-        gap: 14px;
-      }
-
-      .mobile-drawer a {
-        padding: 9px 0;
-        border-bottom: 1px solid var(--line);
-        font-size: 12px;
-        font-weight: 700;
-        letter-spacing: .1em;
-        text-transform: uppercase;
-      }
-
-      .mobile-drawer .header-cta {
-        display: flex;
-        width: 100%;
-        margin-top: 7px;
-      }
-
-      .hero {
-        grid-template-columns: 1fr;
-        gap: 31px;
-        min-height: auto;
-        padding: 68px 20px 52px;
-      }
-
-      .evidence-rail {
-        display: none;
-      }
-
-      h1 {
-        font-size: 3.8rem;
-      }
-
-      .hero-object {
-        height: 390px;
-      }
-
-      .hero-brief-slip {
-        right: 22px;
-        bottom: 8px;
-        left: auto;
-        width: 165px;
-      }
-
-      .profile-inner,
-      .approach-section,
-      .practice-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .profile-record {
-        min-height: 250px;
-        padding: 30px;
-      }
-
-      .profile-content {
-        padding: 50px 20px;
-      }
-
-      .quick-index {
-        grid-template-columns: 1fr;
-        margin: 0 20px;
-      }
-
-      .index-item {
-        min-height: 76px;
-        padding: 0 12px;
-      }
-
-      .index-item strong {
-        font-size: 19px;
-      }
-
-      .content-section {
-        padding: 76px 20px;
-      }
-
-      .section-header {
-        grid-template-columns: 1fr;
-        gap: 13px;
-      }
-
-      .practice-row h3 {
-        font-size: 21px;
-      }
-
-      .case-sheet {
-        min-height: 320px;
-        border-radius: 35px;
-      }
-
-      .approach-section {
-        gap: 35px;
-      }
-
-      .approach-image {
-        min-height: 405px;
-      }
-
-      .contact-band {
-        padding: 70px 20px;
-      }
-
-      .site-footer {
-        display: block;
-      }
-
-      .site-footer p {
-        margin-top: 16px;
-        text-align: left;
-      }
-
-      .intake-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .field.full {
-        grid-column: auto;
-      }
+    /* Footer */
+    .site-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+      padding: 32px 48px;
+      border-top: 1px solid var(--line-gold);
+      background: var(--bg-obsidian);
     }
 
-    /* ============================================================
-       Editorial Scroll Reveal & Motion System
-       ============================================================ */
-    :root {
-      --ease-editorial: cubic-bezier(0.16, 1, 0.3, 1);
+    .site-footer p {
+      max-width: 700px;
+      margin: 0;
+      color: var(--ink-muted);
+      font-size: 11px;
+      line-height: 1.6;
+      text-align: right;
     }
 
+    /* Editorial Scroll Reveals */
     .reveal-init {
       opacity: 0;
       transform: translateY(28px);
-      transition: opacity 0.85s var(--ease-editorial), transform 0.85s var(--ease-editorial);
-      will-change: opacity, transform;
+      transition: opacity 0.85s var(--ease-cinematic), transform 0.85s var(--ease-cinematic);
     }
 
     .reveal-init.is-revealed {
@@ -1139,8 +1817,7 @@
     .reveal-left {
       opacity: 0;
       transform: translateX(-32px);
-      transition: opacity 0.85s var(--ease-editorial), transform 0.85s var(--ease-editorial);
-      will-change: opacity, transform;
+      transition: opacity 0.85s var(--ease-cinematic), transform 0.85s var(--ease-cinematic);
     }
 
     .reveal-left.is-revealed {
@@ -1151,8 +1828,7 @@
     .reveal-right {
       opacity: 0;
       transform: translateX(32px);
-      transition: opacity 0.85s var(--ease-editorial), transform 0.85s var(--ease-editorial);
-      will-change: opacity, transform;
+      transition: opacity 0.85s var(--ease-cinematic), transform 0.85s var(--ease-cinematic);
     }
 
     .reveal-right.is-revealed {
@@ -1163,8 +1839,7 @@
     .reveal-scale {
       opacity: 0;
       transform: scale(0.95) translateY(20px);
-      transition: opacity 0.9s var(--ease-editorial), transform 0.9s var(--ease-editorial);
-      will-change: opacity, transform;
+      transition: opacity 0.9s var(--ease-cinematic), transform 0.9s var(--ease-cinematic);
     }
 
     .reveal-scale.is-revealed {
@@ -1172,7 +1847,6 @@
       transform: scale(1) translateY(0);
     }
 
-    /* Stagger Delays */
     [data-delay="100"] { transition-delay: 100ms; }
     [data-delay="150"] { transition-delay: 150ms; }
     [data-delay="200"] { transition-delay: 200ms; }
@@ -1181,40 +1855,30 @@
     [data-delay="350"] { transition-delay: 350ms; }
     [data-delay="400"] { transition-delay: 400ms; }
 
-    /* Case Sheet Dynamic Transition */
-    .case-sheet {
-      transition: opacity 0.28s var(--ease-editorial), transform 0.28s var(--ease-editorial);
-    }
-
-    .case-sheet.sheet-updating {
-      opacity: 0.25;
-      transform: translateY(8px);
-    }
-
-    /* Floating Back to Top Action */
+    /* Floating Back to Top Button */
     .back-to-top {
       position: fixed;
-      z-index: 35;
-      right: 24px;
-      bottom: 24px;
+      z-index: 40;
+      right: 28px;
+      bottom: 28px;
       display: inline-flex;
       align-items: center;
-      gap: 9px;
-      height: 42px;
-      padding: 0 16px;
-      background: var(--ink);
-      color: var(--white);
-      border: 1px solid var(--brass);
-      box-shadow: 0 8px 24px rgba(22, 38, 48, 0.25);
+      gap: 10px;
+      height: 44px;
+      padding: 0 18px;
+      background: rgba(17, 21, 30, 0.9);
+      color: var(--gold-bright);
+      border: 1px solid var(--glass-border-gold);
+      backdrop-filter: blur(16px);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
       font-size: 10px;
       font-weight: 700;
-      letter-spacing: .12em;
+      letter-spacing: .14em;
       text-transform: uppercase;
       opacity: 0;
       visibility: hidden;
-      transform: translateY(14px);
-      transition: opacity .3s var(--ease), transform .3s var(--ease), visibility .3s, background .2s;
-      cursor: pointer;
+      transform: translateY(16px);
+      transition: opacity 0.3s var(--ease-cinematic), transform 0.3s var(--ease-cinematic), visibility 0.3s, background 0.2s;
     }
 
     .back-to-top.show {
@@ -1225,259 +1889,324 @@
 
     .back-to-top:hover {
       background: var(--oxblood);
+      border-color: var(--gold);
       transform: translateY(-2px);
     }
 
-    .back-to-top .top-arrow {
-      font-size: 13px;
-      line-height: 1;
-      transition: transform .2s var(--ease);
+    @media (max-width: 900px) {
+      .hero {
+        grid-template-columns: 1fr;
+        padding: 70px 24px 50px;
+      }
+      .evidence-rail {
+        display: none;
+      }
+      .profile-inner,
+      .approach-section,
+      .practice-grid {
+        grid-template-columns: 1fr;
+      }
+      .profile-record {
+        border-right: 0;
+        border-bottom: 1px solid var(--line-gold);
+      }
+      .quick-index {
+        grid-template-columns: 1fr;
+      }
+      .stats-docket {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .desk-nav,
+      .liquid-btn.header-btn {
+        display: none;
+      }
+      .menu-toggle {
+        display: block;
+      }
     }
 
-    .back-to-top:hover .top-arrow {
-      transform: translateY(-2px);
-    }
-
-    @media (prefers-reduced-motion:reduce) {
+    @media (prefers-reduced-motion: reduce) {
       *, *::before, *::after {
         animation-duration: 0.01ms !important;
-        animation-iteration-count: 1 !important;
         transition-duration: 0.01ms !important;
         scroll-behavior: auto !important;
       }
-
-      .reveal-init,
-      .reveal-left,
-      .reveal-right,
-      .reveal-scale {
+      .reveal-init, .reveal-left, .reveal-right, .reveal-scale {
         opacity: 1 !important;
         transform: none !important;
-        transition: none !important;
       }
-
-      .scroll-progress-track {
+      .cinematic-loader {
         display: none !important;
-      }
-
-      .hero-brief-slip {
-        transform: rotate(-5deg) !important;
-      }
-
-      .menu-symbol-video {
-        display: none;
-      }
-
-      .menu-symbol-fallback {
-        display: block;
       }
     }
   </style>
 </head>
 
 <body>
+  <!-- Ambient Particle Mesh Canvas -->
+  <canvas id="particle-canvas"></canvas>
+  <div class="bg-grid-overlay"></div>
+
+  <!-- Cinematic Opening Loader Sequence -->
+  <div class="cinematic-loader" id="cinematic-loader">
+    <div class="loader-frame"></div>
+    <div class="loader-emblem">
+      <img class="loader-mark" src="https://briefgavel-xsdpi3fq.manus.space/manus-storage/brief-gavel-logo_2fd75830.png" alt="Brief &amp; Gavel Seal" />
+      <span class="loader-title">Brief &amp; Gavel</span>
+    </div>
+  </div>
+
   <div class="site-shell">
     <header class="site-header" id="site-header">
       <div class="header-inner">
         <a class="brand-lockup" href="#top" aria-label="Brief and Gavel home">
-          <img class="brand-mark" src="https://briefgavel-xsdpi3fq.manus.space/manus-storage/brief-gavel-logo_2fd75830.png" alt="Brief and Gavel mark" width="53" height="53" />
+          <img class="brand-mark" src="https://briefgavel-xsdpi3fq.manus.space/manus-storage/brief-gavel-logo_2fd75830.png" alt="Brief and Gavel mark" />
           <span>Brief <small>&amp; Gavel</small></span>
         </a>
-
-        <div class="court-status-pill" id="court-status-pill" title="Indian Standard Time (IST)">
-          <span class="status-dot"></span>
-          <span class="status-text" id="status-text">TS High Court · In Session</span>
-          <time class="status-clock" id="court-clock">10:30 IST</time>
-        </div>
-
         <nav class="desk-nav" id="desk-nav" aria-label="Main navigation">
           <a href="#profile">Profile</a>
           <a href="#practice">Practice</a>
+          <a href="#experience">Experience</a>
           <a href="#approach">Approach</a>
-          <a href="/chambers">The Roll</a>
           <a href="#contact">Contact</a>
         </nav>
-
-        <button class="header-cta consultation-trigger" type="button">Request a consult ↗</button>
-
-        <button class="menu-toggle" id="menu-toggle" aria-label="Open navigation" aria-expanded="false">
-          <span class="menu-symbol-frame" aria-hidden="true">
-            <video id="menu-video" class="menu-symbol-video" src="https://briefgavel-xsdpi3fq.manus.space/manus-storage/brief-gavel-animated-menu_4ca20c15.mp4" muted playsinline preload="auto"></video>
-            <img class="menu-symbol-fallback" src="https://briefgavel-xsdpi3fq.manus.space/manus-storage/brief-gavel-video-menu-symbol_e43d4c99.png" alt="" />
-          </span>
-        </button>
+        <button class="liquid-btn header-btn consultation-trigger">Request a consult ↗</button>
+        <button class="menu-toggle" id="menu-toggle" aria-label="Open navigation" aria-expanded="false">☰</button>
       </div>
-
       <div class="scroll-progress-track" aria-hidden="true">
         <div class="scroll-progress-bar" id="scroll-progress"></div>
       </div>
-
       <nav class="mobile-drawer" id="mobile-drawer" aria-label="Mobile navigation">
         <a href="#profile">Profile</a>
         <a href="#practice">Practice</a>
+        <a href="#experience">Experience</a>
         <a href="#approach">Approach</a>
-        <a href="/chambers">The Roll</a>
         <a href="#contact">Contact</a>
-        <button class="header-cta consultation-trigger" type="button">Request a consultation ↗</button>
+        <button class="liquid-btn consultation-trigger" style="margin-top:14px;">Request a consultation ↗</button>
       </nav>
     </header>
 
     <main id="top">
-      <section class="hero" aria-labelledby="hero-title">
-        <div class="evidence-rail reveal-left" data-delay="300">Case file / 2026</div>
-        <div class="hero-copy reveal-init" data-delay="100">
-          <div class="file-tab">Advocacy with intent</div>
-          <h1 id="hero-title">A clear case begins with a <em>clear conversation.</em></h1>
-          <p class="hero-summary">
-            Brief &amp; Gavel is the advocate practice of Vimal Vasireddy for people who need a considered legal strategy, not intimidating legal theatre.
-          </p>
-          <div class="hero-actions">
-            <button class="desk-button consultation-trigger" type="button">Discuss your matter ↗</button>
-            <a class="desk-button ghost" href="#practice">Explore practice areas →</a>
+      <section class="hero-pinned-wrapper" id="hero-pinned">
+        <div class="hero-sticky-frame">
+          <div class="hero-fullscreen-canvas-wrap" id="scroll-dissolve-container">
+            <canvas id="dissolve-canvas" class="dissolve-canvas"></canvas>
+            <img id="hero-fallback-img" src="https://briefgavel-xsdpi3fq.manus.space/manus-storage/brief-gavel-hero_fb3554c6.jpg" alt="A considered advocate desk with a gavel, case file, pen and papers" />
+            <div class="hero-overlay-vignette"></div>
           </div>
-          <p class="hero-note">⌾ <b>Practical. Private. Prepared.</b> Start with the facts, then choose the next right step.</p>
-        </div>
-        <div class="hero-object reveal-right" data-delay="200">
-          <img
-            src="https://briefgavel-xsdpi3fq.manus.space/manus-storage/brief-gavel-hero_fb3554c6.jpg"
-            alt="A considered advocate desk with a gavel, case file, pen and papers"
-            width="640"
-            height="555"
-          />
-          <span class="object-number">01</span>
-          <span class="object-label">The working brief</span>
-          <div class="docket-seal-stamp" aria-hidden="true">CHAMBERS COPY · TS/2026</div>
-        </div>
-        <aside class="hero-brief-slip reveal-scale" id="hero-brief-slip" data-delay="350">
-          <div class="slip-avatar-wrap">
-            <img class="slip-avatar" src="img/vimal-vasireddy.png" alt="Vimal Vasireddy, Advocate" width="54" height="54" />
+
+          <div class="hero-content-layer">
+            <div class="hero-light-beam"></div>
+            <div class="evidence-rail reveal-left" data-delay="300">Case file / 2026</div>
+            <div class="hero-copy reveal-init" data-delay="100">
+              <div class="file-tab">Advocacy with intent</div>
+              <h1 id="hero-title">A clear case begins with a <em>clear conversation.</em></h1>
+              <p class="hero-summary">Brief &amp; Gavel is the advocate practice of Vimal Vasireddy for people who need a considered legal strategy, not intimidating legal theatre.</p>
+              <div class="hero-actions">
+                <button class="liquid-btn primary consultation-trigger">Discuss your matter ↗</button>
+                <a class="liquid-btn ghost" href="#practice">Explore practice areas →</a>
+              </div>
+              <p class="hero-note">⌾ <b>Practical. Private. Prepared.</b> Start with the facts, then choose the next right step.</p>
+            </div>
           </div>
-          <span>Advocate</span>
-          <strong>Vimal<br />Vasireddy</strong>
-          <i>Case record / 01</i>
-        </aside>
+
+          <!-- Cinematic Opening Title Scene Layer (Revealed during scroll-dissolve) -->
+          <div class="hero-cinema-title-layer" id="hero-cinema-title-layer" aria-hidden="true">
+            <div class="cinema-letterbox-top"></div>
+            <div class="cinema-letterbox-bottom"></div>
+            <div class="cinema-ambient-glow" id="cinema-ambient-glow"></div>
+            <div class="cinema-anamorphic-flare" id="cinema-flare"></div>
+            
+            <div class="cinema-title-container" id="cinema-title-container">
+              <div class="cinema-kicker-line">
+                <span class="cinema-rule left"></span>
+                <span class="cinema-kicker-text" id="cinema-kicker">The Chambers of</span>
+                <span class="cinema-rule right"></span>
+              </div>
+              
+              <h2 class="cinema-advocate-name" id="cinema-advocate-name">
+                <span class="cinema-name-word first">VIMAL</span>
+                <span class="cinema-name-word last">VASIREDDY</span>
+              </h2>
+              
+              <div class="cinema-designation" id="cinema-designation">
+                <span class="cinema-role">Advocate &amp; Counsel</span>
+                <span class="cinema-bullet">•</span>
+                <span class="cinema-court">High Court of Telangana &amp; NCLT</span>
+              </div>
+
+              <div class="cinema-bottom-tag" id="cinema-bottom-tag">
+                <span>Hyderabad • Established 2012</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="hero-scroll-indicator">
+            <span>Scroll down to dissolve reveal</span>
+            <div class="scroll-arrow-anim">↓</div>
+          </div>
+        </div>
       </section>
 
       <section class="advocate-profile" id="profile">
         <div class="profile-inner">
           <aside class="profile-record reveal-left">
-            <div class="record-badge-header">
-              <span>Advocate / Profile</span>
-              <div class="record-seal-mark" aria-hidden="true">LEX</div>
-            </div>
+            <span>Advocate / profile</span>
             <strong>Vimal<br />Vasireddy</strong>
-            <p>
-              Credentials and court admissions are published under the proviso to Rule 36 of the Bar Council of India Rules.
-            </p>
+            <p>Credentials and court admissions are presented below for client confirmation before publication.</p>
           </aside>
           <div class="profile-content reveal-init" data-delay="150">
             <div class="section-kicker">About Vimal Vasireddy</div>
             <h2 class="section-title">A steady hand when the stakes are <em>highest.</em></h2>
-            <p class="profile-note">
-              Advocacy is not theatrical performance; it is structured logic built upon an uncompromising grasp of the record. We appear in constitutional petitions, appellate litigation, and domestic arbitration before the High Court of Telangana, Andhra Pradesh High Court, and NCLT.
-            </p>
+            <p class="profile-note">Advocacy is built on structured logic and an uncompromising grasp of the record. We appear before the High Court of Telangana, AP High Court, and NCLT.</p>
             <div class="credential-grid">
-              <article class="credential-card reveal-init" data-delay="100">
-                <span>Bar enrolment</span>
-                <strong>TS/0000/0000</strong>
-              </article>
-              <article class="credential-card reveal-init" data-delay="200">
-                <span>Years in practice</span>
-                <strong>14+ Years</strong>
-              </article>
-              <article class="credential-card reveal-init" data-delay="300">
-                <span>Courts admitted</span>
-                <strong>Telangana High Court, AP High Court &amp; NCLT</strong>
-              </article>
-              <article class="credential-card reveal-init" data-delay="400">
-                <span>Recognitions</span>
-                <strong>High Court Bar Association</strong>
-              </article>
-            </div>
-
-            <div class="stats-docket reveal-init" data-delay="300">
-              <div class="stat-item">
-                <span class="stat-num" data-target="14" data-suffix="+">0</span>
-                <span class="stat-label">Years at the Bar</span>
-                <small class="stat-suffix">Active Practice</small>
-              </div>
-              <div class="stat-item">
-                <span class="stat-num" data-target="3" data-suffix="">0</span>
-                <span class="stat-label">Primary Forums</span>
-                <small class="stat-suffix">High Courts &amp; NCLT</small>
-              </div>
-              <div class="stat-item">
-                <span class="stat-num" data-target="500" data-suffix="+">0</span>
-                <span class="stat-label">Briefs Argued</span>
-                <small class="stat-suffix">Matters Prepared</small>
-              </div>
-              <div class="stat-item">
-                <span class="stat-num" data-target="100" data-suffix="%">0</span>
-                <span class="stat-label">Privilege &amp; Discretion</span>
-                <small class="stat-suffix">BCI Compliant</small>
-              </div>
+              <article class="credential-card reveal-init" data-delay="100"><span>Bar enrolment</span><strong>TS/0000/0000</strong></article>
+              <article class="credential-card reveal-init" data-delay="200"><span>Years in practice</span><strong>14+ Years</strong></article>
+              <article class="credential-card reveal-init" data-delay="300"><span>Courts admitted</span><strong>Telangana High Court, AP High Court &amp; NCLT</strong></article>
+              <article class="credential-card reveal-init" data-delay="400"><span>Recognitions</span><strong>High Court Bar Association</strong></article>
             </div>
           </div>
         </div>
       </section>
 
       <nav class="quick-index reveal-init" aria-label="Page highlights">
-        <a class="index-item" href="#profile">
-          <span class="stamp">01</span>
-          <div><span>Profile</span><strong>The advocate</strong></div>
-        </a>
-        <a class="index-item" href="#practice">
-          <span class="stamp">02</span>
-          <div><span>Practice</span><strong>Where we can help</strong></div>
-        </a>
-        <button class="index-item consultation-trigger" type="button">
-          <span class="stamp">03</span>
-          <div><span>First step</span><strong>Request a consult</strong></div>
-        </button>
+        <a class="index-item" href="#profile"><span class="stamp">01</span><div><span>Profile</span><strong>The advocate</strong></div></a>
+        <a class="index-item" href="#practice"><span class="stamp">02</span><div><span>Practice</span><strong>Where we can help</strong></div></a>
+        <button class="index-item consultation-trigger"><span class="stamp">03</span><div><span>First step</span><strong>Request a consult</strong></div></button>
       </nav>
 
       <section class="content-section" id="practice">
         <div class="section-header reveal-init">
-          <div class="section-kicker">Practice Index</div>
+          <div class="section-kicker">Practice index</div>
           <div>
             <h2 class="section-title">Focused representation across the <em>areas that matter most.</em></h2>
-            <p class="section-intro">
-              Select a practice area to review its procedural focus, statutory jurisdiction, and representative legal work.
-            </p>
+            <p class="section-intro">Select a practice area to view its focus and the legal work it can involve.</p>
           </div>
         </div>
-
-        <div class="dossier-filter-bar reveal-init" data-delay="100">
-          <span class="filter-label">Jurisdiction Filter:</span>
-          <button class="filter-chip active" data-category="all" type="button">All Practice Areas</button>
-          <button class="filter-chip" data-category="Constitutional" type="button">Constitutional &amp; Writs</button>
-          <button class="filter-chip" data-category="Appellate" type="button">Appellate Practice</button>
-          <button class="filter-chip" data-category="Arbitration" type="button">Arbitration</button>
-          <button class="filter-chip" data-category="Commercial" type="button">Commercial &amp; Company</button>
-        </div>
-
         <div class="practice-grid reveal-init" data-delay="150">
           <div class="practice-list" id="practice-list"></div>
           <aside class="case-sheet" id="case-sheet" aria-live="polite"></aside>
         </div>
       </section>
 
+      <section class="content-section" id="experience">
+        <div class="section-header reveal-init">
+          <div class="section-kicker">Experience &amp; Record</div>
+          <div>
+            <h2 class="section-title">A record of <em>considered milestones.</em></h2>
+            <p class="section-intro">A milestone record of advocacy achievements, trial victories, and tribunal appearances.</p>
+          </div>
+        </div>
+
+        <div class="v-testimonials-wrapper reveal-init" data-delay="150" id="experience-v-testimonials">
+          <div class="v-testimonials-grid">
+            <!-- Left Column: 3D Stacked Card Deck (VengeanceUI Perspective 1400px) -->
+            <div class="v-card-stack-viewport" id="v-card-stack">
+              <article class="v-stack-card" data-index="0" aria-label="Milestone 01">
+                <img src="https://images.unsplash.com/photo-1589829545856-d10d557cf95f?auto=format&fit=crop&w=800&q=80" alt="High Court Classical Columns" />
+                <div class="v-stack-card-overlay">
+                  <div class="v-card-top-meta">
+                    <span class="v-card-badge"><span class="dot"></span>2012 — 2016</span>
+                    <span class="v-card-num">01</span>
+                  </div>
+                  <div class="v-card-bottom-meta">
+                    <div class="v-card-caption-title">High Court of Telangana</div>
+                    <div class="v-card-caption-sub">Constitutional &amp; Writ Petitions</div>
+                  </div>
+                </div>
+              </article>
+
+              <article class="v-stack-card" data-index="1" aria-label="Milestone 02">
+                <img src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=800&q=80" alt="Corporate Tribunal Architecture" />
+                <div class="v-stack-card-overlay">
+                  <div class="v-card-top-meta">
+                    <span class="v-card-badge"><span class="dot"></span>2016 — 2019</span>
+                    <span class="v-card-num">02</span>
+                  </div>
+                  <div class="v-card-bottom-meta">
+                    <div class="v-card-caption-title">National Company Law Tribunal</div>
+                    <div class="v-card-caption-sub">Insolvency &amp; Corporate Governance</div>
+                  </div>
+                </div>
+              </article>
+
+              <article class="v-stack-card" data-index="2" aria-label="Milestone 03">
+                <img src="https://images.unsplash.com/photo-1541872703-74c5e44368f9?auto=format&fit=crop&w=800&q=80" alt="Historic Legal Chambers" />
+                <div class="v-stack-card-overlay">
+                  <div class="v-card-top-meta">
+                    <span class="v-card-badge"><span class="dot"></span>2019 — 2022</span>
+                    <span class="v-card-num">03</span>
+                  </div>
+                  <div class="v-card-bottom-meta">
+                    <div class="v-card-caption-title">Commercial Appellate Benches</div>
+                    <div class="v-card-caption-sub">High-Stakes Injunctions &amp; Property</div>
+                  </div>
+                </div>
+              </article>
+
+              <article class="v-stack-card" data-index="3" aria-label="Milestone 04">
+                <img src="https://images.unsplash.com/photo-1505664194779-8beaceb93744?auto=format&fit=crop&w=800&q=80" alt="Arbitration Tribunal & Law Books" />
+                <div class="v-stack-card-overlay">
+                  <div class="v-card-top-meta">
+                    <span class="v-card-badge"><span class="dot"></span>2022 — Present</span>
+                    <span class="v-card-num">04</span>
+                  </div>
+                  <div class="v-card-bottom-meta">
+                    <div class="v-card-caption-title">Institutional Arbitration</div>
+                    <div class="v-card-caption-sub">Domestic &amp; Cross-Border Awards</div>
+                  </div>
+                </div>
+              </article>
+            </div>
+
+            <!-- Right Column: Editorial Details & Controls -->
+            <div class="v-details-col">
+              <div class="v-details-top-bar">
+                <div class="v-era-badge" id="v-stage-era"><span class="dot"></span>2012 — 2016</div>
+                <div class="v-counter" id="v-stage-counter"><span id="v-active-num">01</span> / 04</div>
+              </div>
+
+              <div class="v-text-stage" id="v-text-stage">
+                <h3 class="v-milestone-title" id="v-stage-title">Fundamental Rights &amp; <em>High Court Writs</em></h3>
+                <p class="v-milestone-desc" id="v-stage-desc">Secured critical administrative stays and represented fundamental rights writ petitions before the High Court of Telangana.</p>
+                <div class="v-milestone-tags" id="v-stage-tags">
+                  <span class="v-tag-pill">✓ Mandamus &amp; Certiorari Writs</span>
+                  <span class="v-tag-pill">✓ Administrative Stays</span>
+                  <span class="v-tag-pill">✓ Public Law Advocacy</span>
+                </div>
+              </div>
+
+              <div class="v-controls-row">
+                <div class="v-nav-btns">
+                  <button class="v-nav-btn prev" id="v-prev-btn" aria-label="Previous Milestone" disabled>
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+                  </button>
+                  <button class="v-nav-btn next" id="v-next-btn" aria-label="Next Milestone">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                  </button>
+                </div>
+
+                <div class="v-chips-row" id="v-chips-row">
+                  <button class="v-chip active" data-index="0"><span class="dot"></span>2012–16</button>
+                  <button class="v-chip" data-index="1"><span class="dot"></span>2016–19</button>
+                  <button class="v-chip" data-index="2"><span class="dot"></span>2019–22</button>
+                  <button class="v-chip" data-index="3"><span class="dot"></span>2022–Pres</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       <section class="content-section approach-section" id="approach">
         <div class="approach-image reveal-scale">
-          <img
-            src="https://briefgavel-xsdpi3fq.manus.space/manus-storage/brief-gavel-objects_07d4bc57.jpg"
-            alt="A gavel, scale, pen and case file arranged on an advocate’s desk"
-            width="600"
-            height="450"
-            loading="lazy"
-          />
+          <img src="https://briefgavel-xsdpi3fq.manus.space/manus-storage/brief-gavel-objects_07d4bc57.jpg" alt="A gavel, scale, pen and case file arranged on an advocate’s desk" />
           <span class="image-caption">The instruments of a considered argument</span>
         </div>
         <div class="approach-content reveal-init" data-delay="150">
           <div class="section-kicker">The working method</div>
           <h2 class="section-title">Bring the facts. We’ll build the <em>strategy.</em></h2>
-          <p class="section-intro">
-            Good advocacy feels calm because the hard preparation happens before the decisive moment. You should always understand the work, the reasons behind it, and the next choice in front of you.
-          </p>
+          <p class="section-intro">Good advocacy feels calm because the hard preparation happens before the decisive moment.</p>
           <div class="principles">
             <article class="principle reveal-init" data-delay="100">
               <span class="principle-number">01</span>
@@ -1504,103 +2233,16 @@
         </div>
       </section>
 
-      <section class="content-section roll-preview-section" id="roll-preview">
-        <div class="section-header reveal-init">
-          <div class="section-kicker">Chambers Roll · Advocates at the Bar</div>
-          <div>
-            <h2 class="section-title">An institution of independent, <em>rigorous counsel.</em></h2>
-            <p class="section-intro">
-              Juniors of these chambers practise independently and may be instructed directly under Rule 36 of the Bar Council of India Rules.
-            </p>
-          </div>
-        </div>
-
-        <div class="roll-cards-grid reveal-init" data-delay="150">
-          <article class="roll-card reveal-init" data-delay="100">
-            <div class="roll-card-header">
-              <span class="roll-badge">Advocate / TS</span>
-              <span class="roll-number">02</span>
-            </div>
-            <h3 class="roll-name">A. Deshpande</h3>
-            <p class="roll-designation">Advocate · High Court of Telangana</p>
-            <div class="roll-tags">
-              <span class="roll-tag">Constitutional Law</span>
-              <span class="roll-tag">Writ Jurisdiction</span>
-            </div>
-            <a class="roll-action-link" href="/chambers/a-deshpande">
-              <span>View professional record</span>
-              <span class="arrow">→</span>
-            </a>
-          </article>
-
-          <article class="roll-card reveal-init" data-delay="180">
-            <div class="roll-card-header">
-              <span class="roll-badge">Advocate / TS</span>
-              <span class="roll-number">03</span>
-            </div>
-            <h3 class="roll-name">K. Menon</h3>
-            <p class="roll-designation">Advocate · High Court of Telangana</p>
-            <div class="roll-tags">
-              <span class="roll-tag">Arbitration</span>
-              <span class="roll-tag">Company &amp; Commercial</span>
-            </div>
-            <a class="roll-action-link" href="/chambers/k-menon">
-              <span>View professional record</span>
-              <span class="arrow">→</span>
-            </a>
-          </article>
-
-          <article class="roll-card reveal-init" data-delay="260">
-            <div class="roll-card-header">
-              <span class="roll-badge">Advocate / TS</span>
-              <span class="roll-number">04</span>
-            </div>
-            <h3 class="roll-name">P. Varma</h3>
-            <p class="roll-designation">Advocate · High Court of Telangana</p>
-            <div class="roll-tags">
-              <span class="roll-tag">Criminal Appellate</span>
-              <span class="roll-tag">Bail and Trial</span>
-            </div>
-            <a class="roll-action-link" href="/chambers/p-varma">
-              <span>View professional record</span>
-              <span class="arrow">→</span>
-            </a>
-          </article>
-
-          <article class="roll-card reveal-init" data-delay="340">
-            <div class="roll-card-header">
-              <span class="roll-badge">Advocate / TS</span>
-              <span class="roll-number">05</span>
-            </div>
-            <h3 class="roll-name">R. Chandrasekhar</h3>
-            <p class="roll-designation">Advocate · High Court of Telangana</p>
-            <div class="roll-tags">
-              <span class="roll-tag">Civil Appellate</span>
-              <span class="roll-tag">Property and Title</span>
-            </div>
-            <a class="roll-action-link" href="/chambers/r-chandrasekhar">
-              <span>View professional record</span>
-              <span class="arrow">→</span>
-            </a>
-          </article>
-        </div>
-
-        <div class="roll-footer-cta reveal-init" data-delay="300">
-          <a class="desk-button ghost" href="/chambers">View Complete Chambers Roll →</a>
-        </div>
-      </section>
-
       <section class="contact-band" id="contact">
         <div class="contact-band-inner reveal-init">
           <div class="section-kicker">Open a conversation</div>
           <h2>A considered next step is often the <em>most important one.</em></h2>
-          <button class="desk-button consultation-trigger" type="button">Request a consultation ↗</button>
+          <button class="liquid-btn primary consultation-trigger">Request a consultation ↗</button>
         </div>
         <div class="contact-details reveal-init" data-delay="150">
           <span>Private consultations by appointment</span>
           <span>Discreet first conversations</span>
           <span>In-person and online meetings</span>
-          <span>By appointment</span>
         </div>
       </section>
     </main>
@@ -1610,201 +2252,155 @@
         <img src="https://briefgavel-xsdpi3fq.manus.space/manus-storage/brief-gavel-logo_2fd75830.png" alt="Brief and Gavel mark" width="34" height="34" />
         Brief &amp; Gavel
       </a>
-      <p>
-        © 2026 Brief &amp; Gavel. Information on this site is general in nature and is not legal advice. A consultation helps determine whether we can assist with your particular matter. <a href="#top">Back to top</a>
-      </p>
+      <p>© 2026 Brief &amp; Gavel. Information on this site is general in nature and is not legal advice. A consultation helps determine whether we can assist with your particular matter. <a href="#top" style="color:var(--gold-bright);">Back to top</a></p>
     </footer>
   </div>
 
+  <!-- Privacy Consultation Intake Modal -->
   <div class="modal" id="consultation-modal" role="dialog" aria-modal="true" aria-labelledby="consultation-title">
     <div class="modal-card">
-      <button class="modal-close" id="modal-close" aria-label="Close consultation form" type="button">×</button>
-      <div class="dialog-label">Initial consultation</div>
+      <button class="modal-close" id="modal-close" aria-label="Close consultation form">×</button>
+      <div class="security-badge"><span class="dot"></span> LEX Secure Encrypted Intake</div>
       <h2 id="consultation-title">Start with what you know.</h2>
       <p>A short, private first note is enough to begin a useful conversation. We will use it to prepare for the questions that matter most.</p>
       <form id="consultation-form">
         <div class="intake-grid">
           <div class="field"><label for="name">Your name</label><input id="name" required placeholder="Name" /></div>
           <div class="field"><label for="contact-info">Phone or email</label><input id="contact-info" required placeholder="How should we reply?" /></div>
-          <div class="field full"><label for="matter">Matter type</label><select id="matter" required><option value="">Select the closest option</option><option>Constitutional Law &amp; Writs</option><option>Criminal Defence &amp; Bail</option><option>Civil Litigation &amp; Injunctions</option><option>Corporate, Commercial &amp; NCLT</option><option>Arbitration &amp; Enforcement</option><option>Appellate Practice</option></select></div>
-          <div class="field full"><label for="timing">When would you like to speak?</label><select id="timing" required><option value="">Choose a preferred time</option><option>This week</option><option>Within two weeks</option><option>Not urgent — I need initial guidance</option></select></div>
+          <div class="field full">
+            <label for="matter">Matter type</label>
+            <select id="matter" required>
+              <option value="">Select the closest option</option>
+              <option>Constitutional Law</option>
+              <option>Criminal Defence</option>
+              <option>Civil Litigation</option>
+              <option>Corporate &amp; Commercial</option>
+              <option>Arbitration</option>
+              <option>Appellate Practice</option>
+            </select>
+          </div>
+          <div class="field full">
+            <label for="timing">When would you like to speak?</label>
+            <select id="timing" required>
+              <option value="">Choose a preferred time</option>
+              <option>This week</option>
+              <option>Within two weeks</option>
+              <option>Not urgent — I need initial guidance</option>
+            </select>
+          </div>
         </div>
-        <p class="intake-note">Please avoid sharing highly sensitive facts or documents in an initial online note. We can discuss a secure way to share relevant materials during your consultation.</p>
-        <button class="desk-button" type="submit">Save the intake note ↗</button>
-        <div class="form-message" id="form-message">Thank you. Your note is ready for review. We will contact you shortly.</div>
+        <p class="intake-note" style="margin-top:16px;">Please avoid sharing highly sensitive documents in an initial note. We can discuss secure transmission during your consultation.</p>
+        <button class="liquid-btn primary" type="submit" style="width:100%; margin-top:12px;">Save the intake note ↗</button>
+        <div class="form-message" id="form-message">Thank you. Your intake note has been saved for private review.</div>
       </form>
     </div>
   </div>
 
+  <button class="back-to-top" id="back-to-top" aria-label="Back to top" type="button">↑ Top</button>
+
   <script>
-    // Live Court Clock Controller
-    (function initCourtClock() {
-      const clockEl = document.getElementById('court-clock');
-      const textEl = document.getElementById('status-text');
-      const pillEl = document.getElementById('court-status-pill');
+    // 1. Cinematic Opening Sequence
+    window.addEventListener('DOMContentLoaded', () => {
+      const loader = document.getElementById('cinematic-loader');
+      setTimeout(() => loader.classList.add('loaded'), 100);
+      setTimeout(() => loader.classList.add('done'), 1400);
+    });
 
-      function updateClock() {
-        const now = new Date();
-        const utc = now.getTime() + (now.getTimezoneOffset() * 60000);
-        const istDate = new Date(utc + (3600000 * 5.5));
-        const hours = istDate.getHours();
-        const minutes = istDate.getMinutes();
-        const day = istDate.getDay();
-        const hoursFormatted = String(hours).padStart(2, '0');
-        const minutesFormatted = String(minutes).padStart(2, '0');
-        if (clockEl) clockEl.textContent = `${hoursFormatted}:${minutesFormatted} IST`;
+    // 2. Ambient Canvas Dust Particles
+    (function initParticles() {
+      const canvas = document.getElementById('particle-canvas');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      let width = canvas.width = window.innerWidth;
+      let height = canvas.height = window.innerHeight;
 
-        const isWeekday = day >= 1 && day <= 5;
-        const timeInMinutes = hours * 60 + minutes;
-        const isInSession = isWeekday && (timeInMinutes >= 630 && timeInMinutes <= 990);
-
-        if (textEl && pillEl) {
-          if (isInSession) {
-            textEl.textContent = 'TS High Court · In Session';
-            pillEl.classList.remove('recess');
-          } else {
-            textEl.textContent = 'Chambers Hours · IST';
-            pillEl.classList.add('recess');
-          }
-        }
-      }
-      updateClock();
-      setInterval(updateClock, 10000);
-    })();
-
-    // Animated Stats Counter
-    (function initStatsCounter() {
-      const statElements = document.querySelectorAll('.stat-num');
-      let animated = false;
-      function animateCounters() {
-        if (animated) return;
-        const statsSection = document.querySelector('.stats-docket');
-        if (!statsSection) return;
-        const rect = statsSection.getBoundingClientRect();
-        if (rect.top <= window.innerHeight * 0.85 && rect.bottom >= 0) {
-          animated = true;
-          statElements.forEach(el => {
-            const target = parseInt(el.getAttribute('data-target') || '0', 10);
-            const suffix = el.getAttribute('data-suffix') || '';
-            let current = 0;
-            const step = Math.max(1, Math.floor(target / 45));
-            const interval = setInterval(() => {
-              current += step;
-              if (current >= target) {
-                el.textContent = target + suffix;
-                clearInterval(interval);
-              } else {
-                el.textContent = current + suffix;
-              }
-            }, 30);
-          });
-        }
-      }
-      window.addEventListener('scroll', animateCounters, { passive: true });
-      setTimeout(animateCounters, 600);
-    })();
-
-    // Practice Dossier Controller
-    (function initPracticeDossier() {
-      const areas = [
-        ["01", "Constitutional Law", "Writ jurisdiction & fundamental-rights petitions before the High Court.", "Fundamental-rights petitions, writ jurisdiction (Articles 226 & 32), and matters of public importance approached through precise record preparation and considered advocacy.", ["Fundamental-rights petitions", "Writ jurisdiction (Articles 226 & 32)", "Public importance matters"], "Constitutional"],
-        ["02", "Criminal Defence", "Bail, trial, and appellate representation grounded in meticulous case strategy.", "Bail, trial, and appellate representation grounded in meticulous case strategy and purposeful preparation at each stage before trial and appellate courts.", ["Bail representation", "Trial strategy", "Appellate representation"], "Appellate"],
-        ["03", "Civil Litigation", "Property, contract, and injunction disputes resolved with disciplined advocacy.", "Property, contract, and injunction disputes resolved with disciplined advocacy, close attention to the trial record, and a clear litigation plan.", ["Property disputes", "Contract disputes", "Injunction matters"], "Commercial"],
-        ["04", "Corporate & Commercial", "Company disputes, NCLT proceedings, and advisory for institutions.", "Company disputes, regulatory matters, NCLT proceedings, and practical advisory support for institutions navigating important commercial decisions.", ["Company disputes & NCLT", "Regulatory matters", "Institutional advisory"], "Commercial"],
-        ["05", "Arbitration", "Domestic and institutional arbitration, from appointment through enforcement.", "Domestic and institutional arbitration support under the 1996 Act from appointment through enforcement, with every step organised around the issues.", ["Domestic arbitration", "Institutional arbitration", "Enforcement under 1996 Act"], "Arbitration"],
-        ["06", "Appellate Practice", "Focused appellate briefs and oral argument before superior courts.", "Focused appellate briefs and oral argument before superior courts, built on a structured record and carefully framed legal questions.", ["Appellate briefs", "Oral argument", "Superior courts"], "Appellate"]
-      ];
-
-      const list = document.querySelector('#practice-list');
-      const sheet = document.querySelector('#case-sheet');
-      const filterChips = document.querySelectorAll('.filter-chip');
-
-      function renderList(filteredAreas) {
-        if (!list) return;
-        list.innerHTML = filteredAreas.map((area, i) => `
-          <button class="practice-row ${i === 0 ? 'active' : ''}" type="button" data-area-id="${area[0]}">
-            <span class="row-id">${area[0]}</span>
-            <span>
-              <h3>${area[1]}</h3>
-              <p>${area[2]}</p>
-            </span>
-            <span class="row-arrow">→</span>
-          </button>
-        `).join('');
-
-        const rows = list.querySelectorAll('.practice-row');
-        rows.forEach((row, i) => {
-          row.addEventListener('click', () => {
-            rows.forEach(r => r.classList.remove('active'));
-            row.classList.add('active');
-            renderSheet(filteredAreas[i]);
-          });
-        });
-
-        if (filteredAreas.length > 0) renderSheet(filteredAreas[0]);
-      }
-
-      function renderSheet(area) {
-        if (!sheet || !area) return;
-        const [id, title, short, detail, points] = area;
-        sheet.classList.add('sheet-updating');
-        setTimeout(() => {
-          sheet.innerHTML = `
-            <span class="case-tab">Selected Brief / ${id}</span>
-            <h3>${title}</h3>
-            <p>${detail}</p>
-            <ul>${points.map(point => `<li>✓ ${point}</li>`).join('')}</ul>
-            <span class="sheet-mark">B&amp;G</span>
-          `;
-          sheet.classList.remove('sheet-updating');
-        }, 90);
-      }
-
-      filterChips.forEach(chip => {
-        chip.addEventListener('click', () => {
-          filterChips.forEach(c => c.classList.remove('active'));
-          chip.classList.add('active');
-          const cat = chip.getAttribute('data-category');
-          const filtered = cat === 'all' ? areas : areas.filter(a => a[5] === cat || a[1].includes(cat));
-          renderList(filtered);
-        });
+      window.addEventListener('resize', () => {
+        width = canvas.width = window.innerWidth;
+        height = canvas.height = window.innerHeight;
       });
 
-      renderList(areas);
+      const particles = Array.from({ length: 35 }, () => ({
+        x: Math.random() * width,
+        y: Math.random() * height,
+        r: Math.random() * 1.5 + 0.5,
+        dx: (Math.random() - 0.5) * 0.3,
+        dy: (Math.random() - 0.5) * 0.3,
+        alpha: Math.random() * 0.5 + 0.2
+      }));
+
+      function render() {
+        ctx.clearRect(0, 0, width, height);
+        particles.forEach(p => {
+          p.x += p.dx;
+          p.y += p.dy;
+          if (p.x < 0) p.x = width;
+          if (p.x > width) p.x = 0;
+          if (p.y < 0) p.y = height;
+          if (p.y > height) p.y = 0;
+
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+          ctx.fillStyle = `rgba(197, 160, 89, ${p.alpha})`;
+          ctx.fill();
+        });
+        requestAnimationFrame(render);
+      }
+      render();
     })();
 
-    // UI Menu & Modal Controls
+    // 3. Practice Area Dossier State
+    const areas = [
+      ["01", "Constitutional Law", "Fundamental-rights petitions, writ jurisdiction, and public importance matters.", "Fundamental-rights petitions, writ jurisdiction, and public importance matters approached through precise preparation and considered advocacy.", ["Fundamental-rights petitions", "Writ jurisdiction", "Public importance matters"]],
+      ["02", "Criminal Defence", "Bail, trial, and appellate representation grounded in meticulous case strategy.", "Bail, trial, and appellate representation grounded in meticulous case strategy and purposeful preparation at each stage.", ["Bail representation", "Trial strategy", "Appellate representation"]],
+      ["03", "Civil Litigation", "Property, contract, and injunction disputes resolved with disciplined advocacy.", "Property, contract, and injunction disputes resolved with disciplined advocacy and close attention to the record.", ["Property disputes", "Contract disputes", "Injunction matters"]],
+      ["04", "Corporate & Commercial", "Company disputes, regulatory matters, and advisory for institutions.", "Company disputes, regulatory matters, and practical advisory support for institutions and founders navigating commercial decisions.", ["Company disputes", "Regulatory matters", "Institutional advisory"]],
+      ["05", "Arbitration", "Domestic and institutional arbitration, from appointment through enforcement.", "Domestic and institutional arbitration support from appointment through enforcement, organized around the matters in issue.", ["Domestic arbitration", "Institutional arbitration", "Enforcement"]],
+      ["06", "Appellate Practice", "Focused appellate briefs and oral argument before superior courts.", "Focused appellate briefs and oral argument before superior courts, built on a structured record and framed legal questions.", ["Appellate briefs", "Oral argument", "Superior courts"]]
+    ];
+    const list = document.querySelector('#practice-list');
+    const sheet = document.querySelector('#case-sheet');
+    function selectArea(index) {
+      const [id, title, short, detail, points] = areas[index];
+      list.innerHTML = areas.map((area, i) => `<button class="practice-row ${i === index ? 'active' : ''}" type="button" aria-pressed="${i === index}"><span class="row-id">${area[0]}</span><span><h3>${area[1]}</h3><p>${area[2]}</p></span><span>→</span></button>`).join('');
+      sheet.innerHTML = `<span class="case-tab">Selected brief / ${id}</span><h3>${title}</h3><p>${detail}</p><ul>${points.map(point => `<li>✓ ${point}</li>`).join('')}</ul><span class="sheet-mark">B&amp;G</span>`;
+      [...list.querySelectorAll('.practice-row')].forEach((button, i) => button.addEventListener('click', () => selectArea(i)));
+    }
+    selectArea(0);
+
+    // 4. Navigation & Mobile Drawer
     const menuButton = document.querySelector('#menu-toggle');
     const drawer = document.querySelector('#mobile-drawer');
-    const menuVideo = document.querySelector('#menu-video');
-    function resetMenuAnimation() { if (menuVideo) { menuVideo.pause(); menuVideo.currentTime = 0; } }
-    function closeMenu() { drawer.classList.remove('open'); menuButton.setAttribute('aria-expanded', 'false'); menuButton.setAttribute('aria-label', 'Open navigation'); resetMenuAnimation(); }
+    function closeMenu() { drawer.classList.remove('open'); menuButton.setAttribute('aria-expanded', 'false'); }
     menuButton.addEventListener('click', () => {
       const isOpen = drawer.classList.contains('open');
       if (isOpen) return closeMenu();
-      if (menuVideo) { menuVideo.pause(); menuVideo.currentTime = 0; menuVideo.play().catch(() => { }); }
-      drawer.classList.add('open'); menuButton.setAttribute('aria-expanded', 'true'); menuButton.setAttribute('aria-label', 'Close navigation');
+      drawer.classList.add('open'); menuButton.setAttribute('aria-expanded', 'true');
     });
     drawer.querySelectorAll('a').forEach(link => link.addEventListener('click', closeMenu));
 
+    // 5. Consultation Modal Handlers
     const modal = document.querySelector('#consultation-modal');
     const closeModal = () => modal.classList.remove('open');
     document.querySelectorAll('.consultation-trigger').forEach(button => button.addEventListener('click', () => modal.classList.add('open')));
     document.querySelector('#modal-close').addEventListener('click', closeModal);
     modal.addEventListener('click', event => { if (event.target === modal) closeModal(); });
     document.addEventListener('keydown', event => { if (event.key === 'Escape') { closeModal(); closeMenu(); } });
-    document.querySelector('#consultation-form').addEventListener('submit', event => { event.preventDefault(); document.querySelector('#form-message').classList.add('show'); });
+    document.querySelector('#consultation-form').addEventListener('submit', event => {
+      event.preventDefault();
+      document.querySelector('#form-message').classList.add('show');
+    });
 
-    /* Scroll Controller */
+    // 6. Scroll Controllers & Counter Animation
     (function initScrollEffects() {
       const isReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
       const revealElements = document.querySelectorAll('.reveal-init, .reveal-left, .reveal-right, .reveal-scale');
       const progressBar = document.querySelector('#scroll-progress');
-      const header = document.querySelector('#site-header') || document.querySelector('.site-header');
+      const header = document.querySelector('#site-header');
       const backToTop = document.querySelector('#back-to-top');
-      const heroSlip = document.querySelector('#hero-brief-slip') || document.querySelector('.hero-brief-slip');
-      const navLinks = document.querySelectorAll('.desk-nav a');
+      const statNums = document.querySelectorAll('.stat-num');
+      let statsCounted = false;
 
+      // Scroll reveal
       if (!isReducedMotion && 'IntersectionObserver' in window) {
         const revealObserver = new IntersectionObserver((entries, observer) => {
           entries.forEach(entry => {
@@ -1813,60 +2409,810 @@
               observer.unobserve(entry.target);
             }
           });
-        }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+        }, { threshold: 0.12 });
         revealElements.forEach(el => revealObserver.observe(el));
-        setTimeout(() => revealElements.forEach(el => el.classList.add('is-revealed')), 1500);
       } else {
         revealElements.forEach(el => el.classList.add('is-revealed'));
       }
 
-      let ticking = false;
-      const sections = ['profile', 'practice', 'approach', 'contact'].map(id => ({ id, el: document.getElementById(id) })).filter(s => s.el !== null);
+      // Animated Number Counters
+      function animateCounters() {
+        if (statsCounted) return;
+        statsCounted = true;
+        statNums.forEach(numEl => {
+          const target = parseInt(numEl.getAttribute('data-target'), 10);
+          let current = 0;
+          const step = Math.max(1, Math.ceil(target / 40));
+          const timer = setInterval(() => {
+            current += step;
+            if (current >= target) {
+              numEl.textContent = target + (target === 100 ? '%' : '+');
+              clearInterval(timer);
+            } else {
+              numEl.textContent = current;
+            }
+          }, 30);
+        });
+      }
 
+      // Scroll listener (RAF throttled)
+      let ticking = false;
       function onScroll() {
         const scrollY = window.scrollY || window.pageYOffset;
         const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+
         if (progressBar && maxScroll > 0) {
-          progressBar.style.width = Math.min(Math.max((scrollY / maxScroll) * 100, 0), 100) + '%';
+          progressBar.style.width = Math.min(100, Math.max(0, (scrollY / maxScroll) * 100)) + '%';
         }
+
         if (header) {
           if (scrollY > 30) header.classList.add('scrolled');
           else header.classList.remove('scrolled');
         }
+
         if (backToTop) {
           if (scrollY > 380) backToTop.classList.add('show');
           else backToTop.classList.remove('show');
         }
-        if (!isReducedMotion && heroSlip && window.innerWidth > 900) {
-          if (scrollY < 800) {
-            heroSlip.style.transform = `rotate(-5deg) translateY(${-scrollY * 0.07}px)`;
+
+        const profileSection = document.getElementById('profile');
+        if (profileSection && !statsCounted) {
+          const rect = profileSection.getBoundingClientRect();
+          if (rect.top < window.innerHeight * 0.8) {
+            animateCounters();
           }
         }
-        if (navLinks.length > 0 && sections.length > 0) {
-          let currentActiveId = '';
-          const scrollMarker = scrollY + 160;
-          for (let i = sections.length - 1; i >= 0; i--) {
-            if (sections[i].el.offsetTop <= scrollMarker) { currentActiveId = sections[i].id; break; }
-          }
-          navLinks.forEach(link => {
-            const href = link.getAttribute('href');
-            if (currentActiveId && (href === `#${currentActiveId}` || href.endsWith(`#${currentActiveId}`))) {
-              link.classList.add('active');
-            } else { link.classList.remove('active'); }
-          });
-        }
+
         ticking = false;
       }
-      window.addEventListener('scroll', () => { if (!ticking) { window.requestAnimationFrame(onScroll); ticking = true; } }, { passive: true });
+
+      window.addEventListener('scroll', () => {
+        if (!ticking) {
+          window.requestAnimationFrame(onScroll);
+          ticking = true;
+        }
+      }, { passive: true });
+
       onScroll();
-      if (backToTop) backToTop.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+
+      if (backToTop) {
+        backToTop.addEventListener('click', () => {
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+      }
+    })();
+
+    // 7. VengeanceUI Scroll Dissolve Reveal Shader Controller
+    (function initScrollDissolveReveal() {
+      const container = document.getElementById('scroll-dissolve-container');
+      const canvas = document.getElementById('dissolve-canvas');
+      const fallbackImg = document.getElementById('hero-fallback-img');
+      if (!container || !canvas || typeof THREE === 'undefined') return;
+
+      const imageFront = "https://briefgavel-xsdpi3fq.manus.space/manus-storage/brief-gavel-hero_fb3554c6.jpg";
+      const imageBack = "https://briefgavel-xsdpi3fq.manus.space/manus-storage/brief-gavel-objects_07d4bc57.jpg";
+
+      const coverVertexShader = `
+        varying vec2 vUv;
+        void main() {
+          vUv = uv;
+          gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+        }
+      `;
+
+      const coverFragmentShader = `
+        uniform sampler2D uTexture;
+        uniform vec2 uResolution;
+        uniform vec2 uImageResolution;
+        uniform float uDissolve;
+        uniform vec2 uCenter;
+        uniform float uTime;
+        uniform float uGrayscale;
+        uniform float uEdgeIntensity;
+        uniform float uEdgeBrightness;
+        varying vec2 vUv;
+
+        float getLuminance(vec3 color) {
+          return dot(color, vec3(0.299, 0.587, 0.114));
+        }
+
+        float sobel(sampler2D tex, vec2 uv, vec2 texelSize) {
+          vec3 c00 = texture2D(tex, uv + vec2(-1.0, -1.0) * texelSize).rgb;
+          vec3 c01 = texture2D(tex, uv + vec2(-1.0,  0.0) * texelSize).rgb;
+          vec3 c02 = texture2D(tex, uv + vec2(-1.0,  1.0) * texelSize).rgb;
+          vec3 c10 = texture2D(tex, uv + vec2( 0.0, -1.0) * texelSize).rgb;
+          vec3 c12 = texture2D(tex, uv + vec2( 0.0,  1.0) * texelSize).rgb;
+          vec3 c20 = texture2D(tex, uv + vec2( 1.0, -1.0) * texelSize).rgb;
+          vec3 c21 = texture2D(tex, uv + vec2( 1.0,  0.0) * texelSize).rgb;
+          vec3 c22 = texture2D(tex, uv + vec2( 1.0,  1.0) * texelSize).rgb;
+
+          float l00 = getLuminance(c00);
+          float l01 = getLuminance(c01);
+          float l02 = getLuminance(c02);
+          float l10 = getLuminance(c10);
+          float l12 = getLuminance(c12);
+          float l20 = getLuminance(c20);
+          float l21 = getLuminance(c21);
+          float l22 = getLuminance(c22);
+
+          float gx = -l00 + l02 - 2.0*l10 + 2.0*l12 - l20 + l22;
+          float gy = -l00 - 2.0*l01 - l02 + l20 + 2.0*l21 + l22;
+
+          return sqrt(gx * gx + gy * gy);
+        }
+
+        float hash(vec2 p) {
+          return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453);
+        }
+
+        float noise(vec2 p) {
+          vec2 i = floor(p);
+          vec2 f = fract(p);
+          f = f * f * (3.0 - 2.0 * f);
+          
+          float a = hash(i);
+          float b = hash(i + vec2(1.0, 0.0));
+          float c = hash(i + vec2(0.0, 1.0));
+          float d = hash(i + vec2(1.0, 1.0));
+          
+          return mix(mix(a, b, f.x), mix(c, d, f.x), f.y);
+        }
+
+        float fbm(vec2 p) {
+          float value = 0.0;
+          float amplitude = 0.5;
+          float frequency = 1.0;
+          
+          for (int i = 0; i < 5; i++) {
+            value += amplitude * noise(p * frequency);
+            amplitude *= 0.5;
+            frequency *= 2.0;
+          }
+          
+          return value;
+        }
+
+        void main() {
+          vec2 ratio = vec2(
+            min((uResolution.x / uResolution.y) / (uImageResolution.x / uImageResolution.y), 1.0),
+            min((uResolution.y / uResolution.x) / (uImageResolution.y / uImageResolution.x), 1.0)
+          );
+
+          vec2 uv = vec2(
+            vUv.x * ratio.x + (1.0 - ratio.x) * 0.5,
+            vUv.y * ratio.y + (1.0 - ratio.y) * 0.5
+          );
+
+          vec4 texColor = texture2D(uTexture, uv);
+          
+          float gray = getLuminance(texColor.rgb);
+          vec3 grayscaleColor = vec3(gray);
+          texColor.rgb = mix(texColor.rgb, grayscaleColor, uGrayscale);
+          
+          vec2 centeredUv = vUv - uCenter;
+          float aspect = uResolution.x / uResolution.y;
+          centeredUv.x *= aspect;
+          float dist = length(centeredUv);
+          
+          float angle = atan(centeredUv.y, centeredUv.x);
+          
+          float noiseScale = 6.0;
+          vec2 pixelatedUv = floor(vUv * uResolution / noiseScale) * noiseScale / uResolution;
+          float blockNoise = fbm(pixelatedUv * 100.0) * 0.15;
+          
+          float angularNoise = fbm(vec2(angle * 5.0, 0.0)) * 0.15;
+          
+          float totalNoise = blockNoise + angularNoise;
+          float noisyDist = dist + totalNoise;
+          
+          float maxDist = length(vec2(aspect * 0.5, 0.5));
+          float normalizedDist = noisyDist / maxDist;
+          
+          float dissolveThreshold = uDissolve * 1.5; 
+          
+          vec2 texelSize = 1.0 / uResolution;
+          float edge = sobel(uTexture, uv, texelSize);
+          
+          edge = pow(edge, 0.7) * 2.0;
+          edge = clamp(edge, 0.0, 1.0);
+          
+          float dissolveMask = smoothstep(dissolveThreshold - 0.03, dissolveThreshold, normalizedDist);
+          
+          vec3 edgeColor = vec3(1.0, 1.0, 1.0);
+          
+          vec3 baseColor = mix(texColor.rgb, vec3(0.0), uGrayscale);
+          vec3 finalColor = baseColor;
+          
+          float edgeGlowIntensity = uEdgeIntensity * 2.0;
+          float edgeGlow = edge * edgeGlowIntensity * (1.0 + uGrayscale * 3.0);
+          finalColor += edgeColor * edgeGlow * uEdgeBrightness;
+          
+          float edgeZoneWidth = 0.15 * (1.0 - uDissolve) + 0.02;
+          float edgeZone = smoothstep(dissolveThreshold - edgeZoneWidth, dissolveThreshold - edgeZoneWidth + 0.04, normalizedDist) * 
+                           smoothstep(dissolveThreshold + 0.02, dissolveThreshold - 0.02, normalizedDist);
+          float sparkle = hash(floor(vUv * uResolution / 4.0)) * edgeZone;
+          
+          float edgeBrightness = (1.0 - uDissolve) * uEdgeBrightness * (1.0 + uGrayscale * 2.0);
+          finalColor += vec3(sparkle * 3.0 * edgeBrightness);
+          
+          float alpha = dissolveMask * texColor.a;
+
+          gl_FragColor = vec4(finalColor, alpha);
+        }
+      `;
+
+      const coverFragmentShaderReverse = `
+        uniform sampler2D uTexture;
+        uniform vec2 uResolution;
+        uniform vec2 uImageResolution;
+        uniform float uDissolve;
+        uniform vec2 uCenter;
+        uniform float uTime;
+        uniform float uBrightness;
+        uniform float uEdgeIntensity;
+        uniform float uDarkness;
+        uniform float uGrayscale;
+        varying vec2 vUv;
+
+        float getLuminance(vec3 color) {
+          return dot(color, vec3(0.299, 0.587, 0.114));
+        }
+
+        float sobel(sampler2D tex, vec2 uv, vec2 texelSize) {
+          vec3 c00 = texture2D(tex, uv + vec2(-1.0, -1.0) * texelSize).rgb;
+          vec3 c01 = texture2D(tex, uv + vec2(-1.0,  0.0) * texelSize).rgb;
+          vec3 c02 = texture2D(tex, uv + vec2(-1.0,  1.0) * texelSize).rgb;
+          vec3 c10 = texture2D(tex, uv + vec2( 0.0, -1.0) * texelSize).rgb;
+          vec3 c12 = texture2D(tex, uv + vec2( 0.0,  1.0) * texelSize).rgb;
+          vec3 c20 = texture2D(tex, uv + vec2( 1.0, -1.0) * texelSize).rgb;
+          vec3 c21 = texture2D(tex, uv + vec2( 1.0,  0.0) * texelSize).rgb;
+          vec3 c22 = texture2D(tex, uv + vec2( 1.0,  1.0) * texelSize).rgb;
+
+          float l00 = getLuminance(c00);
+          float l01 = getLuminance(c01);
+          float l02 = getLuminance(c02);
+          float l10 = getLuminance(c10);
+          float l12 = getLuminance(c12);
+          float l20 = getLuminance(c20);
+          float l21 = getLuminance(c21);
+          float l22 = getLuminance(c22);
+
+          float gx = -l00 + l02 - 2.0*l10 + 2.0*l12 - l20 + l22;
+          float gy = -l00 - 2.0*l01 - l02 + l20 + 2.0*l21 + l22;
+
+          return sqrt(gx * gx + gy * gy);
+        }
+
+        void main() {
+          vec2 ratio = vec2(
+            min((uResolution.x / uResolution.y) / (uImageResolution.x / uImageResolution.y), 1.0),
+            min((uResolution.y / uResolution.x) / (uImageResolution.y / uImageResolution.x), 1.0)
+          );
+
+          vec2 uv = vec2(
+            vUv.x * ratio.x + (1.0 - ratio.x) * 0.5,
+            vUv.y * ratio.y + (1.0 - ratio.y) * 0.5
+          );
+
+          vec4 texColor = texture2D(uTexture, uv);
+          
+          float gray = getLuminance(texColor.rgb);
+          vec3 grayscaleColor = vec3(gray);
+          texColor.rgb = mix(texColor.rgb, grayscaleColor, uGrayscale);
+          
+          vec2 texelSize = 1.0 / uResolution;
+          float edge = sobel(uTexture, uv, texelSize);
+          
+          edge = pow(edge, 0.7) * 2.0;
+          edge = clamp(edge, 0.0, 1.0);
+          
+          vec3 edgeColor = vec3(1.0, 1.0, 1.0);
+          
+          vec3 darkBase = vec3(0.0);
+          vec3 baseColor = mix(texColor.rgb, darkBase, uDarkness);
+          
+          float edgeGlow = edge * uEdgeIntensity * 2.0;
+          baseColor += edgeColor * edgeGlow;
+          
+          vec3 finalColor = clamp(baseColor, 0.0, 1.0);
+
+          gl_FragColor = vec4(finalColor, texColor.a);
+        }
+      `;
+
+      let width = container.clientWidth || window.innerWidth;
+      let height = container.clientHeight || window.innerHeight;
+
+      let renderer;
+      try {
+        renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: false, alpha: true });
+        renderer.setSize(width, height);
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+      } catch (err) {
+        console.warn('WebGL not supported for scroll-dissolve-reveal:', err);
+        return;
+      }
+
+      const scene = new THREE.Scene();
+      const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0.1, 10);
+      camera.position.z = 1;
+
+      const uniforms1 = {
+        uTexture: { value: null },
+        uResolution: { value: new THREE.Vector2(width, height) },
+        uImageResolution: { value: new THREE.Vector2(1920, 1080) },
+        uDissolve: { value: 0.0 },
+        uCenter: { value: new THREE.Vector2(0.5, 0.5) },
+        uTime: { value: 0.0 },
+        uGrayscale: { value: 0.0 },
+        uEdgeIntensity: { value: 0.0 },
+        uEdgeBrightness: { value: 1.0 }
+      };
+
+      const uniforms2 = {
+        uTexture: { value: null },
+        uResolution: { value: new THREE.Vector2(width, height) },
+        uImageResolution: { value: new THREE.Vector2(1920, 1080) },
+        uDissolve: { value: 0.0 },
+        uCenter: { value: new THREE.Vector2(0.5, 0.5) },
+        uTime: { value: 0.0 },
+        uBrightness: { value: 0.0 },
+        uEdgeIntensity: { value: 0.6 },
+        uDarkness: { value: 1.0 },
+        uGrayscale: { value: 1.0 }
+      };
+
+      const materialBack = new THREE.ShaderMaterial({
+        vertexShader: coverVertexShader,
+        fragmentShader: coverFragmentShaderReverse,
+        uniforms: uniforms2,
+        transparent: true
+      });
+
+      const materialFront = new THREE.ShaderMaterial({
+        vertexShader: coverVertexShader,
+        fragmentShader: coverFragmentShader,
+        uniforms: uniforms1,
+        transparent: true
+      });
+
+      const geometry = new THREE.PlaneGeometry(2, 2);
+      const meshBack = new THREE.Mesh(geometry, materialBack);
+      meshBack.position.z = -0.1;
+      const meshFront = new THREE.Mesh(geometry, materialFront);
+      meshFront.position.z = 0;
+
+      scene.add(meshBack);
+      scene.add(meshFront);
+
+      let texFrontLoaded = false;
+      let texBackLoaded = false;
+
+      function checkLoaded() {
+        if (texFrontLoaded && texBackLoaded) {
+          canvas.classList.add('active');
+          if (fallbackImg) fallbackImg.style.opacity = '0';
+          updateScroll();
+        }
+      }
+
+      const textureLoader = new THREE.TextureLoader();
+      textureLoader.load(imageFront, (t) => {
+        uniforms1.uTexture.value = t;
+        if (t.image) uniforms1.uImageResolution.value.set(t.image.width || 1920, t.image.height || 1080);
+        texFrontLoaded = true;
+        checkLoaded();
+      });
+
+      textureLoader.load(imageBack, (t) => {
+        uniforms2.uTexture.value = t;
+        if (t.image) uniforms2.uImageResolution.value.set(t.image.width || 1920, t.image.height || 1080);
+        texBackLoaded = true;
+        checkLoaded();
+      });
+
+      const clock = new THREE.Clock();
+
+      // Cinema Opening Scene elements
+      const cinemaLayer = document.getElementById('hero-cinema-title-layer');
+      const cinemaContainer = document.getElementById('cinema-title-container');
+      const cinemaName = document.getElementById('cinema-advocate-name');
+      const cinemaFlare = document.getElementById('cinema-flare');
+      const cinemaGlow = document.getElementById('cinema-ambient-glow');
+      const cinemaRules = document.querySelectorAll('.cinema-rule');
+      const letterboxTop = document.querySelector('.cinema-letterbox-top');
+      const letterboxBottom = document.querySelector('.cinema-letterbox-bottom');
+      const heroContentLayer = document.querySelector('.hero-content-layer');
+      const scrollIndicator = document.querySelector('.hero-scroll-indicator');
+
+      function updateScroll() {
+        const wrapper = document.getElementById('hero-pinned');
+        if (!wrapper) return;
+        const rect = wrapper.getBoundingClientRect();
+        const totalScrollable = wrapper.clientHeight - window.innerHeight;
+        const scrolled = -rect.top;
+        
+        let progress = Math.max(0, Math.min(1, scrolled / (totalScrollable > 0 ? totalScrollable : 1)));
+
+        const time = clock.getElapsedTime();
+
+        // 1. WebGL Dissolve Uniforms
+        uniforms1.uTime.value = time;
+        uniforms1.uDissolve.value = progress;
+        uniforms1.uGrayscale.value = Math.min(1.0, progress / 0.4);
+        uniforms1.uEdgeIntensity.value = progress * 0.5;
+        uniforms1.uEdgeBrightness.value = 1.0 - progress;
+
+        uniforms2.uTime.value = time;
+        const accel = Math.min(1.0, progress * 1.1);
+        uniforms2.uEdgeIntensity.value = 0.6 * (1.0 - accel);
+        uniforms2.uDarkness.value = 1.0 - accel;
+        uniforms2.uGrayscale.value = 1.0 - accel;
+
+        renderer.render(scene, camera);
+
+        // 2. Initial Hero Copy Fade-out (0.00 -> 0.20)
+        if (heroContentLayer) {
+          const heroFade = Math.max(0, 1 - progress / 0.18);
+          heroContentLayer.style.opacity = heroFade;
+          heroContentLayer.style.transform = `translateY(${-progress * 130}px) scale(${1 - progress * 0.08})`;
+          heroContentLayer.style.filter = progress > 0.02 ? `blur(${progress * 14}px)` : 'none';
+          heroContentLayer.style.pointerEvents = (heroFade > 0.05) ? 'auto' : 'none';
+        }
+
+        if (scrollIndicator) {
+          scrollIndicator.style.opacity = Math.max(0, 1 - progress * 5);
+        }
+
+        // 3. Cinematic Advocate Name Reveal Scene (0.15 -> 0.88)
+        if (cinemaLayer && cinemaContainer) {
+          const cinemaStart = 0.15;
+          const cinemaPeakStart = 0.36;
+          const cinemaPeakEnd = 0.68;
+          const cinemaEnd = 0.88;
+
+          if (progress >= cinemaStart && progress <= cinemaEnd) {
+            let cinemaOpacity = 0;
+            let cinemaScale = 0.90;
+            let letterSpacing = 0.16;
+            let flareOpacity = 0;
+            let flareX = 0;
+            let letterboxH = 0;
+
+            if (progress < cinemaPeakStart) {
+              // Entering Phase: dramatic film exposure, tracking outward, letterbox widening
+              const t = (progress - cinemaStart) / (cinemaPeakStart - cinemaStart);
+              const easeT = t * t * (3 - 2 * t);
+              cinemaOpacity = easeT;
+              cinemaScale = 0.90 + 0.10 * easeT;
+              letterSpacing = 0.16 + 0.12 * easeT;
+              flareOpacity = easeT * 0.95;
+              flareX = -120 + 120 * easeT;
+              letterboxH = Math.round(52 * easeT);
+            } else if (progress <= cinemaPeakEnd) {
+              // Peak Cinema Presence: majestic hold, subtle drift & shimmer
+              const t = (progress - cinemaPeakStart) / (cinemaPeakEnd - cinemaPeakStart);
+              cinemaOpacity = 1;
+              cinemaScale = 1.00 + 0.04 * t;
+              letterSpacing = 0.28 + 0.04 * t;
+              flareOpacity = 0.90 + 0.10 * Math.sin(t * Math.PI);
+              flareX = (t - 0.5) * 60;
+              letterboxH = 52;
+            } else {
+              // Exit Phase: ethereal dissolve into profile
+              const t = (progress - cinemaPeakEnd) / (cinemaEnd - cinemaPeakEnd);
+              const easeT = t * t;
+              cinemaOpacity = 1 - easeT;
+              cinemaScale = 1.04 + 0.05 * easeT;
+              letterSpacing = 0.32 + 0.06 * easeT;
+              flareOpacity = (1 - easeT) * 0.8;
+              flareX = 30 + 70 * easeT;
+              letterboxH = Math.round(52 * (1 - easeT));
+            }
+
+            cinemaLayer.style.opacity = cinemaOpacity;
+            cinemaContainer.style.transform = `scale(${cinemaScale})`;
+            cinemaContainer.style.filter = cinemaOpacity < 0.92 ? `blur(${(1 - cinemaOpacity) * 6}px)` : 'none';
+
+            if (cinemaName) {
+              cinemaName.style.letterSpacing = `${letterSpacing}em`;
+            }
+
+            if (cinemaFlare) {
+              cinemaFlare.style.opacity = flareOpacity;
+              cinemaFlare.style.transform = `translate(calc(-50% + ${flareX}px), -50%) scaleX(${0.8 + flareOpacity * 0.4})`;
+            }
+
+            if (cinemaGlow) {
+              cinemaGlow.style.opacity = cinemaOpacity * 0.9;
+            }
+
+            cinemaRules.forEach(rule => {
+              rule.style.transform = `scaleX(${Math.min(1, cinemaOpacity * 1.2)})`;
+            });
+
+            if (letterboxTop && letterboxBottom) {
+              letterboxTop.style.height = `${letterboxH}px`;
+              letterboxBottom.style.height = `${letterboxH}px`;
+            }
+          } else {
+            cinemaLayer.style.opacity = 0;
+            if (letterboxTop && letterboxBottom) {
+              letterboxTop.style.height = '0px';
+              letterboxBottom.style.height = '0px';
+            }
+          }
+        }
+      }
+
+      window.addEventListener('scroll', updateScroll, { passive: true });
+      window.addEventListener('resize', () => {
+        width = container.clientWidth || window.innerWidth;
+        height = container.clientHeight || window.innerHeight;
+        renderer.setSize(width, height);
+        uniforms1.uResolution.value.set(width, height);
+        uniforms2.uResolution.value.set(width, height);
+        updateScroll();
+      });
+
+      updateScroll();
     })();
   </script>
 
-  <button class="back-to-top" id="back-to-top" aria-label="Back to top of docket" type="button">
-    <span class="top-arrow" aria-hidden="true">↑</span>
-    <span>Docket top</span>
-  </button>
+  <script>
+    // VengeanceUI Testimonials Card 3D Animation Controller
+    (function initVengeanceTestimonials() {
+      const container = document.getElementById('experience-v-testimonials');
+      if (!container) return;
+
+      const viewport = document.getElementById('v-card-stack');
+      const cards = Array.from(viewport.querySelectorAll('.v-stack-card'));
+      const prevBtn = document.getElementById('v-prev-btn');
+      const nextBtn = document.getElementById('v-next-btn');
+      const counterNum = document.getElementById('v-active-num');
+      const eraBadge = document.getElementById('v-stage-era');
+      const textStage = document.getElementById('v-text-stage');
+      const titleEl = document.getElementById('v-stage-title');
+      const descEl = document.getElementById('v-stage-desc');
+      const tagsEl = document.getElementById('v-stage-tags');
+      const chips = Array.from(document.querySelectorAll('.v-chip'));
+
+      const milestonesData = [
+        {
+          era: '2012 — 2016',
+          title: 'Fundamental Rights & <em>High Court Writs</em>',
+          desc: 'Secured critical administrative stays and represented fundamental rights writ petitions before the High Court of Telangana.',
+          tags: ['✓ Mandamus & Certiorari Writs', '✓ Administrative Stays', '✓ Public Law Advocacy']
+        },
+        {
+          era: '2016 — 2019',
+          title: 'Insolvency & <em>Corporate Governance</em>',
+          desc: 'Advocated complex shareholder disputes and insolvency proceedings before National Company Law Tribunal (NCLT) benches.',
+          tags: ['✓ IBC Insolvency Relief', '✓ Derivative Suits', '✓ Boardroom Restructuring']
+        },
+        {
+          era: '2019 — 2022',
+          title: 'High-Stakes Injunctions & <em>Property</em>',
+          desc: 'Defended commercial titles and real estate assets across complex civil trials and appellate record submissions.',
+          tags: ['✓ Specific Performance', '✓ Commercial Injunctions', '✓ Title Recovery']
+        },
+        {
+          era: '2022 — Present',
+          title: 'Institutional Arbitration & <em>Awards</em>',
+          desc: 'Senior counsel in major commercial arbitrations, managing tribunal appointments through final high-value award enforcement.',
+          tags: ['✓ Section 9 & 11 Relief', '✓ Award Enforcement', '✓ Institutional Rules']
+        }
+      ];
+
+      let activeIndex = 0;
+      let isAnimating = false;
+      const total = cards.length;
+      const rotations = [4, -2, -9, 7];
+
+      function getCardTransform(index, currentActive) {
+        const offset = index - currentActive;
+        if (offset === 0) {
+          return {
+            transform: 'translate3d(0px, 0px, 0px) rotateZ(0deg) scale(1)',
+            opacity: 1,
+            zIndex: 100
+          };
+        } else if (offset > 0) {
+          const x = offset * 18;
+          const y = Math.abs(offset) * 6;
+          const z = -140 * offset;
+          const scale = 0.86 - offset * 0.04;
+          const rot = rotations[index % 4];
+          const opacity = Math.max(0.2, 0.65 - offset * 0.12);
+          return {
+            transform: `translate3d(${x}px, ${y}px, ${z}px) rotateZ(${rot}deg) scale(${scale})`,
+            opacity: opacity,
+            zIndex: 10 - offset
+          };
+        } else {
+          return {
+            transform: 'translate3d(-260px, 0px, -260px) rotateZ(-12deg) scale(0.75)',
+            opacity: 0,
+            zIndex: 2
+          };
+        }
+      }
+
+      function applyStaticTransforms() {
+        cards.forEach((card, idx) => {
+          const style = getCardTransform(idx, activeIndex);
+          card.style.transform = style.transform;
+          card.style.opacity = style.opacity;
+          card.style.zIndex = style.zIndex;
+        });
+      }
+
+      function goToSlide(newIndex, direction) {
+        if (newIndex === activeIndex || isAnimating || newIndex < 0 || newIndex >= total) return;
+        isAnimating = true;
+
+        const prevIndex = activeIndex;
+        activeIndex = newIndex;
+
+        // Animate cards with Web Animations API matching VengeanceUI motion arc
+        cards.forEach((card, idx) => {
+          if (idx === newIndex) {
+            // New Active Card: signature VengeanceUI 3D swooping flight
+            card.style.zIndex = 100;
+            const startOffset = idx - prevIndex;
+            const startX = startOffset * 18;
+            const startY = Math.abs(startOffset) * 6;
+            const startZ = -140 * Math.abs(startOffset);
+            const startRot = rotations[idx % 4];
+            const startScale = 0.86 - Math.abs(startOffset) * 0.04;
+
+            const midX = direction === 1 ? -220 : 220;
+            const midRot = direction === 1 ? -6 : 6;
+
+            card.animate([
+              {
+                transform: `translate3d(${startX}px, ${startY}px, ${startZ}px) rotateZ(${startRot}deg) scale(${startScale})`,
+                opacity: 0.7
+              },
+              {
+                transform: `translate3d(${midX}px, 0px, 150px) rotateZ(${midRot}deg) scale(1.05)`,
+                opacity: 1,
+                offset: 0.42
+              },
+              {
+                transform: 'translate3d(0px, 0px, 0px) rotateZ(0deg) scale(1)',
+                opacity: 1
+              }
+            ], {
+              duration: 750,
+              easing: 'cubic-bezier(0.22, 1, 0.36, 1)',
+              fill: 'forwards'
+            });
+          } else if (idx === prevIndex) {
+            // Outgoing Card: swoops out
+            const exitX = direction === 1 ? -260 : 260;
+            const exitRot = direction === 1 ? -12 : 12;
+
+            card.animate([
+              {
+                transform: 'translate3d(0px, 0px, 0px) rotateZ(0deg) scale(1)',
+                opacity: 1
+              },
+              {
+                transform: `translate3d(${exitX}px, 0px, -260px) rotateZ(${exitRot}deg) scale(0.75)`,
+                opacity: 0
+              }
+            ], {
+              duration: 650,
+              easing: 'cubic-bezier(0.22, 1, 0.36, 1)',
+              fill: 'forwards'
+            });
+            card.style.zIndex = 5;
+          } else {
+            // Other cards in stack shift smoothly to their new depth positions
+            const oldStyle = getCardTransform(idx, prevIndex);
+            const targetStyle = getCardTransform(idx, activeIndex);
+            card.style.zIndex = targetStyle.zIndex;
+
+            card.animate([
+              { transform: oldStyle.transform, opacity: oldStyle.opacity },
+              { transform: targetStyle.transform, opacity: targetStyle.opacity }
+            ], {
+              duration: 600,
+              easing: 'cubic-bezier(0.22, 1, 0.36, 1)',
+              fill: 'forwards'
+            });
+          }
+        });
+
+        // Update Text Stage with smooth fade & slide
+        if (textStage) {
+          textStage.classList.add('transitioning');
+          setTimeout(() => {
+            const data = milestonesData[activeIndex];
+            if (eraBadge) eraBadge.innerHTML = `<span class="dot"></span>${data.era}`;
+            if (counterNum) counterNum.textContent = String(activeIndex + 1).padStart(2, '0');
+            if (titleEl) titleEl.innerHTML = data.title;
+            if (descEl) descEl.textContent = data.desc;
+            if (tagsEl) {
+              tagsEl.innerHTML = data.tags.map(t => `<span class="v-tag-pill">${t}</span>`).join('');
+            }
+            textStage.classList.remove('transitioning');
+          }, 220);
+        }
+
+        // Update Chips & Buttons
+        chips.forEach((chip, i) => {
+          if (i === activeIndex) {
+            chip.classList.add('active');
+          } else {
+            chip.classList.remove('active');
+          }
+        });
+
+        if (prevBtn) prevBtn.disabled = (activeIndex === 0);
+        if (nextBtn) nextBtn.disabled = (activeIndex === total - 1);
+
+        setTimeout(() => {
+          isAnimating = false;
+        }, 760);
+      }
+
+      // Button listeners
+      if (prevBtn) {
+        prevBtn.addEventListener('click', () => {
+          if (activeIndex > 0) goToSlide(activeIndex - 1, -1);
+        });
+      }
+
+      if (nextBtn) {
+        nextBtn.addEventListener('click', () => {
+          if (activeIndex < total - 1) goToSlide(activeIndex + 1, 1);
+        });
+      }
+
+      // Chips click
+      chips.forEach((chip, idx) => {
+        chip.addEventListener('click', () => {
+          if (idx !== activeIndex) {
+            goToSlide(idx, idx > activeIndex ? 1 : -1);
+          }
+        });
+      });
+
+      // Clicking any card directly in the 3D stack
+      cards.forEach((card, idx) => {
+        card.addEventListener('click', () => {
+          if (idx !== activeIndex) {
+            goToSlide(idx, idx > activeIndex ? 1 : -1);
+          }
+        });
+      });
+
+      // Touch swipe gestures
+      let touchStartX = 0;
+      viewport.addEventListener('touchstart', (e) => {
+        touchStartX = e.touches[0].clientX;
+      }, { passive: true });
+
+      viewport.addEventListener('touchend', (e) => {
+        const touchEndX = e.changedTouches[0].clientX;
+        const diff = touchStartX - touchEndX;
+        if (Math.abs(diff) > 45) {
+          if (diff > 0 && activeIndex < total - 1) {
+            goToSlide(activeIndex + 1, 1);
+          } else if (diff < 0 && activeIndex > 0) {
+            goToSlide(activeIndex - 1, -1);
+          }
+        }
+      }, { passive: true });
+
+      // Initialize
+      applyStaticTransforms();
+      if (prevBtn) prevBtn.disabled = true;
+      if (nextBtn) nextBtn.disabled = (total <= 1);
+    })();
+  </script>
 </body>
 
 </html>
